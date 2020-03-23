@@ -9,9 +9,27 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+const Parser = require('rss-parser');
+
+const parser = new Parser();
 
 module.exports = {
   required: [],
-  pattern: () => false,
-  extract: () => [],
+  pattern: (url) => {
+    if (/[&?]feed=atom/.test(url)) {
+      return true;
+    }
+    return false;
+  },
+  extract: async (url) => {
+    const feed = await parser.parseURL(url);
+    return {
+      statusCode: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'max-age=3600',
+      },
+      body: feed.items,
+    };
+  },
 };

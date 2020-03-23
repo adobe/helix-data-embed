@@ -16,6 +16,7 @@ const { epsagon } = require('@adobe/helix-epsagon');
 const embed = require('./embed');
 
 async function main(params) {
+  /* istanbul ignore next */
   const { __ow_logger: log = console } = params;
   if (!params.__ow_path) {
     return {

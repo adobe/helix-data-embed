@@ -17,7 +17,7 @@ const matchers = [
 
 function hasParams(list, params) {
   const empty = list.filter((parameter) => params[parameter] === undefined);
-  return !!empty.length;
+  return empty.length === list.length;
 }
 
 function embed(url, params, log) {

@@ -13,23 +13,22 @@
 const assert = require('assert');
 const { main } = require('../src/index');
 
-describe('Integration Tests', () => {
-  it('Rejects missing URLs', async () => {
+describe('Feed Tests', () => {
+  it('Works for RSS Feeds', async () => {
     const result = await main({
-      __ow_logger: console,
+      __ow_path: '/https://blogs.adobe.com/psirt/',
+      __ow_query: 'feed=atom',
     });
-    assert.equal(result.statusCode, 400);
-  });
+    assert.equal(result.statusCode, 200);
+    assert.equal(result.body.length, 10);
+  }).timeout(5000);
 
-  it('Rejects missing parameters', async () => {
-    const result = await main();
-    assert.equal(result.statusCode, 400);
-  });
-
-  it('Rejects unknown URLs', async () => {
+  it('Rejects invalid RSS Feeds', async () => {
     const result = await main({
       __ow_path: '/https://example.com',
+      feed: 'atom',
+      foo: 'bar',
     });
-    assert.equal(result.statusCode, 404);
-  });
+    assert.equal(result.statusCode, 500);
+  }).timeout(5000);
 });
