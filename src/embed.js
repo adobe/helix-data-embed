@@ -9,15 +9,26 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-const matchers = [];
+const feed = require('./matchers/feed');
 
+const matchers = [
+  feed,
+];
+
+function hasParams(list, params) {
+  const empty = list.filter((parameter) => params[parameter] === undefined);
+  return !!empty.length;
+}
 
 function embed(url, params, log) {
-  const matching = matchers.find((candidate) => candidate.pattern(url));
+  const matching = matchers
+    .filter((candidate) => hasParams(candidate.required, params))
+    .find((candidate) => candidate.pattern(url));
 
   if (!url || !matching) {
     log.warn(`No matcher found for URL ${url}`);
     return {
+      statusCode: 404,
       headers: {
         'Content-Type': 'application/json',
         'Cache-Control': 'max-age=3600',
@@ -26,7 +37,7 @@ function embed(url, params, log) {
     };
   }
 
-  return matching.decorator(url, params);
+  return matching.extract(url, params);
 }
 
 module.exports = embed;

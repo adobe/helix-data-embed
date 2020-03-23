@@ -17,6 +17,12 @@ const embed = require('./embed');
 
 async function main(params) {
   const { __ow_logger: log = console } = params;
+  if (!params.__ow_path) {
+    return {
+      statusCode: 400,
+      body: 'Expecting a path',
+    };
+  }
 
   if (!params.__ow_query) {
     // reconstruct __ow_query
