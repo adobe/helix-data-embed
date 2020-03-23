@@ -8,7 +8,7 @@ executors:
     working_directory: ~/repo
 
 orbs:
-  helix-post-deploy: adobe/helix-post-deploy@1.3.0
+  helix-post-deploy: adobe/helix-post-deploy@1.4.0
 
 commands:
   setup:
@@ -72,9 +72,8 @@ jobs:
       # see https://circleci.com/orbs/registry/orb/adobe/helix-post-deploy
       # for more available parameters
       - helix-post-deploy/monitoring:
-          incubator: Helix Data Embed # remove to promote service to production
-          statuspage_name: Delivery
-          statuspage_group: Delivery Repeated Failure
+          incubator: true # remove to promote service to production
+          statuspage_group: Delivery
           newrelic_group_policy: Development Repeated Failure
 
   branch-deploy:
