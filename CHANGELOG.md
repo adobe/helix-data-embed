@@ -1,3 +1,15 @@
+# 1.0.0 (2020-03-23)
+
+
+### Bug Fixes
+
+* **monitoring:** fix automation with incubator flag ([2329acd](https://github.com/adobe/helix-data-embed/commit/2329acd6830a0af8c17957c0afd844b3baad74eb))
+
+
+### Features
+
+* **feeds:** turn some atom feeds into data ([c6227e7](https://github.com/adobe/helix-data-embed/commit/c6227e7c5c3a8a24a3f2c713ef675bac3a6e19a4))
+
 ## [1.8.7](https://github.com/adobe/helix-service/compare/v1.8.6...v1.8.7) (2020-03-19)
 
 
