@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/adobe/helix-data-embed/compare/v1.0.0...v1.0.1) (2020-03-24)
+
+
+### Bug Fixes
+
+* **deploy:** use correct service name for wsk deployments ([db45763](https://github.com/adobe/helix-data-embed/commit/db45763fe8c9883e52cc5685709d43b55dced540))
+
 # 1.0.0 (2020-03-23)
 
 
