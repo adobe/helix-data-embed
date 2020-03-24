@@ -37,10 +37,9 @@ describe('Post-Deploy Tests', () => {
       .request('https://adobeioruntime.net/')
       .get(`${getbaseurl()}/https://blogs.adobe.com/psirt/?feed=atom`)
       .then((response) => {
-        console.log(response);
-        expect(response).to.have.status(200);
         expect(response).to.be.json;
-        console.log(response.json);
+        expect(response.body).to.be.an('array').that.has.length(10);
+        expect(response).to.have.status(200);
       }).catch((e) => {
         throw e;
       });
