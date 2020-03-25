@@ -33,10 +33,12 @@
   "homepage": "https://github.com/adobe/helix-data-embed#readme",
   "dependencies": {
     "@adobe/helix-epsagon": "1.1.8",
+    "@adobe/helix-onedrive-support": "^2.1.0",
     "@adobe/helix-status": "7.1.2",
     "@adobe/openwhisk-action-logger": "2.2.0",
     "@adobe/openwhisk-action-utils": "4.2.2",
-    "rss-parser": "^3.7.6"
+    "rss-parser": "^3.7.6",
+    "xlsx": "^0.15.6"
   },
   "devDependencies": {
     "@adobe/eslint-config-helix": "1.1.0",
