@@ -38,7 +38,7 @@
     "@adobe/openwhisk-action-logger": "2.2.0",
     "@adobe/openwhisk-action-utils": "4.2.2",
     "rss-parser": "^3.7.6",
-    "xlsx": "^0.15.6"
+    "xlsx": "0.15.6"
   },
   "devDependencies": {
     "@adobe/eslint-config-helix": "1.1.0",
