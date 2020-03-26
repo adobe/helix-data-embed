@@ -52,8 +52,8 @@ describe('Post-Deploy Tests', () => {
       .then((response) => {
         expect(response).to.be.json;
         expect(response.body).to.be.an('array').that.includes({
+          url: 'https://theblog.adobe.com/ar-vr-voice-redefining-digital-experiences/',
           year: 2017,
-          url: 'https://theblog.adobe.com/silka-miesnieks-designing-immersive-world/',
         });
         expect(response).to.have.status(200);
       }).catch((e) => {
