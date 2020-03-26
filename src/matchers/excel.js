@@ -10,7 +10,6 @@
  * governing permissions and limitations under the License.
  */
 const { OneDrive } = require('@adobe/helix-onedrive-support');
-const XLSX = require('xlsx');
 
 async function extract(url, params, log = console) {
   const {
@@ -27,12 +26,28 @@ async function extract(url, params, log = console) {
       log,
     });
 
-    const driveItem = await drive.getDriveItemFromShareLink(url);
-    const xlsxbuffer = await drive.downloadDriveItem(driveItem);
+    const item = await drive.getDriveItemFromShareLink(url);
+    const worksheetsuri = `/drives/${item.parentReference.driveId}/items/${item.id}/workbook/worksheets/`;
+    const worksheets = await (await drive.getClient(false)).get(worksheetsuri);
+    const worksheetname = worksheets.value[0].name;
 
-    const workbook = XLSX.read(xlsxbuffer, { type: 'buffer' });
-    const worksheet1 = workbook.Sheets[workbook.SheetNames[0]];
-    const json = XLSX.utils.sheet_to_json(worksheet1);
+    const tablesuri = `/drives/${item.parentReference.driveId}/items/${item.id}/workbook/worksheets/${worksheetname}/tables/`;
+    const tables = await (await drive.getClient(false)).get(tablesuri);
+    const tablename = tables.value[0].name;
+
+    const rowsuri = `/drives/${item.parentReference.driveId}/items/${item.id}/workbook/worksheets/${worksheetname}/tables/${tablename}/rows/`;
+    const rows = await (await drive.getClient(false)).get(rowsuri);
+
+    const columnsuri = `/drives/${item.parentReference.driveId}/items/${item.id}/workbook/worksheets/${worksheetname}/tables/${tablename}/columns/`;
+    const columns = await (await drive.getClient(false)).get(columnsuri);
+
+    const columnnames = columns.value.map(({ name }) => name);
+
+    const rowvalues = rows.value.map((myrow) => columnnames.reduce((row, name, index) => {
+      // eslint-disable-next-line no-param-reassign
+      row[name] = myrow.values[0][index];
+      return row;
+    }, {}));
 
     return {
       statusCode: 200,
@@ -40,7 +55,7 @@ async function extract(url, params, log = console) {
         'Content-Type': 'application/json',
         'Cache-Control': 'max-age=600',
       },
-      body: json,
+      body: rowvalues,
     };
   } catch (e) {
     log.error(e.message);

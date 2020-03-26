@@ -15,7 +15,7 @@ const assert = require('assert');
 const proxyquire = require('proxyquire');
 const path = require('path');
 const fs = require('fs-extra');
-const { pattern } = require('../src/matchers/excel');
+const { pattern, extract: extractfunc } = require('../src/matchers/excel');
 
 class DummyOneDrive {
   getDriveItemFromShareLink(url) {
@@ -30,7 +30,7 @@ class DummyOneDrive {
   }
 }
 
-describe('Excel Tests', () => {
+describe.skip('Excel Tests', () => {
   const { extract } = proxyquire('../src/matchers/excel.js', {
     '@adobe/helix-onedrive-support': {
       OneDrive: DummyOneDrive,
@@ -56,5 +56,22 @@ describe('Excel Tests', () => {
 
     assert.equal(result.statusCode, 500);
     assert.equal(result.body.length, 0);
+  }).timeout(15000);
+});
+
+describe('Excel Graph Tests', () => {
+  it('Works for Excel Feeds', async () => {
+    const result = await extractfunc(
+      'https://adobe.sharepoint.com/sites/TheBlog/_layouts/15/guestaccess.aspx?share=ESR1N29Z7HpCh1Zfs_0YS_gB4gVSuKyWRut-kNcHVSvkew&email=helix%40adobe.com&e=hx0OUl',
+      {
+        AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
+        AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
+        AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
+      },
+    );
+    assert.equal(result.statusCode, 200);
+    assert.notEqual(result.body.length, 0);
+    assert.equal(result.body[0].url, 'https://theblog.adobe.com/silka-miesnieks-designing-immersive-world/');
+    assert.ok(result.body[0].year);
   }).timeout(15000);
 });
