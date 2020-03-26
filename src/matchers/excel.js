@@ -35,19 +35,21 @@ async function extract(url, params, log = console) {
     const tables = await (await drive.getClient(false)).get(tablesuri);
     const tablename = tables.value[0].name;
 
-    const rowsuri = `/drives/${item.parentReference.driveId}/items/${item.id}/workbook/worksheets/${worksheetname}/tables/${tablename}/rows/`;
-    const rows = await (await drive.getClient(false)).get(rowsuri);
-
     const columnsuri = `/drives/${item.parentReference.driveId}/items/${item.id}/workbook/worksheets/${worksheetname}/tables/${tablename}/columns/`;
     const columns = await (await drive.getClient(false)).get(columnsuri);
 
     const columnnames = columns.value.map(({ name }) => name);
 
-    const rowvalues = rows.value.map((myrow) => columnnames.reduce((row, name, index) => {
-      // eslint-disable-next-line no-param-reassign
-      row[name] = myrow.values[0][index];
-      return row;
-    }, {}));
+    const rowvalues = columns.value[0].values
+      .map((_, rownum) => columnnames.reduce((row, name, colnum) => {
+        const [value] = columns.value[colnum].values[rownum];
+        // eslint-disable-next-line no-param-reassign
+        row[name] = value;
+        return row;
+      }, {}));
+
+    // discard the first row
+    rowvalues.shift();
 
     return {
       statusCode: 200,
