@@ -51,7 +51,7 @@ describe('Post-Deploy Tests', () => {
       .get(`${getbaseurl()}/https://adobe.sharepoint.com/sites/TheBlog/_layouts/15/guestaccess.aspx?share=ESR1N29Z7HpCh1Zfs_0YS_gB4gVSuKyWRut-kNcHVSvkew&email=helix%40adobe.com&e=hx0OUl`)
       .then((response) => {
         expect(response).to.be.json;
-        expect(response.body).to.be.an('array').that.includes({
+        expect(response.body).to.be.an('array').that.deep.includes({
           url: 'https://theblog.adobe.com/ar-vr-voice-redefining-digital-experiences/',
           year: 2017,
         });
