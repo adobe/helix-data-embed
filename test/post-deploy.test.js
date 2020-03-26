@@ -46,6 +46,8 @@ describe('Post-Deploy Tests', () => {
   }).timeout(10000);
 
   it('Excel Embed', async () => {
+    console.log('Trying', `https://adobeioruntime.net/${getbaseurl()}/https://adobe.sharepoint.com/sites/TheBlog/_layouts/15/guestaccess.aspx?share=ESR1N29Z7HpCh1Zfs_0YS_gB4gVSuKyWRut-kNcHVSvkew&email=helix%40adobe.com&e=hx0OUl`);
+
     await chai
       .request('https://adobeioruntime.net/')
       .get(`${getbaseurl()}/https://adobe.sharepoint.com/sites/TheBlog/_layouts/15/guestaccess.aspx?share=ESR1N29Z7HpCh1Zfs_0YS_gB4gVSuKyWRut-kNcHVSvkew&email=helix%40adobe.com&e=hx0OUl`)
