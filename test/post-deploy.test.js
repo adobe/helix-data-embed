@@ -44,4 +44,20 @@ describe('Post-Deploy Tests', () => {
         throw e;
       });
   });
+
+  it('Excel Embed', async () => {
+    await chai
+      .request('https://adobeioruntime.net/')
+      .get(`${getbaseurl()}/https://adobe.sharepoint.com/sites/TheBlog/_layouts/15/guestaccess.aspx?share=ESR1N29Z7HpCh1Zfs_0YS_gB4gVSuKyWRut-kNcHVSvkew&email=helix%40adobe.com&e=hx0OUl`)
+      .then((response) => {
+        expect(response).to.be.json;
+        expect(response.body).to.be.an('array').that.has.members({
+          year: 2017,
+          url: 'https://theblog.adobe.com/silka-miesnieks-designing-immersive-world/',
+        });
+        expect(response).to.have.status(200);
+      }).catch((e) => {
+        throw e;
+      });
+  });
 });
