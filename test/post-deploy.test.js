@@ -43,7 +43,7 @@ describe('Post-Deploy Tests', () => {
       }).catch((e) => {
         throw e;
       });
-  });
+  }).timeout(10000);
 
   it('Excel Embed', async () => {
     await chai
@@ -59,5 +59,5 @@ describe('Post-Deploy Tests', () => {
       }).catch((e) => {
         throw e;
       });
-  });
+  }).timeout(10000);
 });
