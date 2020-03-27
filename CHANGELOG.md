@@ -1,3 +1,15 @@
+# [1.1.0](https://github.com/adobe/helix-data-embed/compare/v1.0.1...v1.1.0) (2020-03-27)
+
+
+### Bug Fixes
+
+* **excel:** relax URL patterns ([0aaf3b2](https://github.com/adobe/helix-data-embed/commit/0aaf3b2aec0932322ed61bb76026527f70b7abb4))
+
+
+### Features
+
+* **excel:** support excel spreadsheets on sharepoint sites ([9c02828](https://github.com/adobe/helix-data-embed/commit/9c028286844497867cd4af15e7d512179572bb97))
+
 ## [1.0.1](https://github.com/adobe/helix-data-embed/compare/v1.0.0...v1.0.1) (2020-03-24)
 
 
