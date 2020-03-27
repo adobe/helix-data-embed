@@ -33,7 +33,7 @@ async function extract(url, params, log = console) {
     const worksheets = await client.get(worksheetsuri);
     const worksheetname = worksheets.value[0].name;
 
-    const tablesuri = `/drives/${item.parentReference.driveId}/items/${item.id}/workbook/worksheets/${worksheetname}/tables/`;
+    const tablesuri = `${worksheetsuri}${worksheetname}/tables/`;
     const tables = await client.get(tablesuri);
     const tablename = tables.value[0].name;
 
