@@ -37,7 +37,7 @@ async function extract(url, params, log = console) {
     const tables = await client.get(tablesuri);
     const tablename = tables.value[0].name;
 
-    const columnsuri = `/drives/${item.parentReference.driveId}/items/${item.id}/workbook/worksheets/${worksheetname}/tables/${tablename}/columns/`;
+    const columnsuri = `${tablesuri}${tablename}/columns/`;
     const columns = await client.get(columnsuri);
 
     const columnnames = columns.value.map(({ name }) => name);
