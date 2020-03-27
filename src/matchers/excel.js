@@ -26,17 +26,19 @@ async function extract(url, params, log = console) {
       log,
     });
 
+    const client = await drive.getClient();
+
     const item = await drive.getDriveItemFromShareLink(url);
     const worksheetsuri = `/drives/${item.parentReference.driveId}/items/${item.id}/workbook/worksheets/`;
-    const worksheets = await (await drive.getClient(false)).get(worksheetsuri);
+    const worksheets = await client.get(worksheetsuri);
     const worksheetname = worksheets.value[0].name;
 
     const tablesuri = `/drives/${item.parentReference.driveId}/items/${item.id}/workbook/worksheets/${worksheetname}/tables/`;
-    const tables = await (await drive.getClient(false)).get(tablesuri);
+    const tables = await client.get(tablesuri);
     const tablename = tables.value[0].name;
 
     const columnsuri = `/drives/${item.parentReference.driveId}/items/${item.id}/workbook/worksheets/${worksheetname}/tables/${tablename}/columns/`;
-    const columns = await (await drive.getClient(false)).get(columnsuri);
+    const columns = await client.get(columnsuri);
 
     const columnnames = columns.value.map(({ name }) => name);
 
