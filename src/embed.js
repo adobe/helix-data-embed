@@ -10,13 +10,14 @@
  * governing permissions and limitations under the License.
  */
 const feed = require('./matchers/feed');
+const excel = require('./matchers/excel');
 
 const matchers = [
-  feed,
+  feed, excel,
 ];
 
 function hasParams(list, params) {
-  const empty = list.filter((parameter) => params[parameter] === undefined);
+  const empty = list.filter((parameter) => params[parameter] !== undefined);
   return empty.length === list.length;
 }
 

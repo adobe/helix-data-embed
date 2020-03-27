@@ -33,10 +33,11 @@
   "homepage": "https://github.com/adobe/helix-data-embed#readme",
   "dependencies": {
     "@adobe/helix-epsagon": "1.1.8",
+    "@adobe/helix-onedrive-support": "2.1.0",
     "@adobe/helix-status": "7.1.2",
     "@adobe/openwhisk-action-logger": "2.2.0",
     "@adobe/openwhisk-action-utils": "4.2.2",
-    "rss-parser": "^3.7.6"
+    "rss-parser": "3.7.6"
   },
   "devDependencies": {
     "@adobe/eslint-config-helix": "1.1.0",
@@ -46,14 +47,15 @@
     "@semantic-release/exec": "5.0.0",
     "@semantic-release/git": "9.0.0",
     "ajv": "6.12.0",
-    "chai": "^4.2.0",
-    "chai-http": "^4.3.0",
+    "chai": "4.2.0",
+    "chai-http": "4.3.0",
     "codecov": "3.6.5",
     "commitizen": "4.0.3",
     "cz-conventional-changelog": "3.1.0",
     "eslint": "6.8.0",
     "eslint-plugin-header": "3.0.0",
     "eslint-plugin-import": "2.20.1",
+    "fs-extra": "9.0.0",
     "jsdoc-to-markdown": "5.0.3",
     "junit-report-builder": "1.3.3",
     "lint-staged": "10.0.8",
