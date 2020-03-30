@@ -37,59 +37,71 @@ function createOAuthClient(options, creds) {
   return oAuth2Client;
 }
 
-async function extract(url, params) {
+async function extract(url, params, log = console) {
   const {
     GOOGLE_DOCS2MD_CLIENT_ID: clientId,
     GOOGLE_DOCS2MD_CLIENT_SECRET: clientSecret,
     GOOGLE_DOCS2MD_REFRESH_TOKEN: refresh_token,
   } = params;
 
-  const spreadsheetId = getId(url);
+  try {
+    const spreadsheetId = getId(url);
 
-  const auth = createOAuthClient({ clientId, clientSecret }, { refresh_token });
+    const auth = createOAuthClient({ clientId, clientSecret }, { refresh_token });
 
-  const sheets = google.sheets({ version: 'v4', auth });
+    const sheets = google.sheets({ version: 'v4', auth });
 
-  const { data } = await sheets.spreadsheets.get({
-    spreadsheetId,
-  });
+    const { data } = await sheets.spreadsheets.get({
+      spreadsheetId,
+    });
 
-  const sheet1 = data.sheets[0].properties;
+    const sheet1 = data.sheets[0].properties;
 
-  const range = `${sheet1.title}!${new A1({
-    colStart: 1,
-    rowStart: 1,
-    nRows: sheet1.gridProperties.rowCount,
-    nCols: sheet1.gridProperties.columnCount,
-  })}`;
+    const range = `${sheet1.title}!${new A1({
+      colStart: 1,
+      rowStart: 1,
+      nRows: sheet1.gridProperties.rowCount,
+      nCols: sheet1.gridProperties.columnCount,
+    })}`;
 
-  const values = await sheets.spreadsheets.values.get({
-    spreadsheetId,
-    range,
-    valueRenderOption: 'UNFORMATTED_VALUE',
-  });
+    const values = await sheets.spreadsheets.values.get({
+      spreadsheetId,
+      range,
+      valueRenderOption: 'UNFORMATTED_VALUE',
+    });
 
-  const dataarray = values.data.values;
+    const dataarray = values.data.values;
 
-  const columnnames = dataarray[0];
+    const columnnames = dataarray[0];
 
-  const rowvalues = dataarray.map((row) => columnnames.reduce((obj, name, index) => {
+    const rowvalues = dataarray.map((row) => columnnames.reduce((obj, name, index) => {
     // eslint-disable-next-line no-param-reassign
-    obj[name] = row[index];
-    return obj;
-  }, {}));
+      obj[name] = row[index];
+      return obj;
+    }, {}));
 
-  // discard the first row
-  rowvalues.shift();
+    // discard the first row
+    rowvalues.shift();
 
-  return {
-    statusCode: 200,
-    headers: {
-      'Content-Type': 'application/json',
-      'Cache-Control': 'max-age=600',
-    },
-    body: rowvalues,
-  };
+    return {
+      statusCode: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'max-age=600',
+      },
+      body: rowvalues,
+    };
+  } catch (e) {
+    log.error(e.message);
+    return {
+      statusCode: 500,
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'max-age=600',
+      },
+      body: [],
+    };
+  }
 }
 
 module.exports = {
