@@ -9,9 +9,10 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-
+/* eslint-disable camelcase */
 const URL = require('url');
 const { google } = require('googleapis');
+const A1 = require('@flighter/a1-notation');
 
 /**
  * Remember the access token for future action invocations.
@@ -40,30 +41,55 @@ async function extract(url, params) {
   const {
     GOOGLE_DOCS2MD_CLIENT_ID: clientId,
     GOOGLE_DOCS2MD_CLIENT_SECRET: clientSecret,
-    GOOGLE_DOCS2MD_REFRESH_TOKEN: refreshToken,
+    GOOGLE_DOCS2MD_REFRESH_TOKEN: refresh_token,
   } = params;
 
   const spreadsheetId = getId(url);
 
-  const auth = createOAuthClient({ clientId, clientSecret }, { refreshToken });
+  const auth = createOAuthClient({ clientId, clientSecret }, { refresh_token });
 
   const sheets = google.sheets({ version: 'v4', auth });
 
-  const values = await sheets.spreadsheets.values.get({
+  const { data } = await sheets.spreadsheets.get({
     spreadsheetId,
-    range: 'Sheet1!',
   });
 
-  /* above fails with:
+  const sheet1 = data.sheets[0].properties;
 
-  Error: No access, refresh token or API key is set.
-      at OAuth2Client.getRequestMetadataAsync
-      (node_modules/google-auth-library/build/src/auth/oauth2client.js:251:19)
+  const range = `${sheet1.title}!${new A1({
+    colStart: 1,
+    rowStart: 1,
+    nRows: sheet1.gridProperties.rowCount,
+    nCols: sheet1.gridProperties.columnCount,
+  })}`;
 
-  */
-  console.log(values);
+  const values = await sheets.spreadsheets.values.get({
+    spreadsheetId,
+    range,
+    valueRenderOption: 'UNFORMATTED_VALUE',
+  });
 
-  // console.log(sheets);
+  const dataarray = values.data.values;
+
+  const columnnames = dataarray[0];
+
+  const rowvalues = dataarray.map((row) => columnnames.reduce((obj, name, index) => {
+    // eslint-disable-next-line no-param-reassign
+    obj[name] = row[index];
+    return obj;
+  }, {}));
+
+  // discard the first row
+  rowvalues.shift();
+
+  return {
+    statusCode: 200,
+    headers: {
+      'Content-Type': 'application/json',
+      'Cache-Control': 'max-age=600',
+    },
+    body: rowvalues,
+  };
 }
 
 module.exports = {

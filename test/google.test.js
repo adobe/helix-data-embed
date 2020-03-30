@@ -26,7 +26,7 @@ describe('Google Sheets Tests', () => {
     );
     assert.equal(result.statusCode, 200);
     assert.notEqual(result.body.length, 0);
-    assert.equal(result.body[0].url, 'https://theblog.adobe.com/silka-miesnieks-designing-immersive-world/');
-    assert.ok(result.body[0].year);
+    assert.equal(result.body[0].Modell, 'Trajet');
+    assert.ok(result.body[0].Preis);
   }).timeout(15000);
 });
