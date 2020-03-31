@@ -14,7 +14,7 @@ const excel = require('./matchers/excel');
 const google = require('./matchers/google');
 
 const matchers = [
-  feed, excel, google
+  feed, excel, google,
 ];
 
 function hasParams(list, params) {
