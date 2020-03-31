@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/adobe/helix-data-embed/compare/v1.1.0...v1.1.1) (2020-03-31)
+
+
+### Bug Fixes
+
+* **deps:** update [@adobe](https://github.com/adobe) ([ab6db8d](https://github.com/adobe/helix-data-embed/commit/ab6db8d86533d2025f2431dc3d6dd8dbb8d53414))
+
 # [1.1.0](https://github.com/adobe/helix-data-embed/compare/v1.0.1...v1.1.0) (2020-03-27)
 
 
