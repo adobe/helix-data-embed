@@ -37,6 +37,8 @@
     "@adobe/helix-status": "7.1.2",
     "@adobe/openwhisk-action-logger": "2.2.0",
     "@adobe/openwhisk-action-utils": "4.2.2",
+    "@flighter/a1-notation": "1.0.6",
+    "googleapis": "48.0.0",
     "rss-parser": "3.7.6"
   },
   "devDependencies": {
