@@ -1,3 +1,13 @@
+# [1.2.0](https://github.com/adobe/helix-data-embed/compare/v1.1.1...v1.2.0) (2020-04-01)
+
+
+### Features
+
+* **embed:** add google sheets matcher to default config ([89cdaa9](https://github.com/adobe/helix-data-embed/commit/89cdaa910ade11336cb9be7b1dc98abe7694c91c)), closes [#7](https://github.com/adobe/helix-data-embed/issues/7)
+* **google:** add support for google sheets ([d7959dd](https://github.com/adobe/helix-data-embed/commit/d7959ddcee2856f4c949517411ac692620e71052)), closes [#7](https://github.com/adobe/helix-data-embed/issues/7)
+* **google:** catch errors in google spreadsheet retrieval ([f8d619a](https://github.com/adobe/helix-data-embed/commit/f8d619ab4d8628d66c2a84181e9ab187404e7819))
+* **google:** check for google spreadsheet URL patterns ([84168d9](https://github.com/adobe/helix-data-embed/commit/84168d93b8d9f44b3d61407c0d5370331fc82b94))
+
 ## [1.1.1](https://github.com/adobe/helix-data-embed/compare/v1.1.0...v1.1.1) (2020-03-31)
 
 
