@@ -1,3 +1,10 @@
+## [1.2.6](https://github.com/adobe/helix-data-embed/compare/v1.2.5...v1.2.6) (2020-04-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-status to v7.1.3 ([#28](https://github.com/adobe/helix-data-embed/issues/28)) ([986307b](https://github.com/adobe/helix-data-embed/commit/986307bcb9d387f1276d4c3af7fb776055d0345b))
+
 ## [1.2.5](https://github.com/adobe/helix-data-embed/compare/v1.2.4...v1.2.5) (2020-04-14)
 
 
