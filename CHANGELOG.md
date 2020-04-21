@@ -1,3 +1,10 @@
+## [1.2.8](https://github.com/adobe/helix-data-embed/compare/v1.2.7...v1.2.8) (2020-04-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency googleapis to v49 ([#33](https://github.com/adobe/helix-data-embed/issues/33)) ([2dd46d9](https://github.com/adobe/helix-data-embed/commit/2dd46d9377c202f598176e9ca8430dd8f8524706))
+
 ## [1.2.7](https://github.com/adobe/helix-data-embed/compare/v1.2.6...v1.2.7) (2020-04-16)
 
 
