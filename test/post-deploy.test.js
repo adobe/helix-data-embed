@@ -46,17 +46,16 @@ describe('Post-Deploy Tests', () => {
   }).timeout(10000);
 
   it('Excel Embed', async () => {
-    console.log('Trying', `https://adobeioruntime.net/${getbaseurl()}/https://adobe.sharepoint.com/sites/TheBlog/_layouts/15/guestaccess.aspx?share=ESR1N29Z7HpCh1Zfs_0YS_gB4gVSuKyWRut-kNcHVSvkew&email=helix%40adobe.com&e=hx0OUl`);
+    console.log('Trying', `https://adobeioruntime.net/${getbaseurl()}/https://adobe-my.sharepoint.com/personal/trieloff_adobe_com/_layouts/15/guestaccess.aspx?share=Edoi88tLKLpDsKzSfL-pcJYB2lIo7UKooYWnjm3w2WRrsA&email=helix%40adobe.com&e=fuCZg3`);
 
     await chai
       .request('https://adobeioruntime.net/')
-      .get(`${getbaseurl()}/https://adobe.sharepoint.com/sites/TheBlog/_layouts/15/guestaccess.aspx?share=ESR1N29Z7HpCh1Zfs_0YS_gB4gVSuKyWRut-kNcHVSvkew&email=helix%40adobe.com&e=hx0OUl`)
+      .get(`${getbaseurl()}/https://adobe-my.sharepoint.com/personal/trieloff_adobe_com/_layouts/15/guestaccess.aspx?share=Edoi88tLKLpDsKzSfL-pcJYB2lIo7UKooYWnjm3w2WRrsA&email=helix%40adobe.com&e=fuCZg3`)
       .then((response) => {
         expect(response).to.be.json;
         expect(response.body).to.be.an('array').that.deep.includes({
-          'import date': '2020-04-23T12:54:25.542Z',
-          url: 'https://theblog.adobe.com/brands-acting-responsibly-amid-covid-19/',
-          year: '3/26/2020',
+          project: 'Helix',
+          created: 2018,
         });
         expect(response).to.have.status(200);
       }).catch((e) => {
