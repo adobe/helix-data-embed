@@ -52,12 +52,12 @@ describe('Post-Deploy Tests', () => {
       .request('https://adobeioruntime.net/')
       .get(`${getbaseurl()}/https://adobe.sharepoint.com/sites/TheBlog/_layouts/15/guestaccess.aspx?share=ESR1N29Z7HpCh1Zfs_0YS_gB4gVSuKyWRut-kNcHVSvkew&email=helix%40adobe.com&e=hx0OUl`)
       .then((response) => {
-        console.log(response.body);
+        // console.log(response.body);
         expect(response).to.be.json;
         expect(response.body).to.be.an('array').that.deep.includes({
-          'import date': '2020-04-23T12:54:25.542Z',
-          url: 'https://theblog.adobe.com/brands-acting-responsibly-amid-covid-19/',
-          year: '3/26/2020',
+          'import date': '2020-04-23T12:55:40.852Z',
+          url: 'https://theblog.adobe.com/best-practices-in-content-management-it-edition/',
+          year: 43875,
         });
         expect(response).to.have.status(200);
       }).catch((e) => {
