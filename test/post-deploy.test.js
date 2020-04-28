@@ -54,7 +54,7 @@ describe('Post-Deploy Tests', () => {
       .then((response) => {
         expect(response).to.be.json;
         expect(response.body).to.be.an('array').that.deep.includes({
-          'import date': '2020-03-25T16:20:13.696Z',
+          'import date': '2020-04-23T12:54:25.542Z',
           url: 'https://theblog.adobe.com/brands-acting-responsibly-amid-covid-19/',
           year: 2020,
         });
