@@ -35,10 +35,10 @@ describe('Test Query Builder URL Parser', () => {
     assert.deepEqual(loadquerystring('foo=bar&hlx_p.limit=10&hlx_fulltext=Management', 'hlx_'), {
       _type: 'root',
       conjunction: 'default',
-      limit: "10",
+      limit: '10',
       predicates: [{
         _type: 'fulltext',
-        fulltext: 'Management'
+        fulltext: 'Management',
       }],
     });
   });
@@ -189,7 +189,7 @@ group.2_group.type=dam:Asset`), {
 
 describe('Utility Unit Tests', () => {
   it('Flat packs it', () => {
-    const arr = [ [1, 2], 3];
+    const arr = [[1, 2], 3];
     assert.deepEqual(arr.reduce(flat, []), [1, 2, 3]);
   });
 });
