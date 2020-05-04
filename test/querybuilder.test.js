@@ -12,21 +12,45 @@
 /* eslint-env mocha */
 
 const assert = require('assert');
-const { loadquerystring, loadtext } = require('../src/querybuilder/url');
+const { loadquerystring, loadtext, flat } = require('../src/querybuilder/url');
 
 describe('Test Query Builder URL Parser', () => {
   it('Works for empty strings', () => {
-    assert.deepEqual(loadquerystring(''), {});
+    assert.deepEqual(loadquerystring(''), {
+      _type: 'root',
+      conjunction: 'default',
+      predicates: [],
+    });
   });
 
-  it('Works non-matching prefixes', () => {
-    assert.deepEqual(loadquerystring('foo=bar', '_hlx'), {});
+  it('Works with non-matching prefixes', () => {
+    assert.deepEqual(loadquerystring('foo=bar', '_hlx'), {
+      _type: 'root',
+      conjunction: 'default',
+      predicates: [],
+    });
+  });
+
+  it('Works with matching prefixes', () => {
+    assert.deepEqual(loadquerystring('foo=bar&hlx_p.limit=10&hlx_fulltext=Management', 'hlx_'), {
+      _type: 'root',
+      conjunction: 'default',
+      limit: "10",
+      predicates: [{
+        _type: 'fulltext',
+        fulltext: 'Management'
+      }],
+    });
   });
 });
 
 describe('Test Query Builder Text Parser', () => {
   it('Works for empty strings', () => {
-    assert.deepEqual(loadtext(''), {});
+    assert.deepEqual(loadtext(''), {
+      _type: 'root',
+      conjunction: 'default',
+      predicates: [],
+    });
   });
 
   it('Loads simple examples', () => {
@@ -34,21 +58,138 @@ describe('Test Query Builder Text Parser', () => {
 1_property=jcr:content/cq:template
 1_property.value=/apps/geometrixx/templates/homepage
 2_property=jcr:content/jcr:title
-2_property.value=English`), [
-      {
-        _type: 'type',
-        type: 'cq:Page',
-      },
-      {
-        _type: 'property',
-        property: 'jcr:content/cq:template',
-        value: '/apps/geometrixx/templates/homepage',
-      },
-      {
-        _type: 'property',
-        property: 'jcr:content/jcr:title',
-        value: 'English',
-      },
-    ]);
+2_property.value=English`),
+    {
+      _type: 'root',
+      conjunction: 'default',
+      predicates: [
+        {
+          _type: 'type',
+          type: 'cq:Page',
+        },
+        {
+          _type: 'property',
+          property: 'jcr:content/cq:template',
+          value: '/apps/geometrixx/templates/homepage',
+        },
+        {
+          _type: 'property',
+          property: 'jcr:content/jcr:title',
+          value: 'English',
+        },
+      ],
+    });
+  });
+
+  it('Loads grouped examples or', () => {
+    assert.deepEqual(loadtext(`fulltext=Management
+group.p.or=true
+group.1_group.path=/content/geometrixx/en
+group.1_group.type=cq:Page
+group.2_group.path=/content/dam/geometrixx
+group.2_group.type=dam:Asset`), {
+      _type: 'root',
+      conjunction: 'default',
+      predicates: [
+        {
+          fulltext: 'Management',
+          _type: 'fulltext',
+        },
+        {
+          _type: 'group',
+          conjunction: 'or',
+          predicates: [
+            {
+              _type: 'group',
+              conjunction: 'default',
+              predicates: [
+                {
+                  path: '/content/geometrixx/en',
+                  _type: 'path',
+                },
+                {
+                  type: 'cq:Page',
+                  _type: 'type',
+                },
+              ],
+            },
+            {
+              _type: 'group',
+              conjunction: 'default',
+              predicates: [
+                {
+                  path: '/content/dam/geometrixx',
+                  _type: 'path',
+                },
+                {
+                  type: 'dam:Asset',
+                  _type: 'type',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+  });
+
+  it('Loads grouped examples (and)', () => {
+    assert.deepEqual(loadtext(`p.limit=10
+fulltext=Management
+group.1_group.path=/content/geometrixx/en
+group.1_group.type=cq:Page
+group.2_group.path=/content/dam/geometrixx
+group.2_group.type=dam:Asset`), {
+      _type: 'root',
+      conjunction: 'default',
+      limit: 10,
+      predicates: [
+        {
+          fulltext: 'Management',
+          _type: 'fulltext',
+        },
+        {
+          _type: 'group',
+          conjunction: 'default',
+          predicates: [
+            {
+              _type: 'group',
+              conjunction: 'default',
+              predicates: [
+                {
+                  path: '/content/geometrixx/en',
+                  _type: 'path',
+                },
+                {
+                  type: 'cq:Page',
+                  _type: 'type',
+                },
+              ],
+            },
+            {
+              _type: 'group',
+              conjunction: 'default',
+              predicates: [
+                {
+                  path: '/content/dam/geometrixx',
+                  _type: 'path',
+                },
+                {
+                  type: 'dam:Asset',
+                  _type: 'type',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+  });
+});
+
+describe('Utility Unit Tests', () => {
+  it('Flat packs it', () => {
+    const arr = [ [1, 2], 3];
+    assert.deepEqual(arr.reduce(flat, []), [1, 2, 3]);
   });
 });

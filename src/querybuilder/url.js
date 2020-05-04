@@ -12,13 +12,33 @@
 /* eslint-disable no-underscore-dangle */
 const { parse } = require('querystring');
 
+const unique = (arr, key) => {
+  if (arr.indexOf(key) < 0) {
+    arr.push(key);
+  }
+  return arr;
+};
+
+const flat = (flattened, e) => {
+  if (Array.isArray(e)) {
+    return [...flattened, ...e];
+  }
+  return [...flattened, e];
+};
+
 function nest(obj) {
   const entries = Object.entries(obj)
     .map(([k, v]) => {
-      const _longkey = k.split(/[._]/).map((key) => (Number.parseInt(key, 10) ? Number.parseInt(key, 10) : key));
-      // ignore everything that comes before a counter
-      const _shortkey = _longkey.reduce((p, val) => {
+      const longkey = k.split(/[._]/).map((key) => (Number.parseInt(key, 10) ? Number.parseInt(key, 10) : key));
+      // ignore everything that comes before a counter or a group
+      const shortkey = longkey.reduce((p, val) => {
         if (Number.isInteger(val)) {
+          return [];
+        }
+        if (val === 'group') {
+          return [];
+        }
+        if (val === 'p') {
           return [];
         }
         p.push(val);
@@ -28,22 +48,23 @@ function nest(obj) {
       const retval = { };
 
 
-      if (_shortkey.length % 2 === 0) {
+      if (shortkey.length % 2 === 0) {
         // this looks like …property.value=
-        const [type, name] = _shortkey.slice(-2);
+        const [type, name] = shortkey.slice(-2);
 
         retval[name] = v;
         retval._type = type;
-        _longkey.pop();
+        longkey.pop();
       } else {
         // it is only …property=
-        const [type] = _shortkey.slice(-1);
+        const [type] = shortkey.slice(-1);
 
         retval[type] = v;
         retval._type = type;
       }
 
-      retval._key = _longkey.join('.');
+      retval._key = longkey.join('.');
+      retval._group = longkey.indexOf('group') < 0 ? undefined : retval._key.replace(/(.*)group\..*$/, '$1group');
 
       return retval;
     });
@@ -52,25 +73,100 @@ function nest(obj) {
     // extract keys
     .map(({ _key }) => _key)
     // that are unique
-    .reduce((arr, key) => {
-      if (arr.indexOf(key) < 0) {
-        arr.push(key);
-      }
-      return arr;
-    }, []);
+    .reduce(unique, []);
 
-  const structs = keys.map((key) => entries
-  // get all entries for the current key
-    .filter(({ _key }) => key === _key)
-  // and merge them
-    .reduce((joint, entry) => {
-      const o = Object.assign(joint, entry);
-      delete o._key;
-      return o;
-    }, {}));
+  // list all implicit groups
+  const groups = entries
+    .map(({ _key }) => _key)
+    .filter((key) => /group/.test(key))
+    .map((key) => key.split('.'))
+    .map((keyz) => keyz.slice(0, keyz.lastIndexOf('group') + 1))
+    .map((keyz) => keyz.map((_, index) => keyz.slice(0, index + 1)).filter((keyzz) => keyzz.slice(-1)[0] === 'group'))
+    // polyfill for Array.prototype.flat
+    .reduce(flat, [])
+    .map((keyz) => keyz.join('.'))
+    .reduce(unique, [])
+    .map((name) => ({
+      name,
+      parent: name === 'group' ? undefined : name.replace(/(.*)group\..*$/, '$1group'),
+      group: {
+        _type: 'group',
+        conjunction: 'default',
+        predicates: [],
+      },
+      depth: name.split('.').filter((e) => e === 'group').length,
+    }));
 
+  // console.table(entries);
 
-  return structs;
+  const structs = keys
+    // remove params (p)
+    .filter((e) => e.split('.').indexOf('p') < 0)
+    .map((key) => entries
+    // get all entries for the current key
+      .filter(({ _key }) => key === _key)
+    // and merge them
+      .reduce((joint, entry) => {
+        const o = Object.assign(joint, entry);
+        delete o._key;
+        return o;
+      }, {}));
+
+  const params = entries.filter((e) => e._key.split('.').indexOf('p') >= 0);
+
+  // console.log('params');
+  // console.table(params);
+
+  // console.table(structs);
+
+  const root = {
+    _type: 'root',
+    conjunction: 'default',
+    predicates: [],
+  };
+
+  structs.forEach((struct) => {
+    const parent = groups.find((e) => e.name === struct._group);
+    if (struct._group && parent) {
+      parent.group.predicates.push(struct);
+    } else {
+      root.predicates.push(struct);
+    }
+    // eslint-disable-next-line no-param-reassign
+    delete struct._group;
+  });
+
+  params.forEach((param) => {
+    const parent = groups.find((e) => e.name === param._group);
+
+    const target = param._group && parent ? parent.group : root;
+    Object.entries(param)
+      .filter(([k]) => !k.startsWith('_'))
+      .forEach(([k, v]) => {
+        if (k === 'or' && (v === 'true')) {
+          target.conjunction = 'or';
+        } else {
+          target[k] = v;
+        }
+      });
+
+    // console.log(target);
+  });
+
+  groups.forEach((group) => {
+    const parent = groups.find((e) => e.name === group.parent);
+    if (group.parent && parent) {
+      parent.group.predicates.push(group.group);
+    } else {
+      root.predicates.push(group.group);
+    }
+  });
+
+  // console.table(groups);
+
+  // console.log(JSON.stringify(root, undefined, 2));
+
+  return root;
 }
 
 function loadquerystring(str, prefix = '') {
@@ -89,4 +185,4 @@ function loadtext(txt) {
   return nest(parse(txt, '\n'));
 }
 
-module.exports = { loadquerystring, loadtext };
+module.exports = { loadquerystring, loadtext, flat };
