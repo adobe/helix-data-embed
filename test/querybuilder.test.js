@@ -13,6 +13,8 @@
 
 const assert = require('assert');
 const { loadquerystring, loadtext, flat } = require('../src/querybuilder/url');
+const { createfilter } = require('../src/querybuilder/filter');
+const { transformconjunctions } = require('../src/querybuilder/util');
 
 describe('Test Query Builder URL Parser', () => {
   it('Works for empty strings', () => {
@@ -191,5 +193,118 @@ describe('Utility Unit Tests', () => {
   it('Flat packs it', () => {
     const arr = [[1, 2], 3];
     assert.deepEqual(arr.reduce(flat, []), [1, 2, 3]);
+  });
+});
+
+describe('Test Query Builder Filters', () => {
+  const testarray = [
+    { foo: 'bar', bar: 'baz' },
+    { foo: 'foo', bar: 'bar' },
+    { foo: 'baz', bar: 'foo' },
+  ];
+
+  it('createfilter returns a function', () => {
+    const fn = createfilter({
+      _type: 'root',
+      conjunction: 'default',
+      predicates: [],
+    });
+
+    assert.equal(typeof fn, 'function');
+  });
+
+  it('createfilter filters', () => {
+    const fn = createfilter({
+      _type: 'root',
+      conjunction: 'default',
+      predicates: [],
+    });
+
+    const result = fn(testarray);
+
+    assert.ok(Array.isArray(result));
+  });
+
+  describe('Test Conjunction Transformer', () => {
+
+    it('Keeps exitsing structure', () => {
+      const input = {
+        _type: 'property',
+        property: 'foo',
+        value: 'bar'
+      };
+
+      const result = transformconjunctions(input);
+
+      assert.deepEqual(input, result);
+    });
+
+    it('Transforms a simple conjunction', () => {
+      const result = transformconjunctions({
+        _type: 'root',
+        conjunction: 'default',
+        predicates: [
+          {
+            _type: 'property',
+            property: 'foo',
+            value: 'foo1',
+          },
+          {
+            _type: 'property',
+            property: 'foo',
+            value: 'foo2',
+          },
+          {
+            _type: 'property',
+            property: 'bar',
+            value: 'bar1',
+          },
+          {
+            _type: 'property',
+            property: 'bar',
+            value: 'bar2',
+          },
+        ],
+      });
+
+      assert.deepEqual(result, {
+        _type: 'root',
+        conjunction: 'and',
+        predicates: [
+          {
+            _type: 'group',
+            conjunction: 'or',
+            predicates: [
+              {
+                _type: 'property',
+                property: 'foo',
+                value: 'foo1',
+              },
+              {
+                _type: 'property',
+                property: 'foo',
+                value: 'foo2',
+              },
+            ],
+          },
+          {
+            _type: 'group',
+            conjunction: 'or',
+            predicates: [
+              {
+                _type: 'property',
+                property: 'bar',
+                value: 'bar1',
+              },
+              {
+                _type: 'property',
+                property: 'bar',
+                value: 'bar2',
+              },
+            ],
+          },
+        ],
+      });
+    });
   });
 });
