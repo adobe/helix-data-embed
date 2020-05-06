@@ -15,6 +15,7 @@ const assert = require('assert');
 const { loadquerystring, loadtext, flat } = require('../src/querybuilder/url');
 const { createfilter } = require('../src/querybuilder/filter');
 const { transformconjunctions } = require('../src/querybuilder/util');
+const qb = require('../src/querybuilder/qb');
 
 describe('Test Query Builder URL Parser', () => {
   it('Works for empty strings', () => {
@@ -264,6 +265,79 @@ describe('Test Query Builder Filters', () => {
     const result = fn(testarray);
 
     assert.ok(Array.isArray(result));
+  });
+
+  it('createfilter limits results', () => {
+    assert.deepEqual(qb`p.limit=1`(testarray), [
+      { foo: 'bar', bar: 'baz' },
+    ]);
+
+    assert.deepEqual(qb`p.offset=1&p.limit=1`(testarray), [
+      { foo: 'foo', bar: 'bar' },
+    ]);
+
+    assert.deepEqual(qb`p.offset=1`(testarray), [
+      { foo: 'foo', bar: 'bar' },
+      { foo: 'baz', bar: 'foo' },
+    ]);
+  });
+
+  it('createfilter filters properties with equals', () => {
+    assert.deepEqual(qb`property=foo
+property.value=bar`(testarray), [
+      { foo: 'bar', bar: 'baz' },
+    ]);
+  });
+
+  it('createfilter filters properties with like', () => {
+    assert.deepEqual(qb`property=foo
+property.operation=like
+property.value=a`(testarray), [
+      { foo: 'bar', bar: 'baz' },
+      { foo: 'baz', bar: 'foo' },
+    ]);
+
+    assert.deepEqual(qb`property=unknown
+property.operation=like
+property.value=a`(testarray), []);
+
+    assert.deepEqual(qb`property=unknown&property.operation=like&property.value=a`(testarray), []);
+  });
+
+  it('createfilter filters properties with unequals', () => {
+    assert.deepEqual(qb`property=foo
+property.operation=unequals
+property.value=foo`(testarray), [
+      { foo: 'bar', bar: 'baz' },
+      { foo: 'baz', bar: 'foo' },
+    ]);
+  });
+
+  it('createfilter filters properties with unequals and OR joins', () => {
+    assert.deepEqual(qb`1_property=foo
+1_property.value=bar
+2_property=foo
+2_property.value=baz
+nop=nop`(testarray), [
+      { foo: 'bar', bar: 'baz' },
+      { foo: 'baz', bar: 'foo' },
+    ]);
+  });
+
+  it('createfilter filters properties with exists', () => {
+    assert.deepEqual(qb`property=foo
+property.operation=exists`(testarray), testarray);
+
+    assert.deepEqual(qb`property=qxb
+property.operation=exists`(testarray), []);
+  });
+
+  it('createfilter filters properties with not', () => {
+    assert.deepEqual(qb`property=foo
+property.operation=not`(testarray), []);
+
+    assert.deepEqual(qb`property=qxb
+property.operation=not`(testarray), testarray);
   });
 });
 

@@ -11,24 +11,26 @@
  */
 /* eslint-disable no-use-before-define, no-underscore-dangle */
 const filters = {
-  or: qbtree => data => qbtree.predicates.reduce((filtered, predicate) => {
-    const predicatefilter = createfilter(predicate);
-    // all entries that satisfy the current predicate
-    const accepted = predicatefilter(data);
-
-    // return any entry that either satisfies the current or any previous predicate
-    return data.filter((entry) => accepted.indexOf(entry) >= 0 || filtered.indexOf(entry) >= 0);
-  }, []), // start with an empty set and build
+  or: (qbtree) => (entry) => qbtree.predicates.reduce((previous, predicate) => {
+    const predicatetest = createtest(predicate);
+    return previous || predicatetest(entry);
+  }, false), // start with rejectance
 
   // go over the predicates until all satisfy, then return
-  and: qbtree => data => qbtree.predicates.reduce((filtered, predicate) => {
-    const predicatefilter = createfilter(predicate);
-    // all entries that satisfy the current predicate
-    const accepted = predicatefilter(data);
+  and: (qbtree) => (entry) => qbtree.predicates.reduce((previous, predicate) => {
+    const predicatetest = createtest(predicate);
+    return previous && predicatetest(entry);
+  }, true), // start with acceptance
 
-    // return any entry that either satisfies the current or any previous predicate
-    return data.filter((entry) => accepted.indexOf(entry) >= 0 && filtered.indexOf(entry) >= 0);
-  }, data) // start with all data, then whittle down
+  property: ({ property, value, operation = 'equals' }) => (entry) => {
+    switch (operation) {
+      case 'exists': return entry[property] !== undefined;
+      case 'not': return entry[property] === undefined;
+      case 'like': return String(entry[property] || '').indexOf(value) >= 0;
+      case 'unequals': return entry[property] !== value;
+      default: return entry[property] === value;
+    }
+  },
 };
 
 function createfilter(qbtree) {
@@ -36,8 +38,17 @@ function createfilter(qbtree) {
   const applicable = filters[qbtree._type] ? filters[qbtree._type] : defaultfilter;
   const filterfn = applicable(qbtree);
 
+  const offset = Number.isInteger(qbtree.offset) ? qbtree.offset : 0;
+  const limit = Number.isInteger(qbtree.limit) ? offset + qbtree.limit : undefined;
+
   // return a function that can filter the data
-  return (data) => data.filter(filterfn);
+  return (data) => data.filter(filterfn).slice(offset, limit);
+}
+
+function createtest(qbtree) {
+  // look up a function for the type
+  const applicable = filters[qbtree._type] ? filters[qbtree._type] : defaultfilter;
+  return applicable(qbtree);
 }
 
 function defaultfilter() {
