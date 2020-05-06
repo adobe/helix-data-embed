@@ -238,7 +238,32 @@ describe('Utility Unit Tests', () => {
   });
 });
 
-describe('Test Query Builder Filters', () => {
+describe('Test Query Builder Range Property Filters', () => {
+  const testarray = [
+    { foo: 'bar', bar: 'baz', val: 1 },
+    { foo: 'foo', bar: 'bar', val: 3.1415 },
+    { foo: 'baz', bar: 'foo', val: 100 },
+    { foo: 'baz', bar: 'foo', val: undefined },
+  ];
+
+  it('createfilter limits results', () => {
+    assert.deepEqual(qb`rangeproperty.property=val
+rangeproperty.lowerBound=1
+rangeproperty.upperBound=100`(testarray), [
+      { foo: 'foo', bar: 'bar', val: 3.1415 },
+    ]);
+
+    assert.deepEqual(qb`rangeproperty.property=val
+rangeproperty.lowerBound=1
+rangeproperty.lowerOperation=x
+rangeproperty.upperOperation=x
+rangeproperty.upperBound=100`(testarray), [{ foo: 'bar', bar: 'baz', val: 1 },
+      { foo: 'foo', bar: 'bar', val: 3.1415 },
+      { foo: 'baz', bar: 'foo', val: 100 }]);
+  });
+});
+
+describe('Test Query Builder Property Filters', () => {
   const testarray = [
     { foo: 'bar', bar: 'baz' },
     { foo: 'foo', bar: 'bar' },

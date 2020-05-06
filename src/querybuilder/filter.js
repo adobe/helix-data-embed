@@ -31,6 +31,15 @@ const filters = {
       default: return entry[property] === value;
     }
   },
+  rangeproperty: ({
+    property, lowerBound, upperBound, lowerOperation = '>', upperOperation = '<',
+  }) => (entry) => {
+    const actual = entry[property];
+    const withinlowerbound = lowerBound === undefined || (lowerOperation === '>' && actual > lowerBound) || (lowerOperation !== '>' && actual >= lowerBound);
+    const withinupperbound = upperBound === undefined || (upperOperation === '<' && actual < upperBound) || (upperOperation !== '<' && actual <= upperBound);
+
+    return typeof actual === 'number' && withinlowerbound && withinupperbound;
+  },
 };
 
 function createfilter(qbtree) {
