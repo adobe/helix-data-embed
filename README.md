@@ -18,6 +18,39 @@
 curl https://adobeioruntime.net/api/v1/web/helix/helix-services/data-embed@v1/https://blogs.adobe.com/psirt/?feed=atom
 ```
 
+### Data Sources
+
+Supported data sources include:
+
+- Microsoft Excel (in Excel, share with `helix@adobe.com` then copy the sharable URL)
+- Google Sheets (in Google Sheets, share with `helix.integration@gmail.com` and copy the URL from the browser)
+- Atom Feeds (must have `atom` somewhere in the URL)
+
+### Filtering Results
+
+`helix-data-embed` supports the [AEM Query Builder syntax](https://docs.adobe.com/content/help/en/experience-manager-65/developing/platform/query-builder/querybuilder-predicate-reference.html) for reducing the result set.
+
+In order to avoid collisions with existing URL parameters, each QueryBuilder parameter must start with `hlx_`. For example to filter entries that have a property `bar` with the value `foo`, append the following to the URL:
+
+```
+hlx_property=foo&hlx_value=bar
+```
+
+If you want to restrict by range, use:
+
+```
+hlx_rangeproperty.property=age&hlx_rangeproperty.lowerBound=18&hlx_rangeproperty.upperBound=99
+```
+
+The predicates supported so far include:
+
+- [`property`](https://docs.adobe.com/content/help/en/experience-manager-65/developing/platform/query-builder/querybuilder-predicate-reference.html#property)
+- [`rangeproperty`](https://docs.adobe.com/content/help/en/experience-manager-65/developing/platform/query-builder/querybuilder-predicate-reference.html#rangeproperty)
+
+(Just remember to add `hlx_` before each URL parameter name)
+
+Furthermore, it is possible to limit the result set using `hlx_p.limit` and page through the result set using `hlx_p.offset`.
+
 For more, see the [API documentation](docs/API.md).
 
 ## Development
