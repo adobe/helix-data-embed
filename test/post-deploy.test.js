@@ -87,13 +87,20 @@ describe('Post-Deploy Tests', () => {
 
     await chai
       .request('https://adobeioruntime.net/')
-      .get(`${getbaseurl()}/https://docs.google.com/spreadsheets/d/1IX0g5P74QnHPR3GW1AMCdTk_-m954A-FKZRT2uOZY7k/edit?ouid=107837958797411838063&usp=sheets_home&ths=true&hlx_property=Hersteller&hlx_value=Hyundai`)
+      .get(`${getbaseurl()}/https://docs.google.com/spreadsheets/d/1IX0g5P74QnHPR3GW1AMCdTk_-m954A-FKZRT2uOZY7k/edit?ouid=107837958797411838063&usp=sheets_home&ths=true&hlx_property=Hersteller&hlx_property.value=Ford`)
       .then((response) => {
         expect(response).to.be.json;
         expect(response.body).to.be.an('array').that.deep.includes({
-          Hersteller: 'Hyundai', Modell: 'Trajet', Preis: 23000, Verbrauch: 7.2, Kofferraum: 304, Preis2: 1.1, 'Verbrauch pro Jahr': 5976, Gesamtkosten: 28976,
+          Gesamtkosten: 32783,
+          Hersteller: 'Ford',
+          Kofferraum: 330,
+          Modell: 'Galaxy Ambiente',
+          Preis: 24400,
+          Preis2: 1.3,
+          Verbrauch: 10.1,
+          'Verbrauch pro Jahr': 8383,
         });
-        expect(response.body).to.have.lengthOf(1);
+        expect(response.body).to.have.lengthOf(2);
         expect(response).to.have.status(200);
       }).catch((e) => {
         throw e;
