@@ -21,7 +21,16 @@ describe('Feed Tests', () => {
     });
     assert.equal(result.statusCode, 200);
     assert.equal(result.body.length, 10);
-  }).timeout(5000);
+  }).timeout(10000);
+
+  it('Works for RSS Feeds with Limits', async () => {
+    const result = await main({
+      __ow_path: '/https://blogs.adobe.com/psirt/',
+      __ow_query: 'feed=atom&hlx_p.limit=1',
+    });
+    assert.equal(result.statusCode, 200);
+    assert.equal(result.body.length, 1);
+  }).timeout(10000);
 
   it('Rejects invalid RSS Feeds', async () => {
     const result = await main({
