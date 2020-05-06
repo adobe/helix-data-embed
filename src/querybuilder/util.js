@@ -12,8 +12,14 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-underscore-dangle */
 function transformconjunctions(qbtree) {
-  if (qbtree.conjunction === 'or' || qbtree.conjunction === 'and' || !qbtree.predicates) {
-    // nothing to do here
+  // this is not a group, just ignore it
+  if (!qbtree.predicates) {
+    return qbtree;
+  }
+  if (qbtree.conjunction === 'or' || qbtree.conjunction === 'and') {
+    // we know the group type
+    qbtree._type = qbtree.conjunction;
+    delete qbtree.conjunction;
     return qbtree;
   }
   const groups = qbtree.predicates.reduce((grps, predicate) => {
@@ -25,12 +31,19 @@ function transformconjunctions(qbtree) {
     return grps;
   }, {});
 
-  qbtree.conjunction = 'and';
-  qbtree.predicates = Object.values(groups).map((predicates) => ({
-    _type: 'group',
-    conjunction: 'or',
-    predicates,
-  }));
+  qbtree._type = 'and';
+  delete qbtree.or;
+  delete qbtree.conjunction;
+  qbtree.predicates = Object.values(groups).map((predicates) => {
+    if (predicates.length === 1) {
+      // no need to create an or group of a single predicate
+      return predicates[0];
+    }
+    return {
+      _type: 'or',
+      predicates,
+    };
+  });
 
   return qbtree;
 }

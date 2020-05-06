@@ -19,25 +19,22 @@ const { transformconjunctions } = require('../src/querybuilder/util');
 describe('Test Query Builder URL Parser', () => {
   it('Works for empty strings', () => {
     assert.deepEqual(loadquerystring(''), {
-      _type: 'root',
-      conjunction: 'default',
+      _type: 'and',
       predicates: [],
     });
   });
 
   it('Works with non-matching prefixes', () => {
     assert.deepEqual(loadquerystring('foo=bar', '_hlx'), {
-      _type: 'root',
-      conjunction: 'default',
+      _type: 'and',
       predicates: [],
     });
   });
 
   it('Works with matching prefixes', () => {
     assert.deepEqual(loadquerystring('foo=bar&hlx_p.limit=10&hlx_fulltext=Management', 'hlx_'), {
-      _type: 'root',
-      conjunction: 'default',
-      limit: '10',
+      _type: 'and',
+      limit: 10,
       predicates: [{
         _type: 'fulltext',
         fulltext: 'Management',
@@ -49,8 +46,7 @@ describe('Test Query Builder URL Parser', () => {
 describe('Test Query Builder Text Parser', () => {
   it('Works for empty strings', () => {
     assert.deepEqual(loadtext(''), {
-      _type: 'root',
-      conjunction: 'default',
+      _type: 'and',
       predicates: [],
     });
   });
@@ -62,8 +58,7 @@ describe('Test Query Builder Text Parser', () => {
 2_property=jcr:content/jcr:title
 2_property.value=English`),
     {
-      _type: 'root',
-      conjunction: 'default',
+      _type: 'and',
       predicates: [
         {
           _type: 'type',
@@ -90,42 +85,38 @@ group.1_group.path=/content/geometrixx/en
 group.1_group.type=cq:Page
 group.2_group.path=/content/dam/geometrixx
 group.2_group.type=dam:Asset`), {
-      _type: 'root',
-      conjunction: 'default',
+      _type: 'and',
       predicates: [
         {
-          fulltext: 'Management',
           _type: 'fulltext',
+          fulltext: 'Management',
         },
         {
-          _type: 'group',
-          conjunction: 'or',
+          _type: 'or',
           predicates: [
             {
-              _type: 'group',
-              conjunction: 'default',
+              _type: 'and',
               predicates: [
                 {
-                  path: '/content/geometrixx/en',
                   _type: 'path',
+                  path: '/content/geometrixx/en',
                 },
                 {
-                  type: 'cq:Page',
                   _type: 'type',
+                  type: 'cq:Page',
                 },
               ],
             },
             {
-              _type: 'group',
-              conjunction: 'default',
+              _type: 'and',
               predicates: [
                 {
-                  path: '/content/dam/geometrixx',
                   _type: 'path',
+                  path: '/content/dam/geometrixx',
                 },
                 {
-                  type: 'dam:Asset',
                   _type: 'type',
+                  type: 'dam:Asset',
                 },
               ],
             },
@@ -135,57 +126,107 @@ group.2_group.type=dam:Asset`), {
     });
   });
 
-  it('Loads grouped examples (and)', () => {
-    assert.deepEqual(loadtext(`p.limit=10
-fulltext=Management
-group.1_group.path=/content/geometrixx/en
-group.1_group.type=cq:Page
-group.2_group.path=/content/dam/geometrixx
-group.2_group.type=dam:Asset`), {
-      _type: 'root',
-      conjunction: 'default',
+  it('Loads grouped examples (normal)', () => {
+    const res = {
+      _type: 'and',
       limit: 10,
       predicates: [
         {
-          fulltext: 'Management',
           _type: 'fulltext',
+          fulltext: 'Management',
         },
         {
-          _type: 'group',
-          conjunction: 'default',
+          _type: 'and',
           predicates: [
             {
-              _type: 'group',
-              conjunction: 'default',
+              _type: 'and',
               predicates: [
                 {
-                  path: '/content/geometrixx/en',
                   _type: 'path',
+                  path: '/content/geometrixx/en',
                 },
                 {
-                  type: 'cq:Page',
                   _type: 'type',
+                  type: 'cq:Page',
                 },
               ],
             },
             {
-              _type: 'group',
-              conjunction: 'default',
+              _type: 'and',
               predicates: [
                 {
-                  path: '/content/dam/geometrixx',
                   _type: 'path',
+                  path: '/content/dam/geometrixx',
                 },
                 {
-                  type: 'dam:Asset',
                   _type: 'type',
+                  type: 'dam:Asset',
                 },
               ],
             },
           ],
         },
       ],
-    });
+    };
+
+    assert.deepEqual(loadtext(`p.limit=10
+fulltext=Management
+group.p.and=true
+group.1_group.path=/content/geometrixx/en
+group.1_group.type=cq:Page
+group.2_group.path=/content/dam/geometrixx
+group.2_group.type=dam:Asset`), res);
+  });
+
+  it('Loads grouped examples (abd)', () => {
+    const res = {
+      _type: 'and',
+      limit: 10,
+      predicates: [
+        {
+          _type: 'fulltext',
+          fulltext: 'Management',
+        },
+        {
+          _type: 'and',
+          predicates: [
+            {
+              _type: 'and',
+              predicates: [
+                {
+                  _type: 'path',
+                  path: '/content/geometrixx/en',
+                },
+                {
+                  _type: 'type',
+                  type: 'cq:Page',
+                },
+              ],
+            },
+            {
+              _type: 'and',
+              predicates: [
+                {
+                  _type: 'path',
+                  path: '/content/dam/geometrixx',
+                },
+                {
+                  _type: 'type',
+                  type: 'dam:Asset',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    assert.deepEqual(loadtext(`p.limit=10
+fulltext=Management
+group.1_group.path=/content/geometrixx/en
+group.1_group.type=cq:Page
+group.2_group.path=/content/dam/geometrixx
+group.2_group.type=dam:Asset`), res);
   });
 });
 
@@ -224,87 +265,84 @@ describe('Test Query Builder Filters', () => {
 
     assert.ok(Array.isArray(result));
   });
+});
 
-  describe('Test Conjunction Transformer', () => {
 
-    it('Keeps exitsing structure', () => {
-      const input = {
-        _type: 'property',
-        property: 'foo',
-        value: 'bar'
-      };
+describe('Test Conjunction Transformer', () => {
+  it('Keeps exitsing structure', () => {
+    const input = {
+      _type: 'property',
+      property: 'foo',
+      value: 'bar',
+    };
 
-      const result = transformconjunctions(input);
+    const result = transformconjunctions(input);
 
-      assert.deepEqual(input, result);
+    assert.deepEqual(input, result);
+  });
+
+  it('Transforms a simple conjunction', () => {
+    const result = transformconjunctions({
+      _type: 'root',
+      conjunction: 'default',
+      predicates: [
+        {
+          _type: 'property',
+          property: 'foo',
+          value: 'foo1',
+        },
+        {
+          _type: 'property',
+          property: 'foo',
+          value: 'foo2',
+        },
+        {
+          _type: 'property',
+          property: 'bar',
+          value: 'bar1',
+        },
+        {
+          _type: 'property',
+          property: 'bar',
+          value: 'bar2',
+        },
+      ],
     });
 
-    it('Transforms a simple conjunction', () => {
-      const result = transformconjunctions({
-        _type: 'root',
-        conjunction: 'default',
-        predicates: [
-          {
-            _type: 'property',
-            property: 'foo',
-            value: 'foo1',
-          },
-          {
-            _type: 'property',
-            property: 'foo',
-            value: 'foo2',
-          },
-          {
-            _type: 'property',
-            property: 'bar',
-            value: 'bar1',
-          },
-          {
-            _type: 'property',
-            property: 'bar',
-            value: 'bar2',
-          },
-        ],
-      });
-
-      assert.deepEqual(result, {
-        _type: 'root',
-        conjunction: 'and',
-        predicates: [
-          {
-            _type: 'group',
-            conjunction: 'or',
-            predicates: [
-              {
-                _type: 'property',
-                property: 'foo',
-                value: 'foo1',
-              },
-              {
-                _type: 'property',
-                property: 'foo',
-                value: 'foo2',
-              },
-            ],
-          },
-          {
-            _type: 'group',
-            conjunction: 'or',
-            predicates: [
-              {
-                _type: 'property',
-                property: 'bar',
-                value: 'bar1',
-              },
-              {
-                _type: 'property',
-                property: 'bar',
-                value: 'bar2',
-              },
-            ],
-          },
-        ],
-      });
+    assert.deepEqual(result, {
+      _type: 'and',
+      predicates: [
+        {
+          _type: 'or',
+          predicates: [
+            {
+              _type: 'property',
+              property: 'foo',
+              value: 'foo1',
+            },
+            {
+              _type: 'property',
+              property: 'foo',
+              value: 'foo2',
+            },
+          ],
+        },
+        {
+          _type: 'or',
+          predicates: [
+            {
+              _type: 'property',
+              property: 'bar',
+              value: 'bar1',
+            },
+            {
+              _type: 'property',
+              property: 'bar',
+              value: 'bar2',
+            },
+          ],
+        },
+      ],
     });
   });
 });

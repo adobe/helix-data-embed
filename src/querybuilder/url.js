@@ -9,8 +9,9 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-underscore-dangle, no-param-reassign */
 const { parse } = require('querystring');
+const { transformconjunctions } = require('./util');
 
 const unique = (arr, key) => {
   if (arr.indexOf(key) < 0) {
@@ -143,8 +144,10 @@ function nest(obj) {
     Object.entries(param)
       .filter(([k]) => !k.startsWith('_'))
       .forEach(([k, v]) => {
-        if (k === 'or' && (v === 'true')) {
+        if (k === 'or' && v) {
           target.conjunction = 'or';
+        } else if (k === 'and' && v) {
+          target.conjunction = 'and';
         } else {
           target[k] = v;
         }
@@ -153,8 +156,14 @@ function nest(obj) {
     // console.log(target);
   });
 
-  groups.forEach((group) => {
-    const parent = groups.find((e) => e.name === group.parent);
+  // transform implicit conjunctions into explicit nested conjunctions
+  const explicitgroups = groups.map((group) => ({
+    ...group,
+    group: transformconjunctions(group.group),
+  }));
+
+  explicitgroups.forEach((group) => {
+    const parent = explicitgroups.find((e) => e.name === group.parent);
     if (group.parent && parent) {
       parent.group.predicates.push(group.group);
     } else {
@@ -166,11 +175,24 @@ function nest(obj) {
 
   // console.log(JSON.stringify(root, undefined, 2));
 
-  return root;
+  return transformconjunctions(root);
+}
+
+function cast(obj) {
+  return Object.entries(obj).reduce((o, [k, v]) => {
+    if (v === 'true' || v === 'false') {
+      o[k] = (v === 'true');
+    } else if (!Number.isNaN(Number.parseFloat(v))) {
+      o[k] = Number.parseFloat(v);
+    } else {
+      o[k] = v;
+    }
+    return o;
+  }, {});
 }
 
 function loadquerystring(str, prefix = '') {
-  const obj = parse(str);
+  const obj = cast(parse(str));
 
   return nest(Object.entries(obj).reduce((o, [k, v]) => {
     if (k.startsWith(prefix)) {
@@ -182,7 +204,7 @@ function loadquerystring(str, prefix = '') {
 }
 
 function loadtext(txt) {
-  return nest(parse(txt, '\n'));
+  return nest(cast(parse(txt, '\n')));
 }
 
 module.exports = { loadquerystring, loadtext, flat };
