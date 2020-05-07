@@ -14,6 +14,8 @@ const { logger } = require('@adobe/openwhisk-action-logger');
 const { wrap: status } = require('@adobe/helix-status');
 const { epsagon } = require('@adobe/helix-epsagon');
 const embed = require('./embed');
+const { loadquerystring } = require('./querybuilder/url');
+const { createfilter } = require('./querybuilder/filter');
 
 async function main(params) {
   /* istanbul ignore next */
@@ -42,8 +44,14 @@ async function main(params) {
   }
   const url = `${params.__ow_path.substring(1)}?${params.__ow_query || ''}`;
 
+  const qbquery = loadquerystring(params.__ow_query, 'hlx_');
+  const filter = createfilter(qbquery);
   const result = await embed(url, params, log);
-  return result;
+
+  return {
+    ...result,
+    body: filter(result.body),
+  };
 }
 
 module.exports.main = wrap(main)
