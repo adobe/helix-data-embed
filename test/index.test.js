@@ -21,6 +21,21 @@ describe('Integration Tests', () => {
     assert.equal(result.statusCode, 400);
   });
 
+  it('tests index with run_query', async () => {
+    const EXPECTED_HEADERS = {
+      'Cache-Control': 'max-age=600',
+      'Content-Type': 'application/json',
+    };
+    const { body, headers, statusCode } = await main({
+      __ow_path: '/run_query/error500',
+      __ow_query: 'fromMins=1000&toMins=0',
+    });
+
+    assert.ok(Array.isArray(body));
+    assert.deepEqual(EXPECTED_HEADERS, headers);
+    assert.equal(statusCode, 200);
+  });
+
   it('Rejects missing parameters', async () => {
     const result = await main();
     assert.equal(result.statusCode, 400);
