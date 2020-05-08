@@ -11,32 +11,37 @@
  */
 /* eslint-disable camelcase */
 const { fetch } = require('@adobe/helix-fetch');
+const { utils } = require('@adobe/helix-shared');
 
 async function extract(url, params, log = console) {
   const host = 'https://adobeioruntime.net';
-  const path = '/api/v1/web/helix/helix-services/run-query@latest/';
+  const path = '/api/v1/web/helix/helix-services/run-query@2.4.11/';
   const query = url.split('/').pop();
   const resource = `${host}${path}${query}`;
+  const DEFAULT_CACHE = 'max-age=600';
 
-  const results = await fetch(resource);
+  const results = await fetch(url.startsWith('http') ? url : resource);
+  const statusCode = utils.propagateStatusCode(results.status);
+  const logLevel = utils.logLevelForStatusCode(results.status);
+  const cacheControl = results.headers.get('cache-control');
 
   if (results.ok) {
     return {
-      statusCode: 200,
+      statusCode,
       headers: {
         'Content-Type': 'application/json',
-        'Cache-Control': 'max-age=600',
+        'Cache-Control': cacheControl || DEFAULT_CACHE,
       },
       body: (await results.json()).results,
     };
   } else {
     const errText = await results.text();
-    log.error(`data request to ${resource} failed ${errText}`);
+    log[logLevel](`data request to ${resource} failed ${errText}`);
     return {
-      statusCode: results.status,
+      statusCode,
       headers: {
         'Content-Type': 'application/json',
-        'Cache-Control': 'max-age=600',
+        'Cache-Control': 'no-cache',
       },
       body: [],
     };
@@ -45,6 +50,6 @@ async function extract(url, params, log = console) {
 
 module.exports = {
   required: [],
-  pattern: (url) => /.*run_query.*/.test(url),
+  pattern: (url) => /(^https:\/\/adobeioruntime.net\/api\/v1\/web\/helix\/helix-services\/run-query@.*)|(^\/?run-query.*)/.test(url),
   extract,
 };

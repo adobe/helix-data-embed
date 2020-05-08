@@ -15,21 +15,25 @@ const assert = require('assert');
 const runQuery = require('../src/matchers/run-query.js');
 
 describe('run query tests', () => {
-  const EXPECTED_HEADERS = {
-    'Cache-Control': 'max-age=600',
-    'Content-Type': 'application/json',
-  };
   it('run query data embeds work', async () => {
-    const { body, headers, statusCode } = await runQuery.extract('/run_query/error500?fromMins=1000&toMins=0');
+    const EXPECTED_HEADERS = {
+      'Cache-Control': 'max-age=600',
+      'Content-Type': 'application/json',
+    };
+    const { body, headers, statusCode } = await runQuery.extract('https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@2.4.11/error500');
     assert.ok(Array.isArray(body));
     assert.deepEqual(EXPECTED_HEADERS, headers);
     assert.equal(statusCode, 200);
-  });
+  }).timeout(6000);
 
   it('run query data embeds fail gracefully', async () => {
+    const EXPECTED_HEADERS = {
+      'Cache-Control': 'no-cache',
+      'Content-Type': 'application/json',
+    };
     const { body, headers, statusCode } = await runQuery.extract('/run_query/fail');
     assert.ok(Array.isArray(body));
     assert.deepEqual(EXPECTED_HEADERS, headers);
-    assert.equal(statusCode, 500);
-  });
+    assert.equal(statusCode, 502);
+  }).timeout(6000);
 });

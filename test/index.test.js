@@ -21,20 +21,34 @@ describe('Integration Tests', () => {
     assert.equal(result.statusCode, 400);
   });
 
-  it('tests index with run_query', async () => {
+  it('tests index with absolute run_query url', async () => {
     const EXPECTED_HEADERS = {
       'Cache-Control': 'max-age=600',
       'Content-Type': 'application/json',
     };
     const { body, headers, statusCode } = await main({
-      __ow_path: '/run_query/error500',
+      __ow_path: '/https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@2.4.11/error500',
+    });
+
+    assert.ok(Array.isArray(body));
+    assert.deepEqual(EXPECTED_HEADERS, headers);
+    assert.equal(statusCode, 200);
+  }).timeout(6000);
+
+  it('tests index with relative run_query url', async () => {
+    const EXPECTED_HEADERS = {
+      'Cache-Control': 'max-age=600',
+      'Content-Type': 'application/json',
+    };
+    const { body, headers, statusCode } = await main({
+      __ow_path: '/run-query/error500',
       __ow_query: 'fromMins=1000&toMins=0',
     });
 
     assert.ok(Array.isArray(body));
     assert.deepEqual(EXPECTED_HEADERS, headers);
     assert.equal(statusCode, 200);
-  });
+  }).timeout(6000);
 
   it('Rejects missing parameters', async () => {
     const result = await main();
