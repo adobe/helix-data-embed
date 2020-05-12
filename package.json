@@ -38,7 +38,7 @@
     "@adobe/openwhisk-action-utils": "4.2.2",
     "@flighter/a1-notation": "1.0.6",
     "googleapis": "50.0.0",
-    "rss-parser": "3.7.6"
+    "rss-parser": "3.8.0"
   },
   "devDependencies": {
     "@adobe/eslint-config-helix": "1.1.0",
@@ -51,8 +51,8 @@
     "chai": "4.2.0",
     "chai-http": "4.3.0",
     "codecov": "3.6.5",
-    "commitizen": "4.0.5",
-    "cz-conventional-changelog": "3.1.0",
+    "commitizen": "4.1.2",
+    "cz-conventional-changelog": "3.2.0",
     "eslint": "7.0.0",
     "eslint-plugin-header": "3.0.0",
     "eslint-plugin-import": "2.20.2",
