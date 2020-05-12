@@ -1,3 +1,16 @@
+# [1.3.0](https://github.com/adobe/helix-data-embed/compare/v1.2.9...v1.3.0) (2020-05-12)
+
+
+### Features
+
+* **filters:** add basic (no grouping support) query builder parser functions ([0fac773](https://github.com/adobe/helix-data-embed/commit/0fac77360dd6bc31f84c5f77823bcad4b8677cb4)), closes [#34](https://github.com/adobe/helix-data-embed/issues/34)
+* **querybuilder:** add property predicate ([0e149e1](https://github.com/adobe/helix-data-embed/commit/0e149e1d2527ae0c18d5968aad282c8ffba01356)), closes [#34](https://github.com/adobe/helix-data-embed/issues/34)
+* **querybuilder:** add support for range queries ([3b6bdb3](https://github.com/adobe/helix-data-embed/commit/3b6bdb3777d48e9832c9d8499595f9f615627f12))
+* **querybuilder:** add utility for making implicit conjunctions explicit ([9b36713](https://github.com/adobe/helix-data-embed/commit/9b36713591fbc06e7ddcdd3abbeae42137161697))
+* **querybuilder:** implement limits and offsets ([850f45b](https://github.com/adobe/helix-data-embed/commit/850f45bdf2dec9fe9854f628a173d5dd144a2e37)), closes [#34](https://github.com/adobe/helix-data-embed/issues/34)
+* **querybuilder:** parse querybuilder expressions with groups and parameters ([19a9cf6](https://github.com/adobe/helix-data-embed/commit/19a9cf6cd42d83411b66d60f892cb2fc7d9dbf4f)), closes [#34](https://github.com/adobe/helix-data-embed/issues/34)
+* **querybuilder:** simplify group expressions ([0c81d37](https://github.com/adobe/helix-data-embed/commit/0c81d3728e024d7f07fc1ce19d1070e4fb6f5c66))
+
 ## [1.2.9](https://github.com/adobe/helix-data-embed/compare/v1.2.8...v1.2.9) (2020-05-07)
 
 
