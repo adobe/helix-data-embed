@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/adobe/helix-data-embed/compare/v1.3.1...v1.4.0) (2020-05-18)
+
+
+### Features
+
+* **feeds:** support more RSS feed URL patterns ([c3e5101](https://github.com/adobe/helix-data-embed/commit/c3e5101f235dbeffacf7fc4b2bd71ff591b24729))
+
 ## [1.3.1](https://github.com/adobe/helix-data-embed/compare/v1.3.0...v1.3.1) (2020-05-12)
 
 

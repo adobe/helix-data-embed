@@ -16,17 +16,17 @@ const { main } = require('../src/index');
 describe('Feed Tests', () => {
   it('Works for RSS Feeds', async () => {
     const result = await main({
-      __ow_path: '/https://blogs.adobe.com/psirt/',
-      __ow_query: 'feed=atom',
+      __ow_path: '/https://daringfireball.net/feeds/articles',
+      __ow_query: '',
     });
     assert.equal(result.statusCode, 200);
-    assert.equal(result.body.length, 10);
+    assert.ok(result.body.length > 1);
   }).timeout(10000);
 
   it('Works for RSS Feeds with Limits', async () => {
     const result = await main({
-      __ow_path: '/https://blogs.adobe.com/psirt/',
-      __ow_query: 'feed=atom&hlx_p.limit=1',
+      __ow_path: '/https://daringfireball.net/feeds/main',
+      __ow_query: 'hlx_p.limit=1',
     });
     assert.equal(result.statusCode, 200);
     assert.equal(result.body.length, 1);
