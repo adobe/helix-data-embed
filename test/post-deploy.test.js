@@ -35,10 +35,10 @@ describe('Post-Deploy Tests', () => {
   it('RSS Embed', async () => {
     await chai
       .request('https://adobeioruntime.net/')
-      .get(`${getbaseurl()}/https://blogs.adobe.com/psirt/?feed=atom`)
+      .get(`${getbaseurl()}/https://daringfireball.net/feeds/main`)
       .then((response) => {
         expect(response).to.be.json;
-        expect(response.body).to.be.an('array').that.has.length(10);
+        expect(response.body).to.be.an('array');
         expect(response).to.have.status(200);
       }).catch((e) => {
         throw e;
