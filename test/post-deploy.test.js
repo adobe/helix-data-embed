@@ -46,7 +46,7 @@ describe('Post-Deploy Tests', () => {
   }).timeout(10000);
 
   it('Excel Embed', async () => {
-    console.log('Trying', `https://adobe-my.sharepoint.com/personal/trieloff_adobe_com/_layouts/15/guestaccess.aspx?share=Edoi88tLKLpDsKzSfL-pcJYB2lIo7UKooYWnjm3w2WRrsA&email=helix%40adobe.com&e=tD623x`);
+    console.log('Trying', 'https://adobe-my.sharepoint.com/personal/trieloff_adobe_com/_layouts/15/guestaccess.aspx?share=Edoi88tLKLpDsKzSfL-pcJYB2lIo7UKooYWnjm3w2WRrsA&email=helix%40adobe.com&e=tD623x');
 
     await chai
       .request('https://adobeioruntime.net/')
