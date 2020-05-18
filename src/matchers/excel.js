@@ -76,7 +76,7 @@ async function extract(url, params, log = console) {
 
 
 module.exports = {
-  required: ['share', 'AZURE_WORD2MD_CLIENT_ID', 'AZURE_HELIX_USER', 'AZURE_HELIX_PASSWORD'],
+  required: ['AZURE_WORD2MD_CLIENT_ID', 'AZURE_HELIX_USER', 'AZURE_HELIX_PASSWORD'],
   pattern: (url) => /^https:\/\/.*\.sharepoint\.com\//.test(url),
   extract,
 };

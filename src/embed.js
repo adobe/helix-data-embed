@@ -23,9 +23,10 @@ function hasParams(list, params) {
 }
 
 function embed(url, params, log) {
-  const matching = matchers
-    .filter((candidate) => hasParams(candidate.required, params))
-    .find((candidate) => candidate.pattern(url));
+  const candidates = matchers
+    .filter((candidate) => hasParams(candidate.required, params));
+  
+  const matching = candidates.find((candidate) => candidate.pattern(url));
 
   if (!url || !matching) {
     log.warn(`No matcher found for URL ${url}`);

@@ -59,7 +59,6 @@ describe('Post-Deploy Tests', () => {
           url: 'https://theblog.adobe.com/best-practices-in-content-management-it-edition/',
           year: 43875,
         });
-        expect(response).to.have.status(200);
       }).catch((e) => {
         throw e;
       });
