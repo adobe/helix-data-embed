@@ -11,11 +11,12 @@
  */
 /* eslint-env mocha */
 
-const { main } = require('../src/index');
 const assert = require('assert');
+const { condit } = require('@adobe/helix-testutils');
+const { main } = require('../src/index');
 
 describe('Excel Integration Test', () => {
-  it('Retrieves Excel Spreadsheet', async () => {
+  condit('Retrieves Excel Spreadsheet', condit.hasenv('AZURE_WORD2MD_CLIENT_ID', 'AZURE_HELIX_USER', 'AZURE_HELIX_PASSWORD'), async () => {
     const result = await main({
       __ow_logger: console,
       __ow_path: '/https://adobe-my.sharepoint.com/personal/trieloff_adobe_com/_layouts/15/guestaccess.aspx',
