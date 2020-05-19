@@ -50,7 +50,7 @@ async function main(params) {
 
   return {
     ...result,
-    body: result.body ? filter(result.body) : '',
+    body: filter(result.body),
   };
 }
 

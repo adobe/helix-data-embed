@@ -18,15 +18,33 @@ const { main } = require('../src/index');
 require('dotenv').config();
 
 describe('Excel Integration Test', () => {
-  condit('Retrieves Excel Spreadsheet', condit.hasenv('AZURE_WORD2MD_CLIENT_ID', 'AZURE_HELIX_USER', 'AZURE_HELIX_PASSWORD'), async () => {
+  condit('Retrieves Excel Spreadsheet without tables', condit.hasenv('AZURE_WORD2MD_CLIENT_ID', 'AZURE_HELIX_USER', 'AZURE_HELIX_PASSWORD'), async () => {
     const result = await main({
       __ow_logger: console,
       __ow_path: '/https://adobe-my.sharepoint.com/personal/trieloff_adobe_com/_layouts/15/guestaccess.aspx',
-      __ow_query: 'share=Edoi88tLKLpDsKzSfL-pcJYB2lIo7UKooYWnjm3w2WRrsA&email=helix%40adobe.com&e=tD623x',
+      share: 'Edoi88tLKLpDsKzSfL-pcJYB2lIo7UKooYWnjm3w2WRrsA',
+      email: 'helix@adobe.com',
+      e: 'tD623x',
       AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
       AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
       AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
     });
     assert.equal(result.statusCode, 200);
+    assert.equal(result.body.length, 3);
+  }).timeout(10000);
+
+  condit('Retrieves Excel Spreadsheet with tables', condit.hasenv('AZURE_WORD2MD_CLIENT_ID', 'AZURE_HELIX_USER', 'AZURE_HELIX_PASSWORD'), async () => {
+    const result = await main({
+      __ow_logger: console,
+      __ow_path: '/https://adobe-my.sharepoint.com/personal/trieloff_adobe_com/_layouts/15/guestaccess.aspx',
+      share: 'Edz_l4D0BghJjLkIfyZCB7sBLaBhySyT5An7fPHVS6CFuA',
+      email: 'helix@adobe.com',
+      e: 'e5ziwf',
+      AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
+      AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
+      AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
+    });
+    assert.equal(result.statusCode, 200);
+    assert.equal(result.body.length, 20);
   }).timeout(10000);
 });

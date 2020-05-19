@@ -31,44 +31,48 @@ async function extract(url, params, log = console) {
     const item = await drive.getDriveItemFromShareLink(url);
     const worksheetsuri = `/drives/${item.parentReference.driveId}/items/${item.id}/workbook/worksheets/`;
     const worksheets = await client.get(worksheetsuri);
-    if (!worksheets.value.length) {
-      log.info(`workbook has no worksheets: ${worksheetsuri}`);
-      return {
-        statusCode: 404,
-      };
-    }
     const worksheetname = worksheets.value[0].name;
 
     const tablesuri = `${worksheetsuri}${worksheetname}/tables/`;
     const tables = await client.get(tablesuri);
-    if (!tables.value.length) {
-      log.info(`worksheet ${worksheetname} has no tables: ${tablesuri}`);
-      return {
-        statusCode: 404,
-      };
-    }
-    const tablename = tables.value[0].name;
+    const body = await (async () => {
+      if (!tables.value.length) {
+        log.info(`worksheet ${worksheetname} has no tables: ${tablesuri}, getting range instead`);
 
-    const columnsuri = `${tablesuri}${tablename}/columns/`;
-    const columns = await client.get(columnsuri);
-    if (!columns.value.length) {
-      log.info(`table ${worksheetname}:${tablename} has no columns: ${columnsuri}`);
-      return {
-        statusCode: 404,
-      };
-    }
+        const rangeuri = `${worksheetsuri}${worksheetname}/usedRange`;
+        const range = await client.get(rangeuri);
 
-    const columnnames = columns.value.map(({ name }) => name);
-    const rowvalues = columns.value[0].values
-      .map((_, rownum) => columnnames.reduce((row, name, colnum) => {
-        const [value] = columns.value[colnum].values[rownum];
-        // eslint-disable-next-line no-param-reassign
-        row[name] = value;
-        return row;
-      }, {}));
 
-    // discard the first row
-    rowvalues.shift();
+        const rows = range.values;
+        const columnames = rows.shift();
+
+        const rowvalues = rows.map((row) => columnames.reduce((obj, name, index) => {
+          // eslint-disable-next-line no-param-reassign
+          obj[name] = row[index];
+          return obj;
+        }, {}));
+
+        return rowvalues;
+      }
+      const tablename = tables.value[0].name;
+
+      const columnsuri = `${tablesuri}${tablename}/columns/`;
+      const columns = await client.get(columnsuri);
+
+      const columnnames = columns.value.map(({ name }) => name);
+      const rowvalues = columns.value[0].values
+        .map((_, rownum) => columnnames.reduce((row, name, colnum) => {
+          const [value] = columns.value[colnum].values[rownum];
+          // eslint-disable-next-line no-param-reassign
+          row[name] = value;
+          return row;
+        }, {}));
+
+      // discard the first row
+      rowvalues.shift();
+
+      return rowvalues;
+    })();
 
     return {
       statusCode: 200,
@@ -76,7 +80,7 @@ async function extract(url, params, log = console) {
         'Content-Type': 'application/json',
         'Cache-Control': 'max-age=600',
       },
-      body: rowvalues,
+      body,
     };
   } catch (e) {
     log.error(e.message);
