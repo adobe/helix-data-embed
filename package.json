@@ -31,13 +31,13 @@
   },
   "homepage": "https://github.com/adobe/helix-data-embed#readme",
   "dependencies": {
-    "@adobe/helix-epsagon": "1.2.2",
+    "@adobe/helix-epsagon": "1.3.0",
     "@adobe/helix-onedrive-support": "2.3.0",
     "@adobe/helix-status": "7.1.3",
     "@adobe/openwhisk-action-logger": "2.2.0",
     "@adobe/openwhisk-action-utils": "4.2.2",
     "@flighter/a1-notation": "1.0.6",
-    "googleapis": "50.0.0",
+    "googleapis": "51.0.0",
     "rss-parser": "3.8.0"
   },
   "devDependencies": {
@@ -51,7 +51,7 @@
     "ajv": "6.12.2",
     "chai": "4.2.0",
     "chai-http": "4.3.0",
-    "codecov": "3.6.5",
+    "codecov": "3.7.0",
     "commitizen": "4.1.2",
     "cz-conventional-changelog": "3.2.0",
     "dotenv": "8.2.0",
@@ -61,7 +61,7 @@
     "fs-extra": "9.0.0",
     "jsdoc-to-markdown": "5.0.3",
     "junit-report-builder": "2.0.0",
-    "lint-staged": "10.2.2",
+    "lint-staged": "10.2.3",
     "mocha": "7.1.2",
     "nyc": "15.0.1",
     "proxyquire": "2.1.3",
