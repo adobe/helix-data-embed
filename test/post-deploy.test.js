@@ -75,7 +75,15 @@ describe('Post-Deploy Tests', () => {
         expect(response).to.have.status(200);
         expect(response).to.be.json;
         expect(response.body).to.be.an('array').that.deep.includes({
-          Hersteller: 'Hyundai', Modell: 'Trajet', Preis: 23000, Verbrauch: 7.2, Kofferraum: 304, Preis2: 1.1, 'Verbrauch pro Jahr': 5976, Gesamtkosten: 28976,
+          Column1: 'Klapptüren',
+          Gesamtkosten: 28976,
+          Hersteller: 'Hyundai',
+          Kofferraum: 304,
+          Modell: 'Trajet',
+          Preis: 23000,
+          Preis2: 1.1,
+          Verbrauch: 7.2,
+          'Verbrauch pro Jahr': 5976,
         });
       }).catch((e) => {
         throw e;
