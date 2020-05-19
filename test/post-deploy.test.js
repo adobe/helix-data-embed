@@ -45,7 +45,7 @@ describe('Post-Deploy Tests', () => {
       });
   }).timeout(10000);
 
-  it('Excel Embed', async () => {
+  it('Excel Embed (without tables)', async () => {
     console.log('Trying', 'https://adobe-my.sharepoint.com/personal/trieloff_adobe_com/_layouts/15/guestaccess.aspx?share=Edoi88tLKLpDsKzSfL-pcJYB2lIo7UKooYWnjm3w2WRrsA&email=helix%40adobe.com&e=tD623x');
 
     await chai
@@ -53,10 +53,29 @@ describe('Post-Deploy Tests', () => {
       .get(`${getbaseurl()}/https://adobe-my.sharepoint.com/personal/trieloff_adobe_com/_layouts/15/guestaccess.aspx?share=Edoi88tLKLpDsKzSfL-pcJYB2lIo7UKooYWnjm3w2WRrsA&email=helix%40adobe.com&e=tD623x`)
       .then((response) => {
         // console.log(response.body);
+        expect(response).to.have.status(200);
         expect(response).to.be.json;
         expect(response.body).to.be.an('array').that.deep.includes({
           project: 'Helix',
           created: 2018,
+        });
+      }).catch((e) => {
+        throw e;
+      });
+  }).timeout(10000);
+
+  it('Excel Embed (with tables)', async () => {
+    console.log('Trying', 'https://adobe-my.sharepoint.com/personal/trieloff_adobe_com/_layouts/15/guestaccess.aspx?share=Edz_l4D0BghJjLkIfyZCB7sBLaBhySyT5An7fPHVS6CFuA&email=helix%40adobe.com&e=e5ziwf');
+
+    await chai
+      .request('https://adobeioruntime.net/')
+      .get(`${getbaseurl()}/https://adobe-my.sharepoint.com/personal/trieloff_adobe_com/_layouts/15/guestaccess.aspx?share=Edz_l4D0BghJjLkIfyZCB7sBLaBhySyT5An7fPHVS6CFuA&email=helix%40adobe.com&e=e5ziwf`)
+      .then((response) => {
+        // console.log(response.body);
+        expect(response).to.have.status(200);
+        expect(response).to.be.json;
+        expect(response.body).to.be.an('array').that.deep.includes({
+          Hersteller: 'Hyundai', Modell: 'Trajet', Preis: 23000, Verbrauch: 7.2, Kofferraum: 304, Preis2: 1.1, 'Verbrauch pro Jahr': 5976, Gesamtkosten: 28976,
         });
       }).catch((e) => {
         throw e;
