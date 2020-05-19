@@ -78,7 +78,7 @@ describe('Excel Tests', () => {
     },
   });
 
-  it.skip('Works for Excel Feeds', async () => {
+  it('Works for Excel Feeds', async () => {
     const result = await extract(
       'https://adobe.sharepoint.com/sites/TheBlog/_layouts/15/guestaccess.aspx?share=ESR1N29Z7HpCh1Zfs_0YS_gB4gVSuKyWRut-kNcHVSvkew&email=helix%40adobe.com&e=hx0OUl',
       {},
