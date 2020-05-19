@@ -15,6 +15,8 @@ const assert = require('assert');
 const { condit } = require('@adobe/helix-testutils');
 const { main } = require('../src/index');
 
+require('dotenv').config();
+
 describe('Excel Integration Test', () => {
   condit('Retrieves Excel Spreadsheet', condit.hasenv('AZURE_WORD2MD_CLIENT_ID', 'AZURE_HELIX_USER', 'AZURE_HELIX_PASSWORD'), async () => {
     const result = await main({

@@ -31,17 +31,34 @@ async function extract(url, params, log = console) {
     const item = await drive.getDriveItemFromShareLink(url);
     const worksheetsuri = `/drives/${item.parentReference.driveId}/items/${item.id}/workbook/worksheets/`;
     const worksheets = await client.get(worksheetsuri);
+    if (!worksheets.value.length) {
+      log.info(`workbook has no worksheets: ${worksheetsuri}`);
+      return {
+        statusCode: 404,
+      };
+    }
     const worksheetname = worksheets.value[0].name;
 
     const tablesuri = `${worksheetsuri}${worksheetname}/tables/`;
     const tables = await client.get(tablesuri);
+    if (!tables.value.length) {
+      log.info(`worksheet ${worksheetname} has no tables: ${tablesuri}`);
+      return {
+        statusCode: 404,
+      };
+    }
     const tablename = tables.value[0].name;
 
     const columnsuri = `${tablesuri}${tablename}/columns/`;
     const columns = await client.get(columnsuri);
+    if (!columns.value.length) {
+      log.info(`table ${worksheetname}:${tablename} has no columns: ${columnsuri}`);
+      return {
+        statusCode: 404,
+      };
+    }
 
     const columnnames = columns.value.map(({ name }) => name);
-
     const rowvalues = columns.value[0].values
       .map((_, rownum) => columnnames.reduce((row, name, colnum) => {
         const [value] = columns.value[colnum].values[rownum];
