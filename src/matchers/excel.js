@@ -35,23 +35,44 @@ async function extract(url, params, log = console) {
 
     const tablesuri = `${worksheetsuri}${worksheetname}/tables/`;
     const tables = await client.get(tablesuri);
-    const tablename = tables.value[0].name;
+    const body = await (async () => {
+      if (!tables.value.length) {
+        log.info(`worksheet ${worksheetname} has no tables: ${tablesuri}, getting range instead`);
 
-    const columnsuri = `${tablesuri}${tablename}/columns/`;
-    const columns = await client.get(columnsuri);
+        const rangeuri = `${worksheetsuri}${worksheetname}/usedRange`;
+        const range = await client.get(rangeuri);
 
-    const columnnames = columns.value.map(({ name }) => name);
 
-    const rowvalues = columns.value[0].values
-      .map((_, rownum) => columnnames.reduce((row, name, colnum) => {
-        const [value] = columns.value[colnum].values[rownum];
-        // eslint-disable-next-line no-param-reassign
-        row[name] = value;
-        return row;
-      }, {}));
+        const rows = range.values;
+        const columnames = rows.shift();
 
-    // discard the first row
-    rowvalues.shift();
+        const rowvalues = rows.map((row) => columnames.reduce((obj, name, index) => {
+          // eslint-disable-next-line no-param-reassign
+          obj[name] = row[index];
+          return obj;
+        }, {}));
+
+        return rowvalues;
+      }
+      const tablename = tables.value[0].name;
+
+      const columnsuri = `${tablesuri}${tablename}/columns/`;
+      const columns = await client.get(columnsuri);
+
+      const columnnames = columns.value.map(({ name }) => name);
+      const rowvalues = columns.value[0].values
+        .map((_, rownum) => columnnames.reduce((row, name, colnum) => {
+          const [value] = columns.value[colnum].values[rownum];
+          // eslint-disable-next-line no-param-reassign
+          row[name] = value;
+          return row;
+        }, {}));
+
+      // discard the first row
+      rowvalues.shift();
+
+      return rowvalues;
+    })();
 
     return {
       statusCode: 200,
@@ -59,7 +80,7 @@ async function extract(url, params, log = console) {
         'Content-Type': 'application/json',
         'Cache-Control': 'max-age=600',
       },
-      body: rowvalues,
+      body,
     };
   } catch (e) {
     log.error(e.message);
@@ -76,7 +97,7 @@ async function extract(url, params, log = console) {
 
 
 module.exports = {
-  required: ['share', 'AZURE_WORD2MD_CLIENT_ID', 'AZURE_HELIX_USER', 'AZURE_HELIX_PASSWORD'],
+  required: ['AZURE_WORD2MD_CLIENT_ID', 'AZURE_HELIX_USER', 'AZURE_HELIX_PASSWORD'],
   pattern: (url) => /^https:\/\/.*\.sharepoint\.com\//.test(url),
   extract,
 };

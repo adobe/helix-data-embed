@@ -16,7 +16,7 @@ const parser = new Parser();
 module.exports = {
   required: [],
   pattern: (url) => {
-    if (/[&?]feed=atom/.test(url)) {
+    if (/\/feeds\/|[&?]feed=atom/.test(url)) {
       return true;
     }
     return false;
