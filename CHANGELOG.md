@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/adobe/helix-data-embed/compare/v1.4.0...v1.4.1) (2020-05-19)
+
+
+### Bug Fixes
+
+* **excel:** support excel workbooks that do not have tables ([366d272](https://github.com/adobe/helix-data-embed/commit/366d272985a8a244128c03f2d268e38614d01c09)), closes [#52](https://github.com/adobe/helix-data-embed/issues/52)
+
 # [1.4.0](https://github.com/adobe/helix-data-embed/compare/v1.3.1...v1.4.0) (2020-05-18)
 
 
