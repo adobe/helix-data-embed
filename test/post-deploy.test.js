@@ -130,4 +130,34 @@ describe('Post-Deploy Tests', () => {
         throw e;
       });
   }).timeout(10000);
+
+  it('Helix Run Query Embed', async () => {
+    console.log('Trying', `https://adobeioruntime.net/${getbaseurl()}/https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@v2/error500`);
+
+    await chai
+      .request('https://adobeioruntime.net/')
+      .get(`${getbaseurl()}/https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@v2/error500?fromMins=1000&toMins=0`)
+      .then((response) => {
+        expect(response).to.be.json;
+        expect(response.body).to.be.an('array');
+        expect(response).to.have.status(200);
+      }).catch((e) => {
+        throw e;
+      });
+  }).timeout(10000);
+
+  it('Helix Run Query Embed Works with Site prefixed', async () => {
+    console.log('Trying', `https://adobeioruntime.net/${getbaseurl()}/https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@v2/error500`);
+
+    await chai
+      .request('https://adobeioruntime.net/')
+      .get(`${getbaseurl()}/https://example.com/_query/run-query/error500?fromMins=1000&toMins=0`)
+      .then((response) => {
+        expect(response).to.be.json;
+        expect(response.body).to.be.an('array');
+        expect(response).to.have.status(200);
+      }).catch((e) => {
+        throw e;
+      });
+  }).timeout(10000);
 });

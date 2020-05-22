@@ -28,7 +28,7 @@ describe('run query tests', () => {
 
   it('run query data embeds fail gracefully', async () => {
     const EXPECTED_HEADERS = {
-      'Cache-Control': 'no-cache',
+      'Cache-Control': 'max-age=60',
       'Content-Type': 'application/json',
     };
     const { body, headers, statusCode } = await runQuery.extract('/run_query/fail');
