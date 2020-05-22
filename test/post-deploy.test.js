@@ -147,7 +147,7 @@ describe('Post-Deploy Tests', () => {
   }).timeout(10000);
 
   it('Helix Run Query Embed Works with Site prefixed', async () => {
-    console.log('Trying', `https://adobeioruntime.net/${getbaseurl()}/https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@v2/error500`);
+    console.log('Trying', `https://adobeioruntime.net/${getbaseurl()}/https://example.com/_query/run-query/error500?fromMins=1000&toMins=0`);
 
     await chai
       .request('https://adobeioruntime.net/')
