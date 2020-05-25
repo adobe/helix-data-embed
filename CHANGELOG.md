@@ -1,3 +1,17 @@
+# [1.5.0](https://github.com/adobe/helix-data-embed/compare/v1.4.3...v1.5.0) (2020-05-25)
+
+
+### Bug Fixes
+
+* **run-query.js:** fix url pattern code ([5406c14](https://github.com/adobe/helix-data-embed/commit/5406c14f19e9c42ee24c2661d35355ad8adbdc5d)), closes [#44](https://github.com/adobe/helix-data-embed/issues/44)
+* **run-query.js:** pass rev ([2b3a12f](https://github.com/adobe/helix-data-embed/commit/2b3a12f842032a6b131cc108cce815f5b386a4b5)), closes [#44](https://github.com/adobe/helix-data-embed/issues/44)
+* **run-query.js:** wrap extract logic in try/catch ([cf3afd6](https://github.com/adobe/helix-data-embed/commit/cf3afd6d592989b310bf0e503496b29026942011)), closes [#44](https://github.com/adobe/helix-data-embed/issues/44)
+
+
+### Features
+
+* **run-query.js:** adds helix-run-query support ([8e30131](https://github.com/adobe/helix-data-embed/commit/8e301315abb45ff4fccb00781b316b8898028542)), closes [#9](https://github.com/adobe/helix-data-embed/issues/9)
+
 ## [1.4.3](https://github.com/adobe/helix-data-embed/compare/v1.4.2...v1.4.3) (2020-05-20)
 
 
