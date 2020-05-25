@@ -12,9 +12,11 @@
 const feed = require('./matchers/feed');
 const excel = require('./matchers/excel');
 const google = require('./matchers/google');
+// eslint-disable-next-line camelcase
+const runQuery = require('./matchers/run-query');
 
 const matchers = [
-  feed, excel, google,
+  feed, excel, google, runQuery,
 ];
 
 function hasParams(list, params) {

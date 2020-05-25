@@ -11,54 +11,29 @@
  */
 /* eslint-env mocha */
 const assert = require('assert');
-const { main } = require('../src/index');
+// eslint-disable-next-line camelcase
+const runQuery = require('../src/matchers/run-query.js');
 
-describe('Integration Tests', () => {
-  it('Rejects missing URLs', async () => {
-    const result = await main({
-      __ow_logger: console,
-    });
-    assert.equal(result.statusCode, 400);
-  });
-
-  it('tests index with absolute run_query url', async () => {
+describe('run query tests', () => {
+  it('run query data embeds work', async () => {
     const EXPECTED_HEADERS = {
       'Cache-Control': 'max-age=600',
       'Content-Type': 'application/json',
     };
-    const { body, headers, statusCode } = await main({
-      __ow_path: '/https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@2.4.11/error500',
-    });
-
+    const { body, headers, statusCode } = await runQuery.extract('https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@2.4.11/error500');
     assert.ok(Array.isArray(body));
     assert.deepEqual(EXPECTED_HEADERS, headers);
     assert.equal(statusCode, 200);
   }).timeout(6000);
 
-  it('tests index with relative run_query url', async () => {
+  it('run query data embeds fail gracefully', async () => {
     const EXPECTED_HEADERS = {
-      'Cache-Control': 'max-age=600',
+      'Cache-Control': 'max-age=60',
       'Content-Type': 'application/json',
     };
-    const { body, headers, statusCode } = await main({
-      __ow_path: 'https://example.com/_query/run-query/error500',
-      __ow_query: 'fromMins=1000&toMins=0',
-    });
-
+    const { body, headers, statusCode } = await runQuery.extract('/run_query/fail');
     assert.ok(Array.isArray(body));
     assert.deepEqual(EXPECTED_HEADERS, headers);
-    assert.equal(statusCode, 200);
+    assert.equal(statusCode, 502);
   }).timeout(6000);
-
-  it('Rejects missing parameters', async () => {
-    const result = await main();
-    assert.equal(result.statusCode, 400);
-  });
-
-  it('Rejects unknown URLs', async () => {
-    const result = await main({
-      __ow_path: '/https://example.com',
-    });
-    assert.equal(result.statusCode, 404);
-  });
 });

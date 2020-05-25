@@ -71,7 +71,6 @@ describe('Post-Deploy Tests', () => {
       .request('https://adobeioruntime.net/')
       .get(`${getbaseurl()}/https://adobe-my.sharepoint.com/personal/trieloff_adobe_com/_layouts/15/guestaccess.aspx?share=Edz_l4D0BghJjLkIfyZCB7sBLaBhySyT5An7fPHVS6CFuA&email=helix%40adobe.com&e=e5ziwf`)
       .then((response) => {
-        // console.log(response.body);
         expect(response).to.have.status(200);
         expect(response).to.be.json;
         expect(response.body).to.be.an('array').that.deep.includes({
@@ -126,6 +125,36 @@ describe('Post-Deploy Tests', () => {
           'Verbrauch pro Jahr': 8383,
         });
         expect(response.body).to.have.lengthOf(2);
+        expect(response).to.have.status(200);
+      }).catch((e) => {
+        throw e;
+      });
+  }).timeout(10000);
+
+  it('Helix Run Query Embed', async () => {
+    console.log('Trying', `https://adobeioruntime.net/${getbaseurl()}/https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@v2/error500`);
+
+    await chai
+      .request('https://adobeioruntime.net/')
+      .get(`${getbaseurl()}/https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@v2/error500?fromMins=1000&toMins=0`)
+      .then((response) => {
+        expect(response).to.be.json;
+        expect(response.body).to.be.an('array');
+        expect(response).to.have.status(200);
+      }).catch((e) => {
+        throw e;
+      });
+  }).timeout(10000);
+
+  it('Helix Run Query Embed Works with Site prefixed', async () => {
+    console.log('Trying', `https://adobeioruntime.net/${getbaseurl()}/https://example.com/_query/run-query/error500?fromMins=1000&toMins=0`);
+
+    await chai
+      .request('https://adobeioruntime.net/')
+      .get(`${getbaseurl()}/https://example.com/_query/run-query/error500?fromMins=1000&toMins=0`)
+      .then((response) => {
+        expect(response).to.be.json;
+        expect(response.body).to.be.an('array');
         expect(response).to.have.status(200);
       }).catch((e) => {
         throw e;
