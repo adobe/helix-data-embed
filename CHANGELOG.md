@@ -1,3 +1,10 @@
+## [1.5.3](https://github.com/adobe/helix-data-embed/compare/v1.5.2...v1.5.3) (2020-05-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-onedrive-support to v2.4.0 ([#64](https://github.com/adobe/helix-data-embed/issues/64)) ([cb37128](https://github.com/adobe/helix-data-embed/commit/cb37128081df11a44abc0bbfcb194d44107bfd40))
+
 ## [1.5.2](https://github.com/adobe/helix-data-embed/compare/v1.5.1...v1.5.2) (2020-05-26)
 
 
