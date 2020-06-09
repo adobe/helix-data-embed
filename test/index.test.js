@@ -41,7 +41,7 @@ describe('Integration Tests', () => {
       'Content-Type': 'application/json',
     };
     const { body, headers, statusCode } = await main({
-      __ow_path: 'https://example.com/_query/run-query/error500',
+      __ow_path: '/https://example.com/_query/run-query/error500',
       __ow_query: 'fromMins=1000&toMins=0',
     });
 

@@ -16,37 +16,22 @@ const { epsagon } = require('@adobe/helix-epsagon');
 const embed = require('./embed');
 const { loadquerystring } = require('./querybuilder/url');
 const { createfilter } = require('./querybuilder/filter');
+const dataSource = require('./data-source.js');
 
 async function main(params) {
   /* istanbul ignore next */
   const { __ow_logger: log = console } = params;
-  if (!params.__ow_path) {
+  const url = dataSource((params));
+  if (!url) {
     return {
       statusCode: 400,
-      body: 'Expecting a path',
+      body: 'Expecting a datasource',
     };
   }
 
-  if (!params.__ow_query) {
-    // reconstruct __ow_query
-    const query = Object.keys(params)
-      .filter((key) => !/^[A-Z]+_[A-Z]+/.test(key))
-      .filter((key) => key !== 'api')
-      .filter((key) => !/^__ow_/.test(key))
-      .reduce((pv, cv) => {
-        if (pv) {
-          return `${pv}&${cv}=${params[cv]}`;
-        }
-        return `${cv}=${params[cv]}`;
-      }, '');
-    // eslint-disable-next-line no-param-reassign
-    params.__ow_query = query;
-  }
-  const url = `${params.__ow_path.substring(1)}?${params.__ow_query || ''}`;
-
-  const qbquery = loadquerystring(params.__ow_query, 'hlx_');
+  const qbquery = loadquerystring(url.search.substring(1), 'hlx_');
   const filter = createfilter(qbquery);
-  const result = await embed(url, params, log);
+  const result = await embed(url.toString(), params, log);
 
   return {
     ...result,
