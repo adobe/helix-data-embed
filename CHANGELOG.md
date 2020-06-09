@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/adobe/helix-data-embed/compare/v1.5.12...v1.6.0) (2020-06-09)
+
+
+### Features
+
+* escape path and support 'src' parameter ([#81](https://github.com/adobe/helix-data-embed/issues/81)) ([17c3da4](https://github.com/adobe/helix-data-embed/commit/17c3da47c7ee7cc2caf4017bc6237e901c7a1ba0)), closes [#11](https://github.com/adobe/helix-data-embed/issues/11)
+
 ## [1.5.12](https://github.com/adobe/helix-data-embed/compare/v1.5.11...v1.5.12) (2020-06-09)
 
 
