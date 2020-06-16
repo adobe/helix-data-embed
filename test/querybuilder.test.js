@@ -366,7 +366,6 @@ property.operation=not`(testarray), testarray);
   });
 });
 
-
 describe('Test Conjunction Transformer', () => {
   it('Keeps exitsing structure', () => {
     const input = {

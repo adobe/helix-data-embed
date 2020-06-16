@@ -42,7 +42,6 @@ async function extract(url, params, log = console) {
         const rangeuri = `${worksheetsuri}${worksheetname}/usedRange`;
         const range = await client.get(rangeuri);
 
-
         const rows = range.values;
         const columnames = rows.shift();
 
@@ -94,7 +93,6 @@ async function extract(url, params, log = console) {
     };
   }
 }
-
 
 module.exports = {
   required: ['AZURE_WORD2MD_CLIENT_ID', 'AZURE_HELIX_USER', 'AZURE_HELIX_PASSWORD'],
