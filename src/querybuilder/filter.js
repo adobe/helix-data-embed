@@ -64,5 +64,4 @@ function defaultfilter() {
   return () => true;
 }
 
-
 module.exports = { createfilter };

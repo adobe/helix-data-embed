@@ -48,7 +48,6 @@ function nest(obj) {
 
       const retval = { };
 
-
       if (shortkey.length % 2 === 0) {
         // this looks like …property.value=
         const [type, name] = shortkey.slice(-2);
