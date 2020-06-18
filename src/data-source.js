@@ -20,36 +20,46 @@ const querystring = require('querystring');
  */
 function dataSource(params) {
   const { __ow_path: path = '', src = '' } = params;
+  let url = null;
   if (!path) {
     if (!src.startsWith('https://')) {
       return null;
     }
-    return new URL(params.src);
-  }
+    url = new URL(params.src);
 
   // expect the _ow_path to start with /https:// or /https%3a%2f%2f
-  if (path.startsWith('/https%3A%2F%2F')) {
-    return new URL(decodeURIComponent(path.substring(1)));
-  }
-  if (!path.startsWith('/https://')) {
+  } else if (path.startsWith('/https%3A%2F%2F')) {
+    url = new URL(decodeURIComponent(path.substring(1)));
+  } else if (!path.startsWith('/https://')) {
     return null;
+  } else {
+    url = new URL(path.substring(1));
   }
-  const url = new URL(path.substring(1));
 
   if (!params.__ow_query) {
     // reconstruct __ow_query
+    const q = {};
     Object.keys(params)
       .filter((key) => !/^[A-Z]+_[A-Z]+/.test(key))
       .filter((key) => key !== 'api')
+      .filter((key) => key !== 'src')
       .filter((key) => !/^__ow_/.test(key))
       .forEach((key) => {
-        url.searchParams.append(key, params[key]);
+        q[key] = params[key];
+        // don't append querybuilder keys to source or if a src param was given
+        if (!key.startsWith('hlx_') && !params.src) {
+          url.searchParams.append(key, params[key]);
+        }
       });
+    // eslint-disable-next-line no-param-reassign
+    params.__ow_query = querystring.stringify(q);
   } else {
     // else add it to the url
-    Object.entries(querystring.parse(params.__ow_query)).forEach(([key, value]) => {
-      url.searchParams.append(key, value);
-    });
+    Object.entries(querystring.parse(params.__ow_query))
+      .filter(([key]) => (!key.startsWith('hlx_')))
+      .forEach(([key, value]) => {
+        url.searchParams.append(key, value);
+      });
   }
   return url;
 }
