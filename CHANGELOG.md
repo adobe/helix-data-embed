@@ -1,3 +1,10 @@
+## [1.6.8](https://github.com/adobe/helix-data-embed/compare/v1.6.7...v1.6.8) (2020-06-22)
+
+
+### Bug Fixes
+
+* **src:** ensure that querybuilder params are correctly used ([#96](https://github.com/adobe/helix-data-embed/issues/96)) ([067c962](https://github.com/adobe/helix-data-embed/commit/067c9623b46b3f46cbb915f7071f74572f00fee1)), closes [#95](https://github.com/adobe/helix-data-embed/issues/95)
+
 ## [1.6.7](https://github.com/adobe/helix-data-embed/compare/v1.6.6...v1.6.7) (2020-06-16)
 
 
