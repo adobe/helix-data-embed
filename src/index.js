@@ -29,7 +29,7 @@ async function main(params) {
     };
   }
 
-  const qbquery = loadquerystring(url.search.substring(1), 'hlx_');
+  const qbquery = loadquerystring(params.__ow_query, 'hlx_');
   const filter = createfilter(qbquery);
   const result = await embed(url.toString(), params, log);
 
