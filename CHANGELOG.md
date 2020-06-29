@@ -1,3 +1,10 @@
+## [1.6.14](https://github.com/adobe/helix-data-embed/compare/v1.6.13...v1.6.14) (2020-06-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/openwhisk-action-utils to v4.2.3 ([#104](https://github.com/adobe/helix-data-embed/issues/104)) ([314dcab](https://github.com/adobe/helix-data-embed/commit/314dcab25b10cf2807a172f49b8c40bcf9b425f4))
+
 ## [1.6.13](https://github.com/adobe/helix-data-embed/compare/v1.6.12...v1.6.13) (2020-06-28)
 
 
