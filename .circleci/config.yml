@@ -72,9 +72,9 @@ jobs:
       # see https://circleci.com/orbs/registry/orb/adobe/helix-post-deploy
       # for more available parameters
       - helix-post-deploy/monitoring:
-          incubator: true # remove to promote service to production
+          statuspage_name: Helix Data Embed
           statuspage_group: Delivery
-          newrelic_group_policy: Development Repeated Failure
+          newrelic_group_policy: Delivery Repeated Failure
 
   branch-deploy:
     executor: node10
