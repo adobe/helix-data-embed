@@ -28,14 +28,22 @@ async function main(params) {
       body: 'Expecting a datasource',
     };
   }
-
+  log.info(`data-embed for datasource ${url}`);
   const qbquery = loadquerystring(params.__ow_query, 'hlx_');
+  log.debug('QB query', qbquery);
   const filter = createfilter(qbquery);
+  log.debug('QB filter', filter);
   const result = await embed(url.toString(), params, log);
 
+  const { body } = result;
+  delete result.body;
+  log.debug('result', result);
+  log.debug(`result body size: ${JSON.stringify(body).length}`);
+  const filtered = filter(body);
+  log.info(`filtered result ${filtered.length} rows. size: ${JSON.stringify(filtered).length}`);
   return {
     ...result,
-    body: filter(result.body),
+    body: filtered,
   };
 }
 

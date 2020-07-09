@@ -9,28 +9,31 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-const Parser = require('rss-parser');
+const data = [
+  ['Country', 'Code', 'Number'],
+  ['Japan', 'JP', 3],
+  ['Germany', 'DE', 5],
+  ['USA', 'US', 7],
+  ['Switzerland', 'CH', 27],
+  ['France', 'FR', 99],
+];
 
-const parser = new Parser();
+const tables = [];
+
+const namedItems = [];
 
 module.exports = {
-  name: 'feed',
-  required: [],
-  pattern: (url) => {
-    if (/\/feeds\/|[&?]feed=atom/.test(url)) {
-      return true;
-    }
-    return false;
-  },
-  extract: async (url) => {
-    const feed = await parser.parseURL(url);
-    return {
-      statusCode: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'Cache-Control': 'max-age=3600',
-      },
-      body: feed.items,
-    };
-  },
+  name: 'book-with-tables',
+  tables,
+  sheets: [{
+    name: 'Sheet1',
+    tables,
+    namedItems,
+    usedRange: {
+      address: 'Sheet1!A1:B4',
+      addressLocal: 'A1:B4',
+      values: data,
+    },
+  }],
+  namedItems,
 };

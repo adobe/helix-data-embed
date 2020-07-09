@@ -41,8 +41,9 @@ function embed(url, params, log) {
       body: [],
     };
   }
+  log.info(`found handler for ${url}: ${matching.name}`);
 
-  return matching.extract(url, params);
+  return matching.extract(url, params, log);
 }
 
 module.exports = embed;
