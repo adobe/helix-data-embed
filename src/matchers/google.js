@@ -105,6 +105,7 @@ async function extract(url, params, log = console) {
 }
 
 module.exports = {
+  name: 'google',
   required: ['GOOGLE_DOCS2MD_CLIENT_ID', 'GOOGLE_DOCS2MD_CLIENT_SECRET', 'GOOGLE_DOCS2MD_REFRESH_TOKEN'],
   pattern: (url) => /^https:\/\/docs\.google\.com\/spreadsheets\/d\/.*/.test(url),
   extract,

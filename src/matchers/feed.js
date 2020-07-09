@@ -14,6 +14,7 @@ const Parser = require('rss-parser');
 const parser = new Parser();
 
 module.exports = {
+  name: 'feed',
   required: [],
   pattern: (url) => {
     if (/\/feeds\/|[&?]feed=atom/.test(url)) {

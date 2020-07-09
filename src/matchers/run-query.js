@@ -51,6 +51,7 @@ async function extract(url, params, log = console) {
 }
 
 module.exports = {
+  name: 'run-query',
   required: [],
   pattern: (url) => /(^https:\/\/adobeioruntime\.net\/api\/v1\/web\/helix\/helix-services\/run-query@.*)/.test(url)
     || /^\/?_query\/run-query\/.*$/.test(new URL(url).pathname),
