@@ -1,3 +1,10 @@
+## [1.6.19](https://github.com/adobe/helix-data-embed/compare/v1.6.18...v1.6.19) (2020-07-10)
+
+
+### Bug Fixes
+
+* **google:** disable caching ([#123](https://github.com/adobe/helix-data-embed/issues/123)) ([c37eac7](https://github.com/adobe/helix-data-embed/commit/c37eac7a0a944f2a6b7b031c6956759634c0dcd8))
+
 ## [1.6.18](https://github.com/adobe/helix-data-embed/compare/v1.6.17...v1.6.18) (2020-07-02)
 
 
