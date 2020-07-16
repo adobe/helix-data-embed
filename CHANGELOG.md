@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/adobe/helix-data-embed/compare/v1.6.21...v1.7.0) (2020-07-16)
+
+
+### Features
+
+* **excel:** use excel from onedrive-support ([#129](https://github.com/adobe/helix-data-embed/issues/129)) ([6aa4add](https://github.com/adobe/helix-data-embed/commit/6aa4add60ec7b4a0f47bd4ab6374e230310f2225)), closes [#121](https://github.com/adobe/helix-data-embed/issues/121)
+
 ## [1.6.21](https://github.com/adobe/helix-data-embed/compare/v1.6.20...v1.6.21) (2020-07-16)
 
 
