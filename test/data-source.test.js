@@ -30,11 +30,18 @@ describe('Data Source Tests', () => {
     null);
   });
 
-  it('rejects src parameters not starting with https://', () => {
+  it('rejects src parameters not starting with scheme', () => {
     assert.equal(dataSource({
-      src: '/http://example.com',
+      src: '/example.com',
     }),
     null);
+  });
+
+  it('src parameters allows for different scheme', () => {
+    assert.equal(dataSource({
+      src: 'onedrive://drives/123123/items/234234',
+    }),
+    'onedrive://drives/123123/items/234234');
   });
 
   it('returns data source for `src` parameter', () => {
@@ -44,6 +51,16 @@ describe('Data Source Tests', () => {
       foo: 'bar',
     };
     assert.equal(dataSource(params), 'https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@2.4.11/error500?a=1&b=2');
+    assert.equal(params.__ow_query, 'hlx_limit=1&foo=bar');
+  });
+
+  it('returns data source for `src` parameter with different scheme', () => {
+    const params = {
+      src: 'onedrive://drives/1234/items/5677?a=1&b=2',
+      hlx_limit: '1',
+      foo: 'bar',
+    };
+    assert.equal(dataSource(params), 'onedrive://drives/1234/items/5677?a=1&b=2');
     assert.equal(params.__ow_query, 'hlx_limit=1&foo=bar');
   });
 

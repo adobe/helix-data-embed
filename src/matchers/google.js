@@ -10,7 +10,6 @@
  * governing permissions and limitations under the License.
  */
 /* eslint-disable camelcase */
-const URL = require('url');
 const { google } = require('googleapis');
 const A1 = require('@flighter/a1-notation');
 
@@ -20,7 +19,7 @@ const A1 = require('@flighter/a1-notation');
 let tokenCache = {};
 
 function getId(url) {
-  return URL.parse(url).pathname.match(/\/d\/(.*)\//)[1];
+  return url.pathname.match(/\/d\/(.*)\//)[1];
 }
 
 function createOAuthClient(options, creds) {
@@ -107,6 +106,6 @@ async function extract(url, params, log = console) {
 module.exports = {
   name: 'google',
   required: ['GOOGLE_DOCS2MD_CLIENT_ID', 'GOOGLE_DOCS2MD_CLIENT_SECRET', 'GOOGLE_DOCS2MD_REFRESH_TOKEN'],
-  pattern: (url) => /^https:\/\/docs\.google\.com\/spreadsheets\/d\/.*/.test(url),
+  accept: (url) => /^https:\/\/docs\.google\.com\/spreadsheets\/d\/.*/.test(url),
   extract,
 };

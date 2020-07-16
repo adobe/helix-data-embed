@@ -80,7 +80,7 @@ describe('Google Sheets Tests (mocked)', () => {
 
   it('Works for mocked Google Sheets', async () => {
     const result = await extract(
-      'https://docs.google.com/spreadsheets/d/1IX0g5P74QnHPR3GW1AMCdTk_-m954A-FKZRT2uOZY7k/edit?ouid=107837958797411838063&usp=sheets_home&ths=true',
+      new URL('https://docs.google.com/spreadsheets/d/1IX0g5P74QnHPR3GW1AMCdTk_-m954A-FKZRT2uOZY7k/edit?ouid=107837958797411838063&usp=sheets_home&ths=true'),
       {
         GOOGLE_DOCS2MD_CLIENT_ID: 'fake',
         GOOGLE_DOCS2MD_CLIENT_SECRET: 'fake',
@@ -95,7 +95,7 @@ describe('Google Sheets Tests (mocked)', () => {
 
   it('Fails (in a good way) for mocked Google Sheets', async () => {
     const result = await extract(
-      'https://docs.google.com/spreadsheets/d/1IX0g5P74QnHPR3GW1AMCdTk_-m954A-FKZRT2uOZY7k/edit?ouid=107837958797411838063&usp=sheets_home&ths=true',
+      new URL('https://docs.google.com/spreadsheets/d/1IX0g5P74QnHPR3GW1AMCdTk_-m954A-FKZRT2uOZY7k/edit?ouid=107837958797411838063&usp=sheets_home&ths=true'),
       {
         GOOGLE_DOCS2MD_CLIENT_ID: 'fail',
         GOOGLE_DOCS2MD_CLIENT_SECRET: 'fake',
@@ -108,16 +108,16 @@ describe('Google Sheets Tests (mocked)', () => {
 });
 
 describe('Google Sheets Tests (online)', () => {
-  const { extract, pattern } = require('../src/matchers/google');
+  const { extract, accept } = require('../src/matchers/google');
 
   it('Test patterns', () => {
-    assert.ok(pattern('https://docs.google.com/spreadsheets/d/1IX0g5P74QnHPR3GW1AMCdTk_-m954A-FKZRT2uOZY7k/edit?ouid=107837958797411838063&usp=sheets_home&ths=true'));
-    assert.ok(!pattern('https://docs.google.com/airballoons/d/1IX0g5P74QnHPR3GW1AMCdTk_-m954A-FKZRT2uOZY7k/edit?ouid=107837958797411838063&usp=sheets_home&ths=true'));
+    assert.ok(accept(new URL('https://docs.google.com/spreadsheets/d/1IX0g5P74QnHPR3GW1AMCdTk_-m954A-FKZRT2uOZY7k/edit?ouid=107837958797411838063&usp=sheets_home&ths=true')));
+    assert.ok(!accept(new URL('https://docs.google.com/airballoons/d/1IX0g5P74QnHPR3GW1AMCdTk_-m954A-FKZRT2uOZY7k/edit?ouid=107837958797411838063&usp=sheets_home&ths=true')));
   });
 
   it.skip('Works for real Google Sheets', async () => {
     const result = await extract(
-      'https://docs.google.com/spreadsheets/d/1IX0g5P74QnHPR3GW1AMCdTk_-m954A-FKZRT2uOZY7k/edit?ouid=107837958797411838063&usp=sheets_home&ths=true',
+      new URL('https://docs.google.com/spreadsheets/d/1IX0g5P74QnHPR3GW1AMCdTk_-m954A-FKZRT2uOZY7k/edit?ouid=107837958797411838063&usp=sheets_home&ths=true'),
       {
         GOOGLE_DOCS2MD_CLIENT_ID: process.env.GOOGLE_DOCS2MD_CLIENT_ID,
         GOOGLE_DOCS2MD_CLIENT_SECRET: process.env.GOOGLE_DOCS2MD_CLIENT_SECRET,

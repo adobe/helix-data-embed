@@ -16,14 +16,14 @@ const parser = new Parser();
 module.exports = {
   name: 'feed',
   required: [],
-  pattern: (url) => {
+  accept: (url) => {
     if (/\/feeds\/|[&?]feed=atom/.test(url)) {
       return true;
     }
     return false;
   },
   extract: async (url) => {
-    const feed = await parser.parseURL(url);
+    const feed = await parser.parseURL(url.toString());
     return {
       statusCode: 200,
       headers: {

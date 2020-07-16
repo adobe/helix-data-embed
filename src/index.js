@@ -33,7 +33,7 @@ async function main(params) {
   log.debug('QB query', qbquery);
   const filter = createfilter(qbquery);
   log.debug('QB filter', filter);
-  const result = await embed(url.toString(), params, log);
+  const result = await embed(url, params, log);
 
   const { body } = result;
   delete result.body;
