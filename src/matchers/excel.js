@@ -26,53 +26,22 @@ async function extract(url, params, log = console) {
       log,
     });
 
-    const client = await drive.getClient();
-
     const item = await drive.getDriveItemFromShareLink(url);
-    const worksheetsuri = `/drives/${item.parentReference.driveId}/items/${item.id}/workbook/worksheets/`;
-    const worksheets = await client.get(worksheetsuri);
-    const worksheetname = worksheets.value[0].name;
+    const workbook = drive.getWorkbook(item);
 
-    const tablesuri = `${worksheetsuri}${worksheetname}/tables/`;
-    const tables = await client.get(tablesuri);
+    const worksheetNames = await workbook.getWorksheetNames();
+    const worksheetName = worksheetNames[0];
+    const worksheet = workbook.worksheet(worksheetName);
+    const tableNames = await worksheet.getTableNames();
     const body = await (async () => {
-      if (!tables.value.length) {
-        log.info(`worksheet ${worksheetname} has no tables: ${tablesuri}, getting range instead`);
-
-        const rangeuri = `${worksheetsuri}${worksheetname}/usedRange`;
-        const range = await client.get(rangeuri);
-
-        const rows = range.values;
-        const columnames = rows.shift();
-
-        const rowvalues = rows.map((row) => columnames.reduce((obj, name, index) => {
-          // eslint-disable-next-line no-param-reassign
-          obj[name] = row[index];
-          return obj;
-        }, {}));
-
-        return rowvalues;
+      if (!tableNames.length) {
+        log.info(`worksheet ${worksheetName} has no tables, getting range instead`);
+        return worksheet.usedRange().getRowsAsObjects();
       }
-      const tablename = tables.value[0].name;
-
-      const columnsuri = `${tablesuri}${tablename}/columns/`;
-      const columns = await client.get(columnsuri);
-
-      const columnnames = columns.value.map(({ name }) => name);
-      const rowvalues = columns.value[0].values
-        .map((_, rownum) => columnnames.reduce((row, name, colnum) => {
-          const [value] = columns.value[colnum].values[rownum];
-          // eslint-disable-next-line no-param-reassign
-          row[name] = value;
-          return row;
-        }, {}));
-
-      // discard the first row
-      rowvalues.shift();
-
-      return rowvalues;
+      log.info(`fetching table data for worksheet ${worksheetName} with name ${tableNames[0]}`);
+      return worksheet.table(tableNames[0]).getRowsAsObjects();
     })();
-
+    log.info(`returning ${body.length} rows.`);
     return {
       statusCode: 200,
       headers: {
@@ -95,6 +64,7 @@ async function extract(url, params, log = console) {
 }
 
 module.exports = {
+  name: 'excel',
   required: ['AZURE_WORD2MD_CLIENT_ID', 'AZURE_HELIX_USER', 'AZURE_HELIX_PASSWORD'],
   pattern: (url) => /^https:\/\/.*\.sharepoint\.com\//.test(url),
   extract,
