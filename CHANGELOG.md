@@ -1,3 +1,11 @@
+# [1.8.0](https://github.com/adobe/helix-data-embed/compare/v1.7.1...v1.8.0) (2020-07-17)
+
+
+### Features
+
+* **excel:** avoid caching in runtime ([#131](https://github.com/adobe/helix-data-embed/issues/131)) ([4edb1c2](https://github.com/adobe/helix-data-embed/commit/4edb1c2b83d824ad79ccb8fd534d68e1d8ab1d80)), closes [#90](https://github.com/adobe/helix-data-embed/issues/90)
+* **excel:** support for drive id ([#132](https://github.com/adobe/helix-data-embed/issues/132)) ([2a7b2e0](https://github.com/adobe/helix-data-embed/commit/2a7b2e0fec302ad27447998614938f831ad76e8e)), closes [#122](https://github.com/adobe/helix-data-embed/issues/122)
+
 ## [1.7.1](https://github.com/adobe/helix-data-embed/compare/v1.7.0...v1.7.1) (2020-07-17)
 
 
