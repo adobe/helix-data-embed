@@ -24,11 +24,18 @@ function hasParams(list, params) {
   return empty.length === list.length;
 }
 
+/**
+ * Returns the data representation of the resource addressed by url.
+ * @param {URL} url The url of the resource
+ * @param {object} params The action params
+ * @param {Logger} log logger
+ * @returns {object} an action response with the body containing the data.
+ */
 function embed(url, params, log) {
   const candidates = matchers
     .filter((candidate) => hasParams(candidate.required, params));
 
-  const matching = candidates.find((candidate) => candidate.pattern(url));
+  const matching = candidates.find((candidate) => candidate.accept(url));
 
   if (!url || !matching) {
     log.warn(`No matcher found for URL ${url}`);

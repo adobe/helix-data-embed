@@ -25,7 +25,6 @@ async function extract(url, params, log = console) {
       password,
       log,
     });
-
     const item = await drive.getDriveItemFromShareLink(url);
     const workbook = drive.getWorkbook(item);
 
@@ -53,7 +52,7 @@ async function extract(url, params, log = console) {
   } catch (e) {
     log.error(e.message);
     return {
-      statusCode: 500,
+      statusCode: e.statusCode || 500,
       headers: {
         'Content-Type': 'application/json',
         'Cache-Control': 'max-age=600',
@@ -66,6 +65,6 @@ async function extract(url, params, log = console) {
 module.exports = {
   name: 'excel',
   required: ['AZURE_WORD2MD_CLIENT_ID', 'AZURE_HELIX_USER', 'AZURE_HELIX_PASSWORD'],
-  pattern: (url) => /^https:\/\/.*\.sharepoint\.com\//.test(url),
+  accept: (url) => url.protocol === 'onedrive:' || /^https:\/\/.*\.sharepoint\.com\//.test(url),
   extract,
 };

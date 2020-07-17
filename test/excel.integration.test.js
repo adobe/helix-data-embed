@@ -31,7 +31,7 @@ describe('Excel Integration Test', () => {
     });
     assert.equal(result.statusCode, 200);
     assert.equal(result.body.length, 3);
-  }).timeout(10000);
+  }).timeout(15000);
 
   condit('Retrieves Excel Spreadsheet with tables', condit.hasenv('AZURE_WORD2MD_CLIENT_ID', 'AZURE_HELIX_USER', 'AZURE_HELIX_PASSWORD'), async () => {
     const result = await main({
@@ -46,5 +46,20 @@ describe('Excel Integration Test', () => {
     });
     assert.equal(result.statusCode, 200);
     assert.equal(result.body.length, 20);
-  }).timeout(10000);
+  }).timeout(15000);
+
+  condit('Retrieves Excel Spreadsheet via drive uri', condit.hasenv('AZURE_WORD2MD_CLIENT_ID', 'AZURE_HELIX_USER', 'AZURE_HELIX_PASSWORD'), async () => {
+    const result = await main({
+      __ow_logger: console,
+      src: 'onedrive:/drives/b!2nFK7YhvL0yLgH3l_6DPvdBErfBlFFRPphB3wsFazXGX6gDR8muPTo89wY6LZLgv/items/01YELWHJW476LYB5AGBBEYZOIIP4TEEB53',
+      share: 'Edz_l4D0BghJjLkIfyZCB7sBLaBhySyT5An7fPHVS6CFuA',
+      email: 'helix@adobe.com',
+      e: 'e5ziwf',
+      AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
+      AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
+      AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
+    });
+    assert.equal(result.statusCode, 200);
+    assert.equal(result.body.length, 20);
+  }).timeout(15000);
 });

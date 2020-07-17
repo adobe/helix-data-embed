@@ -22,10 +22,11 @@ function dataSource(params) {
   const { __ow_path: path = '', src = '' } = params;
   let url = null;
   if (!path) {
-    if (!src.startsWith('https://')) {
+    try {
+      url = new URL(src);
+    } catch (e) {
       return null;
     }
-    url = new URL(params.src);
 
   // expect the _ow_path to start with /https:// or /https%3a%2f%2f
   } else if (path.startsWith('/https%3A%2F%2F')) {

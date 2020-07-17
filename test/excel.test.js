@@ -42,30 +42,70 @@ describe('Excel Tests', () => {
   it('Works for Excel Workbooks with no tables', async () => {
     const expected = await fs.readJson(path.resolve(__dirname, 'fixtures', 'example-data-sheet1.json'));
     const result = await extract(
-      'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data-no-tables.xlsx',
+      new URL('https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data-no-tables.xlsx'),
       {},
     );
     assert.equal(result.statusCode, 200);
     assert.deepEqual(result.body, expected);
-  }).timeout(15000);
+  });
+
+  it('Works for Excel Workbooks with onedrive uri', async () => {
+    const expected = await fs.readJson(path.resolve(__dirname, 'fixtures', 'example-data-sheet1.json'));
+    const result = await extract(
+      new URL('onedrive:/drives/my-drive/items/my-item'),
+      {},
+    );
+    assert.equal(result.statusCode, 200);
+    assert.deepEqual(result.body, expected);
+  });
 
   it('Works for Excel Workbooks with tables', async () => {
     const expected = await fs.readJson(path.resolve(__dirname, 'fixtures', 'example-data-sheet1.json'));
     const result = await extract(
-      'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data.xlsx',
+      new URL('https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data.xlsx'),
       {},
     );
     assert.equal(result.statusCode, 200);
     assert.deepEqual(result.body, expected);
-  }).timeout(15000);
+  });
 
-  it('Fails for invalid Excel workbook', async () => {
+  it('Fails with 404 for non existing Excel workbook', async () => {
     const result = await extract(
-      'invalid',
+      new URL('https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/not-exist.xlsx'),
+      {},
+    );
+
+    assert.equal(result.statusCode, 404);
+    assert.equal(result.body.length, 0);
+  });
+
+  it('Fails for non existing Excel workbook with onedrive uri', async () => {
+    const result = await extract(
+      new URL('onedrive:/drives/1234/items/5678'),
+      {},
+    );
+
+    assert.equal(result.statusCode, 404);
+    assert.equal(result.body.length, 0);
+  });
+
+  it('Fails for invalid onedrive items uri', async () => {
+    const result = await extract(
+      new URL('onedrive:/drives/1234/root'),
       {},
     );
 
     assert.equal(result.statusCode, 500);
     assert.equal(result.body.length, 0);
-  }).timeout(15000);
+  });
+
+  it('Fails for invalid onedrive uri', async () => {
+    const result = await extract(
+      new URL('onedrive:/1234'),
+      {},
+    );
+
+    assert.equal(result.statusCode, 500);
+    assert.equal(result.body.length, 0);
+  });
 });

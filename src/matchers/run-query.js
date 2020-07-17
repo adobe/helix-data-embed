@@ -16,11 +16,11 @@ const { utils } = require('@adobe/helix-shared');
 async function extract(url, params, log = console) {
   const host = 'https://adobeioruntime.net';
   const path = '/api/v1/web/helix/helix-services/run-query@v2/';
-  const query = url.split('/').pop();
+  const query = url.toString().split('/').pop();
   const resource = `${host}${path}${query}`;
   const DEFAULT_CACHE = 'max-age=600';
 
-  const results = await fetch(url.startsWith(host) ? url : resource);
+  const results = await fetch(url.hostname === 'adobeioruntime.net' ? url.toString() : resource);
   const statusCode = utils.propagateStatusCode(results.status);
   const logLevel = utils.logLevelForStatusCode(results.status);
   const cacheControl = results.headers.get('cache-control');
@@ -53,7 +53,7 @@ async function extract(url, params, log = console) {
 module.exports = {
   name: 'run-query',
   required: [],
-  pattern: (url) => /(^https:\/\/adobeioruntime\.net\/api\/v1\/web\/helix\/helix-services\/run-query@.*)/.test(url)
-    || /^\/?_query\/run-query\/.*$/.test(new URL(url).pathname),
+  accept: (url) => /(^https:\/\/adobeioruntime\.net\/api\/v1\/web\/helix\/helix-services\/run-query@.*)/.test(url)
+    || /^\/?_query\/run-query\/.*$/.test(url.pathname),
   extract,
 };
