@@ -20,7 +20,7 @@ describe('Feed Tests', () => {
       __ow_query: '',
     });
     assert.equal(result.statusCode, 200);
-    assert.ok(result.body.length > 1);
+    assert.ok(result.body.data.length > 1);
   }).timeout(10000);
 
   it('Works for RSS Feeds with Limits', async () => {
@@ -29,7 +29,7 @@ describe('Feed Tests', () => {
       __ow_query: 'hlx_p.limit=1',
     });
     assert.equal(result.statusCode, 200);
-    assert.equal(result.body.length, 1);
+    assert.equal(result.body.data.length, 1);
   }).timeout(10000);
 
   it('Rejects invalid RSS Feeds', async () => {
