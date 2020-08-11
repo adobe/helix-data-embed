@@ -1,3 +1,10 @@
+## [1.8.11](https://github.com/adobe/helix-data-embed/compare/v1.8.10...v1.8.11) (2020-08-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-status to v8.1.3 ([#151](https://github.com/adobe/helix-data-embed/issues/151)) ([8d1e644](https://github.com/adobe/helix-data-embed/commit/8d1e644074f868d1aab38e51fc4d340532f545ac))
+
 ## [1.8.10](https://github.com/adobe/helix-data-embed/compare/v1.8.9...v1.8.10) (2020-08-11)
 
 
