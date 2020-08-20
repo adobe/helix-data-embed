@@ -86,7 +86,7 @@ async function extract(url, params, log = console) {
       statusCode: 200,
       headers: {
         'Content-Type': 'application/json',
-        'cache-control': 'no-store, private, must-revalidate',
+        'cache-control': 'max-age=120',
       },
       body: rowvalues,
     };
@@ -96,7 +96,7 @@ async function extract(url, params, log = console) {
       statusCode: 500,
       headers: {
         'Content-Type': 'application/json',
-        'cache-control': 'no-store, private, must-revalidate',
+        'cache-control': 'max-age=60',
       },
       body: [],
     };
