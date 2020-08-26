@@ -46,18 +46,20 @@ describe('Post-Deploy Tests', () => {
   }).timeout(10000);
 
   it('Excel Embed (without tables)', async () => {
-    console.log('Trying', 'https://adobe-my.sharepoint.com/personal/trieloff_adobe_com/_layouts/15/guestaccess.aspx?share=Edoi88tLKLpDsKzSfL-pcJYB2lIo7UKooYWnjm3w2WRrsA&email=helix%40adobe.com&e=tD623x');
+    const url = 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data.xlsx?d=w6911fff4a52a4b3fb80560d8785adfa3&csf=1&web=1&e=fkkA2a';
+    console.log('Trying', url);
 
     await chai
       .request('https://adobeioruntime.net/')
-      .get(`${getbaseurl()}/https://adobe-my.sharepoint.com/personal/trieloff_adobe_com/_layouts/15/guestaccess.aspx?share=Edoi88tLKLpDsKzSfL-pcJYB2lIo7UKooYWnjm3w2WRrsA&email=helix%40adobe.com&e=tD623x`)
+      .get(`${getbaseurl()}/${url}`)
       .then((response) => {
-        // console.log(response.body);
+        // console.log(response);
         expect(response).to.have.status(200);
         expect(response).to.be.json;
         expect(response.body).to.be.an('array').that.deep.includes({
-          project: 'Helix',
-          created: 2018,
+          Country: 'Japan',
+          Code: 'JP',
+          Number: 3,
         });
       }).catch((e) => {
         throw e;
@@ -65,24 +67,20 @@ describe('Post-Deploy Tests', () => {
   }).timeout(10000);
 
   it('Excel Embed (with tables)', async () => {
-    console.log('Trying', 'https://adobe-my.sharepoint.com/personal/trieloff_adobe_com/_layouts/15/guestaccess.aspx?share=Edz_l4D0BghJjLkIfyZCB7sBLaBhySyT5An7fPHVS6CFuA&email=helix%40adobe.com&e=e5ziwf');
+    const url = 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data.xlsx?d=w6911fff4a52a4b3fb80560d8785adfa3&csf=1&web=1&e=fkkA2a';
+    console.log('Trying', url);
 
     await chai
       .request('https://adobeioruntime.net/')
-      .get(`${getbaseurl()}/https://adobe-my.sharepoint.com/personal/trieloff_adobe_com/_layouts/15/guestaccess.aspx?share=Edz_l4D0BghJjLkIfyZCB7sBLaBhySyT5An7fPHVS6CFuA&email=helix%40adobe.com&e=e5ziwf`)
+      .get(`${getbaseurl()}?src=${encodeURIComponent(url)}&sheet=tables&table=0`)
       .then((response) => {
+        console.log(response);
         expect(response).to.have.status(200);
         expect(response).to.be.json;
         expect(response.body).to.be.an('array').that.deep.includes({
-          Column1: 'Klapptüren',
-          Gesamtkosten: 28976,
-          Hersteller: 'Hyundai',
-          Kofferraum: 304,
-          Modell: 'Trajet',
-          Preis: 23000,
-          Preis2: 1.1,
-          Verbrauch: 7.2,
-          'Verbrauch pro Jahr': 5976,
+          A: 112,
+          B: 224,
+          C: 135,
         });
       }).catch((e) => {
         throw e;
@@ -90,15 +88,17 @@ describe('Post-Deploy Tests', () => {
   }).timeout(10000);
 
   it('Google Sheets Embed', async () => {
-    console.log('Trying', `https://adobeioruntime.net/${getbaseurl()}/https://docs.google.com/spreadsheets/d/1IX0g5P74QnHPR3GW1AMCdTk_-m954A-FKZRT2uOZY7k/edit?ouid=107837958797411838063&usp=sheets_home&ths=true`);
-
+    const url = 'https://docs.google.com/spreadsheets/d/1KP2-ty18PLmHMduBX-ZOlHUpNCk6uB1Q1i__l3scoTM/view';
+    console.log('Trying', url);
     await chai
       .request('https://adobeioruntime.net/')
-      .get(`${getbaseurl()}/https://docs.google.com/spreadsheets/d/1IX0g5P74QnHPR3GW1AMCdTk_-m954A-FKZRT2uOZY7k/edit?ouid=107837958797411838063&usp=sheets_home&ths=true`)
+      .get(`${getbaseurl()}/${url}`)
       .then((response) => {
         expect(response).to.be.json;
         expect(response.body).to.be.an('array').that.deep.includes({
-          Hersteller: 'Hyundai', Modell: 'Trajet', Preis: 23000, Verbrauch: 7.2, Kofferraum: 304, Preis2: 1.1, 'Verbrauch pro Jahr': 5976, Gesamtkosten: 28976,
+          Country: 'Japan',
+          Code: 'JP',
+          Number: 3,
         });
         expect(response).to.have.status(200);
       }).catch((e) => {
@@ -107,24 +107,16 @@ describe('Post-Deploy Tests', () => {
   }).timeout(10000);
 
   it('Google Sheets Embed with Query Builder', async () => {
-    console.log('Trying', `https://adobeioruntime.net/${getbaseurl()}/https://docs.google.com/spreadsheets/d/1IX0g5P74QnHPR3GW1AMCdTk_-m954A-FKZRT2uOZY7k/edit?ouid=107837958797411838063&usp=sheets_home&ths=true`);
+    const url = 'https://docs.google.com/spreadsheets/d/1KP2-ty18PLmHMduBX-ZOlHUpNCk6uB1Q1i__l3scoTM/edit?hlx_property=Code&hlx_property.value=DE';
+    console.log('Trying', url);
 
     await chai
       .request('https://adobeioruntime.net/')
-      .get(`${getbaseurl()}/https://docs.google.com/spreadsheets/d/1IX0g5P74QnHPR3GW1AMCdTk_-m954A-FKZRT2uOZY7k/edit?ouid=107837958797411838063&usp=sheets_home&ths=true&hlx_property=Hersteller&hlx_property.value=Ford`)
+      .get(`${getbaseurl()}/${url}`)
       .then((response) => {
+        console.log(response.body);
         expect(response).to.be.json;
-        expect(response.body).to.be.an('array').that.deep.includes({
-          Gesamtkosten: 32783,
-          Hersteller: 'Ford',
-          Kofferraum: 330,
-          Modell: 'Galaxy Ambiente',
-          Preis: 24400,
-          Preis2: 1.3,
-          Verbrauch: 10.1,
-          'Verbrauch pro Jahr': 8383,
-        });
-        expect(response.body).to.have.lengthOf(2);
+        expect(response.body).to.be.an('array').that.eql([{ Code: 'DE', Country: 'Germany', Number: 5 }]);
         expect(response).to.have.status(200);
       }).catch((e) => {
         throw e;
@@ -132,26 +124,17 @@ describe('Post-Deploy Tests', () => {
   }).timeout(10000);
 
   it('Google Sheets Embed with Query Builder (alternative syntax)', async () => {
-    const src = 'https://docs.google.com/spreadsheets/d/1IX0g5P74QnHPR3GW1AMCdTk_-m954A-FKZRT2uOZY7k/edit?ouid=107837958797411838063&usp=sheets_home&ths=true';
-    const url = `${getbaseurl()}?src=${encodeURIComponent(src)}&hlx_property=Hersteller&hlx_property.value=Ford`;
+    const src = 'https://docs.google.com/spreadsheets/d/1KP2-ty18PLmHMduBX-ZOlHUpNCk6uB1Q1i__l3scoTM/edit';
+    const url = `${getbaseurl()}?src=${encodeURIComponent(src)}&hlx_property=Code&hlx_property.value=DE`;
     console.log('Trying', url);
 
     await chai
       .request('https://adobeioruntime.net/')
       .get(url)
       .then((response) => {
+        console.log(response.body);
         expect(response).to.be.json;
-        expect(response.body).to.be.an('array').that.deep.includes({
-          Gesamtkosten: 32783,
-          Hersteller: 'Ford',
-          Kofferraum: 330,
-          Modell: 'Galaxy Ambiente',
-          Preis: 24400,
-          Preis2: 1.3,
-          Verbrauch: 10.1,
-          'Verbrauch pro Jahr': 8383,
-        });
-        expect(response.body).to.have.lengthOf(2);
+        expect(response.body).to.be.an('array').that.eql([{ Code: 'DE', Country: 'Germany', Number: 5 }]);
         expect(response).to.have.status(200);
       }).catch((e) => {
         throw e;

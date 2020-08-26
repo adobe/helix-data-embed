@@ -41,26 +41,47 @@ async function extract(url, params, log = console) {
     GOOGLE_DOCS2MD_CLIENT_ID: clientId,
     GOOGLE_DOCS2MD_CLIENT_SECRET: clientSecret,
     GOOGLE_DOCS2MD_REFRESH_TOKEN: refresh_token,
+    sheet,
   } = params;
 
   try {
     const spreadsheetId = getId(url);
-
     const auth = createOAuthClient({ clientId, clientSecret }, { refresh_token });
-
     const sheets = google.sheets({ version: 'v4', auth });
-
     const { data } = await sheets.spreadsheets.get({
       spreadsheetId,
     });
 
-    const sheet1 = data.sheets[0].properties;
+    let sheetTitle;
+    if (sheet) {
+      sheetTitle = `helix-${sheet}`;
+    } else {
+      const hasHelixSheets = !!data.sheets.find((s) => s.properties.title.startsWith('helix-'));
+      if (hasHelixSheets) {
+        sheetTitle = 'helix-default';
+      } else {
+        sheetTitle = data.sheets[0].properties.title;
+        log.info(`Workbook has no helix sheets. using first one: ${sheetTitle}`);
+      }
+    }
 
-    const range = `${sheet1.title}!${new A1({
+    const sheet1 = data.sheets.find((s) => s.properties.title === sheetTitle);
+    if (!sheet1) {
+      log.info(`no sheet found with name ${sheetTitle}`);
+      return {
+        statusCode: 404,
+        headers: {
+          'cache-control': 'no-store, private, must-revalidate',
+        },
+        body: '',
+      };
+    }
+
+    const range = `${sheet1.properties.title}!${new A1({
       colStart: 1,
       rowStart: 1,
-      nRows: sheet1.gridProperties.rowCount,
-      nCols: sheet1.gridProperties.columnCount,
+      nRows: sheet1.properties.gridProperties.rowCount,
+      nCols: sheet1.properties.gridProperties.columnCount,
     })}`;
 
     const values = await sheets.spreadsheets.values.get({

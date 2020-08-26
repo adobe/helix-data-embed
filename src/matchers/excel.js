@@ -16,6 +16,8 @@ async function extract(url, params, log = console) {
     AZURE_WORD2MD_CLIENT_ID: clientId,
     AZURE_HELIX_USER: username,
     AZURE_HELIX_PASSWORD: password,
+    sheet,
+    table,
   } = params;
 
   try {
@@ -28,17 +30,54 @@ async function extract(url, params, log = console) {
     const item = await drive.getDriveItemFromShareLink(url);
     const workbook = drive.getWorkbook(item);
 
-    const worksheetNames = await workbook.getWorksheetNames();
-    const worksheetName = worksheetNames[0];
-    const worksheet = workbook.worksheet(worksheetName);
-    const tableNames = await worksheet.getTableNames();
+    // if a sheet is specified, use it
+    let worksheetName;
+    if (sheet) {
+      worksheetName = `helix-${sheet}`;
+    } else {
+      // get the sheet names and check if any of them starts with `helix-`
+      const sheetNames = await workbook.getWorksheetNames();
+      const hasHelixSheets = !!sheetNames.find((n) => n.startsWith('helix-'));
+      if (hasHelixSheets) {
+        if (sheetNames.indexOf('helix-default') < 0) {
+          // no helix-default -> not found
+          log.info('Workbook has helix sheets but no helix-default');
+          return {
+            statusCode: 404,
+            headers: {
+              'cache-control': 'no-store, private, must-revalidate',
+            },
+            body: [],
+          };
+        }
+        worksheetName = 'helix-default';
+      } else {
+        [worksheetName] = sheetNames;
+        log.info(`Workbook has no helix sheets. using first one: ${worksheetName}`);
+      }
+    }
+
+    const worksheet = workbook.worksheet(encodeURIComponent(worksheetName));
     const body = await (async () => {
-      if (!tableNames.length) {
-        log.info(`worksheet ${worksheetName} has no tables, getting range instead`);
+      if (!table) {
+        log.info(`returning used-range for ${worksheetName}.`);
         return worksheet.usedRange().getRowsAsObjects();
       }
-      log.info(`fetching table data for worksheet ${worksheetName} with name ${tableNames[0]}`);
-      return worksheet.table(tableNames[0]).getRowsAsObjects();
+      // if table is a number, get the names
+      let tableName = table;
+      if (/^\d+$/.test(table)) {
+        const tableNum = Number.parseInt(table, 10);
+        const tableNames = await worksheet.getTableNames();
+        if (tableNum < 0 || tableNum >= tableNames.length) {
+          log.info(`table index out of range: 0 >= ${tableNum} < ${tableNames.length}`);
+          const error = new Error('index out of range');
+          error.statusCode = 404;
+          throw error;
+        }
+        tableName = tableNames[tableNum];
+      }
+      log.info(`fetching table data for worksheet ${worksheetName} with name ${tableName}`);
+      return worksheet.table(encodeURIComponent(tableName)).getRowsAsObjects();
     })();
     log.info(`returning ${body.length} rows.`);
     return {
