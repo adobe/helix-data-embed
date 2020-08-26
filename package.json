@@ -32,7 +32,7 @@
   "homepage": "https://github.com/adobe/helix-data-embed#readme",
   "dependencies": {
     "@adobe/helix-fetch": "1.9.1",
-    "@adobe/helix-epsagon": "1.4.0",
+    "@adobe/helix-epsagon": "1.5.0",
     "@adobe/helix-onedrive-support": "2.10.0",
     "@adobe/helix-shared": "7.10.1",
     "@adobe/helix-status": "8.1.3",
