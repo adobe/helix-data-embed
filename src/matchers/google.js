@@ -86,7 +86,7 @@ async function extract(url, params, log = console) {
       statusCode: 200,
       headers: {
         'Content-Type': 'application/json',
-        'cache-control': 'max-age=120',
+        'cache-control': 'max-age=30',
       },
       body: rowvalues,
     };
