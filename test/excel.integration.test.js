@@ -17,49 +17,118 @@ const { main } = require('../src/index');
 
 require('dotenv').config();
 
+const condition = condit.hasenv('AZURE_WORD2MD_CLIENT_ID', 'AZURE_HELIX_USER', 'AZURE_HELIX_PASSWORD');
+
+const DATA_COUNTRIES = [{ Country: 'Japan', Code: 'JP', Number: 3 },
+  { Country: 'Germany', Code: 'DE', Number: 5 },
+  { Country: 'USA', Code: 'US', Number: 7 },
+  { Country: 'Switzerland', Code: 'CH', Number: 27 },
+  { Country: 'France', Code: 'FR', Number: 99 },
+  { Country: 'Australia', Code: 'AUS', Number: 12 }];
+
 describe('Excel Integration Test', () => {
-  condit('Retrieves Excel Spreadsheet without tables', condit.hasenv('AZURE_WORD2MD_CLIENT_ID', 'AZURE_HELIX_USER', 'AZURE_HELIX_PASSWORD'), async () => {
+  condit('Excel Spreadsheet without helix-default sheet returns 404', condition, async () => {
     const result = await main({
       __ow_logger: console,
-      __ow_path: '/https://adobe-my.sharepoint.com/personal/trieloff_adobe_com/_layouts/15/guestaccess.aspx',
-      share: 'Edoi88tLKLpDsKzSfL-pcJYB2lIo7UKooYWnjm3w2WRrsA',
-      email: 'helix@adobe.com',
-      e: 'tD623x',
+      src: 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/data-embed-no-default.xlsx?d=wf80aa1d65efb4e41bd16ba3ca0a4564b&csf=1&web=1&e=9WnXzf',
       AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
       AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
       AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
     });
-    assert.equal(result.statusCode, 200);
-    assert.equal(result.body.length, 3);
+    assert.equal(result.statusCode, 404);
   }).timeout(15000);
 
-  condit('Retrieves Excel Spreadsheet with tables', condit.hasenv('AZURE_WORD2MD_CLIENT_ID', 'AZURE_HELIX_USER', 'AZURE_HELIX_PASSWORD'), async () => {
+  condit('Excel Spreadsheet without helix-default but sheet params', condition, async () => {
     const result = await main({
       __ow_logger: console,
-      __ow_path: '/https://adobe-my.sharepoint.com/personal/trieloff_adobe_com/_layouts/15/guestaccess.aspx',
-      share: 'Edz_l4D0BghJjLkIfyZCB7sBLaBhySyT5An7fPHVS6CFuA',
-      email: 'helix@adobe.com',
-      e: 'e5ziwf',
+      src: 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/data-embed-no-default.xlsx?d=wf80aa1d65efb4e41bd16ba3ca0a4564b&csf=1&web=1&e=9WnXzf',
+      sheet: 'countries',
       AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
       AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
       AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
     });
     assert.equal(result.statusCode, 200);
-    assert.equal(result.body.length, 20);
+    assert.deepEqual(result.body, DATA_COUNTRIES);
   }).timeout(15000);
 
-  condit('Retrieves Excel Spreadsheet via drive uri', condit.hasenv('AZURE_WORD2MD_CLIENT_ID', 'AZURE_HELIX_USER', 'AZURE_HELIX_PASSWORD'), async () => {
+  condit('Excel Spreadsheet without helix returns first sheet', condition, async () => {
     const result = await main({
       __ow_logger: console,
-      src: 'onedrive:/drives/b!2nFK7YhvL0yLgH3l_6DPvdBErfBlFFRPphB3wsFazXGX6gDR8muPTo89wY6LZLgv/items/01YELWHJW476LYB5AGBBEYZOIIP4TEEB53',
-      share: 'Edz_l4D0BghJjLkIfyZCB7sBLaBhySyT5An7fPHVS6CFuA',
-      email: 'helix@adobe.com',
-      e: 'e5ziwf',
+      src: 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/data-embed-no-helix.xlsx?d=w88ace0003b6847a48b6bb84b79a5b72b&csf=1&web=1&e=Sg8lKt',
       AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
       AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
       AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
     });
     assert.equal(result.statusCode, 200);
-    assert.equal(result.body.length, 20);
+    assert.deepEqual(result.body, [{ Country: 'Japan', Code: 'JP', Number: 81 }]);
+  }).timeout(15000);
+
+  condit('Excel Spreadsheet without helix-default but sheet params Unicode', condition, async () => {
+    const result = await main({
+      __ow_logger: console,
+      src: 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data.xlsx?d=w6911fff4a52a4b3fb80560d8785adfa3&csf=1&web=1&e=fkkA2a',
+      sheet: '日本',
+      AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
+      AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
+      AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
+    });
+    assert.equal(result.statusCode, 200);
+    assert.deepEqual(result.body, [{
+      Code: 'JP',
+      Country: 'Japan',
+      Number: 3,
+    }]);
+  }).timeout(15000);
+
+  condit('Retrieves Excel Spreadsheet with helix-default (range)', condition, async () => {
+    const result = await main({
+      __ow_logger: console,
+      src: 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data.xlsx?d=w6911fff4a52a4b3fb80560d8785adfa3&csf=1&web=1&e=fkkA2a',
+      AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
+      AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
+      AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
+    });
+    assert.equal(result.statusCode, 200);
+    assert.deepEqual(result.body, DATA_COUNTRIES);
+  }).timeout(15000);
+
+  condit('Retrieves Excel Spreadsheet with tables and table name', condition, async () => {
+    const result = await main({
+      __ow_logger: console,
+      src: 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data.xlsx?d=w6911fff4a52a4b3fb80560d8785adfa3&csf=1&web=1&e=fkkA2a',
+      sheet: 'tables',
+      table: 'Table1',
+      AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
+      AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
+      AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
+    });
+    assert.equal(result.statusCode, 200);
+    assert.deepEqual(result.body, [{ A: 112, B: 224, C: 135 }, { A: 2244, B: 234, C: 53 }]);
+  }).timeout(15000);
+
+  condit('Retrieves Excel Spreadsheet with tables and table index', condition, async () => {
+    const result = await main({
+      __ow_logger: console,
+      src: 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data.xlsx?d=w6911fff4a52a4b3fb80560d8785adfa3&csf=1&web=1&e=fkkA2a',
+      sheet: 'tables',
+      table: 1,
+      AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
+      AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
+      AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
+    });
+    assert.equal(result.statusCode, 200);
+    assert.deepEqual(result.body, [{ X: 111, Y: 222, Z: 333 }, { X: 444, Y: 555, Z: 666 }]);
+  }).timeout(15000);
+
+  condit('Retrieves Excel Spreadsheet via drive uri', condition, async () => {
+    const result = await main({
+      __ow_logger: console,
+      src: 'onedrive:/drives/b!DyVXacYnlkm_17hZL307Me9vzRzaKwZCpVMBYbPOKaVT_gD5WmlHRbC-PCpiwGPx/items/012VWERI7U74IWSKVFH5F3QBLA3B4FVX5D',
+      AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
+      AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
+      AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
+    });
+    assert.equal(result.statusCode, 200);
+    assert.deepEqual(result.body, DATA_COUNTRIES);
   }).timeout(15000);
 });

@@ -18,33 +18,15 @@ const data = [
   ['France', 'FR', 99],
 ];
 
-const data2 = [
-  ['Country', 'Code', 'Number'],
-  ['Japan', 'JP', 81],
-];
-
-const tables = [{
-  name: 'Table1',
-  headerNames: data[0],
-  rows: data.slice(1),
-}];
+const tables = [];
 
 const namedItems = [];
 
 module.exports = {
-  name: 'book-with-tables',
+  name: 'book-without-helix',
   tables,
   sheets: [{
     name: 'Sheet1',
-    tables: [],
-    namedItems,
-    usedRange: {
-      address: 'Sheet1!A1:B4',
-      addressLocal: 'A1:B4',
-      values: data2,
-    },
-  }, {
-    name: 'helix-default',
     tables,
     namedItems,
     usedRange: {

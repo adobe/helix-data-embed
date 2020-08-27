@@ -23,10 +23,10 @@ const tables = [];
 const namedItems = [];
 
 module.exports = {
-  name: 'book-with-tables',
+  name: 'book-without-tables',
   tables,
   sheets: [{
-    name: 'Sheet1',
+    name: 'helix-default',
     tables,
     namedItems,
     usedRange: {

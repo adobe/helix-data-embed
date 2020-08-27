@@ -65,6 +65,14 @@ Furthermore, it is possible to limit the result set using `hlx_p.limit` and page
 
 For more, see the [API documentation](docs/API.md).
 
+## Working with Excel and Google Sheets
+
+- The sheet inside an Excel workbook or Google spreadsheet can be addressed using the `sheet` parameter. 
+- Only sheets having the `helix-` prefix can be addressed.
+- If the workbook or spreadsheet does not have any `helix-` prefixed sheets, the first sheet is returned.
+- By default, the _used range_ of the selected sheet is returned.
+- For excel, A table can be addressed using the `table` request parameter, which can be a table name or an index. For example, `table=Table1` will return the table with the name `Table1`, `table=1` will return the second table in the sheet.
+
 ## Development
 
 ### Deploying Helix Data Embed

@@ -18,17 +18,25 @@ const path = require('path');
 const fs = require('fs-extra');
 const exampleBook = require('./fixtures/book-with-tables.js');
 const exampleBook2 = require('./fixtures/book-without-tables.js');
+const exampleBook3 = require('./fixtures/book-without-default.js');
+const exampleBook4 = require('./fixtures/book-without-helix.js');
 
 const TEST_SHARE_LINK = 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data.xlsx';
 const TEST_SHARE_LINK_NO_TABLES = 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data-no-tables.xlsx';
+const TEST_SHARE_LINK_NO_DEFAULT = 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data-no-default.xlsx';
+const TEST_SHARE_LINK_NO_HELIX = 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data-no-helix.xlsx';
 
 class DummyOneDrive extends OneDriveMock {
   constructor() {
     super();
     this.registerWorkbook('my-drive', 'my-item', exampleBook);
     this.registerWorkbook('my-drive', 'my-item-no-tables', exampleBook2);
+    this.registerWorkbook('my-drive', 'my-item-no-default', exampleBook3);
+    this.registerWorkbook('my-drive', 'my-item-no-helix', exampleBook4);
     this.registerShareLink(TEST_SHARE_LINK, 'my-drive', 'my-item');
     this.registerShareLink(TEST_SHARE_LINK_NO_TABLES, 'my-drive', 'my-item-no-tables');
+    this.registerShareLink(TEST_SHARE_LINK_NO_DEFAULT, 'my-drive', 'my-item-no-default');
+    this.registerShareLink(TEST_SHARE_LINK_NO_HELIX, 'my-drive', 'my-item-no-helix');
   }
 }
 
@@ -37,6 +45,46 @@ describe('Excel Tests', () => {
     '@adobe/helix-onedrive-support': {
       OneDrive: DummyOneDrive,
     },
+  });
+
+  it('Returns 404 for Excel Workbooks with no default sheet', async () => {
+    const result = await extract(
+      new URL('https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data-no-default.xlsx'),
+      {},
+    );
+    assert.equal(result.statusCode, 404);
+  });
+
+  it('Returns 404 for Excel Workbooks with wrong sheet name', async () => {
+    const result = await extract(
+      new URL('https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data-no-default.xlsx'),
+      {
+        sheet: 'foo',
+      },
+    );
+    assert.equal(result.statusCode, 404);
+  });
+
+  it('Works for Excel Workbooks with no default but sheet name', async () => {
+    const expected = await fs.readJson(path.resolve(__dirname, 'fixtures', 'example-data-sheet1.json'));
+    const result = await extract(
+      new URL('https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data-no-default.xlsx'),
+      {
+        sheet: 'countries',
+      },
+    );
+    assert.equal(result.statusCode, 200);
+    assert.deepEqual(result.body, expected);
+  });
+
+  it('Works for Excel Workbooks with no helix sheet', async () => {
+    const expected = await fs.readJson(path.resolve(__dirname, 'fixtures', 'example-data-sheet1.json'));
+    const result = await extract(
+      new URL('https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data-no-helix.xlsx'),
+      {},
+    );
+    assert.equal(result.statusCode, 200);
+    assert.deepEqual(result.body, expected);
   });
 
   it('Works for Excel Workbooks with no tables', async () => {
@@ -59,14 +107,48 @@ describe('Excel Tests', () => {
     assert.deepEqual(result.body, expected);
   });
 
-  it('Works for Excel Workbooks with tables', async () => {
+  it('Works for Excel Workbooks with tables (index)', async () => {
     const expected = await fs.readJson(path.resolve(__dirname, 'fixtures', 'example-data-sheet1.json'));
     const result = await extract(
       new URL('https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data.xlsx'),
-      {},
+      {
+        table: '0',
+      },
     );
     assert.equal(result.statusCode, 200);
     assert.deepEqual(result.body, expected);
+  });
+
+  it('Works for Excel Workbooks with tables (name)', async () => {
+    const expected = await fs.readJson(path.resolve(__dirname, 'fixtures', 'example-data-sheet1.json'));
+    const result = await extract(
+      new URL('https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data.xlsx'),
+      {
+        table: 'Table1',
+      },
+    );
+    assert.equal(result.statusCode, 200);
+    assert.deepEqual(result.body, expected);
+  });
+
+  it('Returns 404 for wrong table name', async () => {
+    const result = await extract(
+      new URL('https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data.xlsx'),
+      {
+        table: 'foo',
+      },
+    );
+    assert.equal(result.statusCode, 404);
+  });
+
+  it('Returns 404 for wrong table index', async () => {
+    const result = await extract(
+      new URL('https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data.xlsx'),
+      {
+        table: '99',
+      },
+    );
+    assert.equal(result.statusCode, 404);
   });
 
   it('Fails with 404 for non existing Excel workbook', async () => {
