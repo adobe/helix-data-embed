@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/adobe/helix-data-embed/compare/v1.8.16...v1.9.0) (2020-08-27)
+
+
+### Features
+
+* **data:** add sheet addressing ([#162](https://github.com/adobe/helix-data-embed/issues/162)) ([59ed953](https://github.com/adobe/helix-data-embed/commit/59ed953bd7cbb38bf2d8a11b3ce2aa3e7b67d256)), closes [#118](https://github.com/adobe/helix-data-embed/issues/118)
+
 ## [1.8.16](https://github.com/adobe/helix-data-embed/compare/v1.8.15...v1.8.16) (2020-08-27)
 
 
