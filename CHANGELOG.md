@@ -1,3 +1,10 @@
+## [1.9.8](https://github.com/adobe/helix-data-embed/compare/v1.9.7...v1.9.8) (2020-09-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-onedrive-support to v3 ([#180](https://github.com/adobe/helix-data-embed/issues/180)) ([e107a9b](https://github.com/adobe/helix-data-embed/commit/e107a9b2907713245b89d2a923de251762b9b65c))
+
 ## [1.9.7](https://github.com/adobe/helix-data-embed/compare/v1.9.6...v1.9.7) (2020-09-14)
 
 
