@@ -28,13 +28,17 @@ function dataSource(params) {
       return null;
     }
 
-  // expect the _ow_path to start with /https:// or /https%3a%2f%2f
-  } else if (path.startsWith('/https%3A%2F%2F')) {
-    url = new URL(decodeURIComponent(path.substring(1)));
-  } else if (!path.startsWith('/https://')) {
+  // expect the _ow_path to start with /https:/ or /https%3a%2f
+  // the escaping done by runtime is inconsistent, the : may be decoded
+  } else if (path.match(/^\/https(:|%3A)%2F/)) {
+    url = new URL(decodeURIComponent(path.substring(1)
+      .replace(/^https(:|%3A)%2F([^%])/, 'https://$2')));
+  } else if (!path.startsWith('/https:/')) {
     return null;
   } else {
-    url = new URL(path.substring(1));
+    url = new URL(path.substring(1)
+    // workaround: Adobe I/O Runtime messes up consecutive spaces in URLs
+      .replace(/^https:\/\/?([^/])/, 'https://$1'));
   }
 
   if (!params.__ow_query) {
