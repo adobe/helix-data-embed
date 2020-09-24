@@ -1,3 +1,10 @@
+## [1.9.9](https://github.com/adobe/helix-data-embed/compare/v1.9.8...v1.9.9) (2020-09-24)
+
+
+### Bug Fixes
+
+* **deps:** update [@adobe](https://github.com/adobe) fixes ([#182](https://github.com/adobe/helix-data-embed/issues/182)) ([46633d8](https://github.com/adobe/helix-data-embed/commit/46633d8fcbdaa794f6f0ac82276b42b25d77c2b7))
+
 ## [1.9.8](https://github.com/adobe/helix-data-embed/compare/v1.9.7...v1.9.8) (2020-09-21)
 
 
