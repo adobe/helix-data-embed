@@ -184,7 +184,7 @@ describe('Running Post-Deployment Integration Tests on Preprod', () => {
       }).catch((e) => {
         throw e;
       });
-  }).timeout(10000);
+  }).timeout(60000);
 
   it('Excel Embed (without tables)', async () => {
     const url = 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data.xlsx?d=w6911fff4a52a4b3fb80560d8785adfa3&csf=1&web=1&e=fkkA2a';
@@ -205,7 +205,7 @@ describe('Running Post-Deployment Integration Tests on Preprod', () => {
       }).catch((e) => {
         throw e;
       });
-  }).timeout(10000);
+  }).timeout(60000);
 
   it('Excel Embed (with tables)', async () => {
     const url = 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data.xlsx?d=w6911fff4a52a4b3fb80560d8785adfa3&csf=1&web=1&e=fkkA2a';
