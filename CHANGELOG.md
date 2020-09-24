@@ -1,3 +1,10 @@
+## [1.9.10](https://github.com/adobe/helix-data-embed/compare/v1.9.9...v1.9.10) (2020-09-24)
+
+
+### Bug Fixes
+
+* **data-source:** add workaround for runtime/ethos weirdness ([7b3cd7a](https://github.com/adobe/helix-data-embed/commit/7b3cd7a59a89ef69cdea22bcf111ce3ec92294c9))
+
 ## [1.9.9](https://github.com/adobe/helix-data-embed/compare/v1.9.8...v1.9.9) (2020-09-24)
 
 
