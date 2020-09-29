@@ -37,7 +37,7 @@ describe('Integration Tests', () => {
 
   it('tests index with relative run_query url', async () => {
     const EXPECTED_HEADERS = {
-      'Cache-Control': 'max-age=600',
+      'Cache-Control': 'max-age=60',
       'Content-Type': 'application/json',
     };
     const { body, headers, statusCode } = await main({
