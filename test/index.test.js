@@ -48,7 +48,7 @@ describe('Integration Tests', () => {
     assert.ok(Array.isArray(body));
     assert.deepEqual(headers, EXPECTED_HEADERS);
     assert.equal(statusCode, 200);
-  }).timeout(6000);
+  }).timeout(60000);
 
   it('Rejects missing parameters', async () => {
     const result = await main();
