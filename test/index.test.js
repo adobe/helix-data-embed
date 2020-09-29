@@ -31,13 +31,13 @@ describe('Integration Tests', () => {
     });
 
     assert.ok(Array.isArray(body));
-    assert.deepEqual(EXPECTED_HEADERS, headers);
+    assert.deepEqual(headers, EXPECTED_HEADERS);
     assert.equal(statusCode, 200);
   }).timeout(6000);
 
   it('tests index with relative run_query url', async () => {
     const EXPECTED_HEADERS = {
-      'Cache-Control': 'max-age=60',
+      'Cache-Control': 'max-age=600',
       'Content-Type': 'application/json',
     };
     const { body, headers, statusCode } = await main({
@@ -46,7 +46,7 @@ describe('Integration Tests', () => {
     });
 
     assert.ok(Array.isArray(body));
-    assert.deepEqual(EXPECTED_HEADERS, headers);
+    assert.deepEqual(headers, EXPECTED_HEADERS);
     assert.equal(statusCode, 200);
   }).timeout(6000);
 
