@@ -39,7 +39,7 @@
     "@adobe/openwhisk-action-logger": "2.2.0",
     "@adobe/openwhisk-action-utils": "4.3.0",
     "@flighter/a1-notation": "1.0.6",
-    "googleapis": "59.0.0",
+    "googleapis": "60.0.1",
     "rss-parser": "3.9.0"
   },
   "devDependencies": {
