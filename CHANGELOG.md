@@ -1,3 +1,17 @@
+# [2.0.0](https://github.com/adobe/helix-data-embed/compare/v1.9.13...v2.0.0) (2020-09-30)
+
+
+### Features
+
+* **data:** use modern data format and truncate result if too large ([#136](https://github.com/adobe/helix-data-embed/issues/136)) ([9d1e924](https://github.com/adobe/helix-data-embed/commit/9d1e924acc3aa6488b464a3cdc4a3bf68e3843bc)), closes [#119](https://github.com/adobe/helix-data-embed/issues/119)
+
+
+### BREAKING CHANGES
+
+* **data:** the response body is no longer a JSON array but an
+                 object that contains a limit, offset, total and
+                 data property.
+
 ## [1.9.13](https://github.com/adobe/helix-data-embed/compare/v1.9.12...v1.9.13) (2020-09-30)
 
 
