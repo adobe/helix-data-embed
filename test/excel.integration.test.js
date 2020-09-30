@@ -48,7 +48,12 @@ describe('Excel Integration Test', () => {
       AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
     });
     assert.equal(result.statusCode, 200);
-    assert.deepEqual(result.body, DATA_COUNTRIES);
+    assert.deepEqual(result.body, {
+      data: DATA_COUNTRIES,
+      limit: 6,
+      offset: 0,
+      total: 6,
+    });
   }).timeout(15000);
 
   condit('Excel Spreadsheet without helix returns first sheet', condition, async () => {
@@ -60,7 +65,12 @@ describe('Excel Integration Test', () => {
       AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
     });
     assert.equal(result.statusCode, 200);
-    assert.deepEqual(result.body, [{ Country: 'Japan', Code: 'JP', Number: 81 }]);
+    assert.deepEqual(result.body, {
+      data: [{ Country: 'Japan', Code: 'JP', Number: 81 }],
+      limit: 1,
+      offset: 0,
+      total: 1,
+    });
   }).timeout(15000);
 
   condit('Excel Spreadsheet without helix-default but sheet params Unicode', condition, async () => {
@@ -73,11 +83,12 @@ describe('Excel Integration Test', () => {
       AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
     });
     assert.equal(result.statusCode, 200);
-    assert.deepEqual(result.body, [{
-      Code: 'JP',
-      Country: 'Japan',
-      Number: 3,
-    }]);
+    assert.deepEqual(result.body, {
+      data: [{ Country: 'Japan', Code: 'JP', Number: 3 }],
+      limit: 1,
+      offset: 0,
+      total: 1,
+    });
   }).timeout(15000);
 
   condit('Retrieves Excel Spreadsheet with helix-default (range)', condition, async () => {
@@ -89,7 +100,12 @@ describe('Excel Integration Test', () => {
       AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
     });
     assert.equal(result.statusCode, 200);
-    assert.deepEqual(result.body, DATA_COUNTRIES);
+    assert.deepEqual(result.body, {
+      data: DATA_COUNTRIES,
+      limit: 6,
+      offset: 0,
+      total: 6,
+    });
   }).timeout(15000);
 
   condit('Retrieves Excel Spreadsheet with tables and table name', condition, async () => {
@@ -103,7 +119,12 @@ describe('Excel Integration Test', () => {
       AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
     });
     assert.equal(result.statusCode, 200);
-    assert.deepEqual(result.body, [{ A: 112, B: 224, C: 135 }, { A: 2244, B: 234, C: 53 }]);
+    assert.deepEqual(result.body, {
+      data: [{ A: 112, B: 224, C: 135 }, { A: 2244, B: 234, C: 53 }],
+      limit: 2,
+      offset: 0,
+      total: 2,
+    });
   }).timeout(15000);
 
   condit('Retrieves Excel Spreadsheet with tables and table index', condition, async () => {
@@ -115,9 +136,15 @@ describe('Excel Integration Test', () => {
       AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
       AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
       AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
+      'hlx_p.limit': 4,
     });
     assert.equal(result.statusCode, 200);
-    assert.deepEqual(result.body, [{ X: 111, Y: 222, Z: 333 }, { X: 444, Y: 555, Z: 666 }]);
+    assert.deepEqual(result.body, {
+      data: [{ X: 111, Y: 222, Z: 333 }, { X: 444, Y: 555, Z: 666 }],
+      limit: 2,
+      offset: 0,
+      total: 2,
+    });
   }).timeout(15000);
 
   condit('Retrieves Excel Spreadsheet via drive uri', condition, async () => {
@@ -127,8 +154,15 @@ describe('Excel Integration Test', () => {
       AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
       AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
       AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
+      'hlx_p.limit': 2,
+      'hlx_p.offset': 3,
     });
     assert.equal(result.statusCode, 200);
-    assert.deepEqual(result.body, DATA_COUNTRIES);
+    assert.deepEqual(result.body, {
+      data: [{ Code: 'CH', Country: 'Switzerland', Number: 27 }, { Code: 'FR', Country: 'France', Number: 99 }],
+      limit: 2,
+      offset: 3,
+      total: 6,
+    });
   }).timeout(15000);
 });

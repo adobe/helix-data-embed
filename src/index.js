@@ -18,6 +18,8 @@ const { loadquerystring } = require('./querybuilder/url');
 const { createfilter } = require('./querybuilder/filter');
 const dataSource = require('./data-source.js');
 
+const MAX_DATA_SIZE = 750000;
+
 async function main(params) {
   /* istanbul ignore next */
   const { __ow_logger: log = console } = params;
@@ -40,10 +42,24 @@ async function main(params) {
   log.debug('result', result);
   log.debug(`result body size: ${JSON.stringify(body).length}`);
   const filtered = filter(body);
-  log.info(`filtered result ${filtered.length} rows. size: ${JSON.stringify(filtered).length}`);
+  let size = JSON.stringify(filtered).length;
+  log.info(`filtered result ${filtered.length} rows. size: ${size}`);
+  if (size > MAX_DATA_SIZE) {
+    // todo: could be optimized to be more accurate using some binary search approach
+    const avgRowSize = size / filtered.length;
+    const retain = Math.floor(MAX_DATA_SIZE / avgRowSize);
+    filtered.splice(retain, filtered.length - retain);
+    size = JSON.stringify(filtered).length;
+    log.info(`result truncated to ${filtered.length} rows. size: ${size}`);
+  }
   return {
     ...result,
-    body: filtered,
+    body: {
+      total: body.length,
+      offset: filter.offset || 0,
+      limit: filtered.length,
+      data: filtered,
+    },
   };
 }
 

@@ -51,7 +51,10 @@ function createfilter(qbtree) {
   const limit = Number.isInteger(qbtree.limit) ? offset + qbtree.limit : undefined;
 
   // return a function that can filter the data
-  return (data) => data.filter(filterfn).slice(offset, limit);
+  const filter = (data) => data.filter(filterfn).slice(offset, limit);
+  filter.offset = offset;
+  filter.limit = limit;
+  return filter;
 }
 
 function createtest(qbtree) {

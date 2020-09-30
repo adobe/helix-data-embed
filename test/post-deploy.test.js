@@ -38,7 +38,6 @@ describe('Post-Deploy Tests', () => {
       .get(`${getbaseurl()}/https://daringfireball.net/feeds/main`)
       .then((response) => {
         expect(response).to.be.json;
-        expect(response.body).to.be.an('array');
         expect(response).to.have.status(200);
       }).catch((e) => {
         throw e;
@@ -56,7 +55,7 @@ describe('Post-Deploy Tests', () => {
         // console.log(response);
         expect(response).to.have.status(200);
         expect(response).to.be.json;
-        expect(response.body).to.be.an('array').that.deep.includes({
+        expect(response.body.data).to.be.an('array').that.deep.includes({
           Country: 'Japan',
           Code: 'JP',
           Number: 3,
@@ -74,10 +73,10 @@ describe('Post-Deploy Tests', () => {
       .request('https://adobeioruntime.net/')
       .get(`${getbaseurl()}?src=${encodeURIComponent(url)}&sheet=tables&table=0`)
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         expect(response).to.have.status(200);
         expect(response).to.be.json;
-        expect(response.body).to.be.an('array').that.deep.includes({
+        expect(response.body.data).to.be.an('array').that.deep.includes({
           A: 112,
           B: 224,
           C: 135,
@@ -95,7 +94,7 @@ describe('Post-Deploy Tests', () => {
       .get(`${getbaseurl()}/${url}`)
       .then((response) => {
         expect(response).to.be.json;
-        expect(response.body).to.be.an('array').that.deep.includes({
+        expect(response.body.data).to.be.an('array').that.deep.includes({
           Country: 'Japan',
           Code: 'JP',
           Number: 3,
@@ -114,9 +113,10 @@ describe('Post-Deploy Tests', () => {
       .request('https://adobeioruntime.net/')
       .get(`${getbaseurl()}/${url}`)
       .then((response) => {
-        console.log(response.body);
+        // console.log(response.body);
         expect(response).to.be.json;
-        expect(response.body).to.be.an('array').that.eql([{ Code: 'DE', Country: 'Germany', Number: 5 }]);
+        expect(response.body.data).to.be.an('array').that.eql([{ Code: 'DE', Country: 'Germany', Number: 5 }]);
+        expect(response.body.data).to.have.lengthOf(1);
         expect(response).to.have.status(200);
       }).catch((e) => {
         throw e;
@@ -132,9 +132,10 @@ describe('Post-Deploy Tests', () => {
       .request('https://adobeioruntime.net/')
       .get(url)
       .then((response) => {
-        console.log(response.body);
+        // console.log(response.body);
         expect(response).to.be.json;
-        expect(response.body).to.be.an('array').that.eql([{ Code: 'DE', Country: 'Germany', Number: 5 }]);
+        expect(response.body.data).to.be.an('array').that.eql([{ Code: 'DE', Country: 'Germany', Number: 5 }]);
+        expect(response.body.data).to.have.lengthOf(1);
         expect(response).to.have.status(200);
       }).catch((e) => {
         throw e;
@@ -149,7 +150,7 @@ describe('Post-Deploy Tests', () => {
       .get(`${getbaseurl()}/https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@v2/error500?fromMins=1000&toMins=0`)
       .then((response) => {
         expect(response).to.be.json;
-        expect(response.body).to.be.an('array');
+        expect(response.body.data).to.be.an('array');
         expect(response).to.have.status(200);
       }).catch((e) => {
         throw e;
@@ -164,7 +165,7 @@ describe('Post-Deploy Tests', () => {
       .get(`${getbaseurl()}/https://example.com/_query/run-query/error500?fromMins=1000&toMins=0`)
       .then((response) => {
         expect(response).to.be.json;
-        expect(response.body).to.be.an('array');
+        expect(response.body.data).to.be.an('array');
         expect(response).to.have.status(200);
       }).catch((e) => {
         throw e;
@@ -179,7 +180,7 @@ describe('Running Post-Deployment Integration Tests on Preprod', () => {
       .get(`${getbaseurl()}/https://daringfireball.net/feeds/main`)
       .then((response) => {
         expect(response).to.be.json;
-        expect(response.body).to.be.an('array');
+        expect(response.body.data).to.be.an('array');
         expect(response).to.have.status(200);
       }).catch((e) => {
         throw e;
@@ -197,7 +198,7 @@ describe('Running Post-Deployment Integration Tests on Preprod', () => {
         // console.log(response);
         expect(response).to.have.status(200);
         expect(response).to.be.json;
-        expect(response.body).to.be.an('array').that.deep.includes({
+        expect(response.body.data).to.be.an('array').that.deep.includes({
           Country: 'Japan',
           Code: 'JP',
           Number: 3,
@@ -215,10 +216,10 @@ describe('Running Post-Deployment Integration Tests on Preprod', () => {
       .request('https://preprod.adobeioruntime.net/')
       .get(`${getbaseurl()}?src=${encodeURIComponent(url)}&sheet=tables&table=0`)
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         expect(response).to.have.status(200);
         expect(response).to.be.json;
-        expect(response.body).to.be.an('array').that.deep.includes({
+        expect(response.body.data).to.be.an('array').that.deep.includes({
           A: 112,
           B: 224,
           C: 135,
@@ -236,7 +237,7 @@ describe('Running Post-Deployment Integration Tests on Preprod', () => {
       .get(`${getbaseurl()}/${url}`)
       .then((response) => {
         expect(response).to.be.json;
-        expect(response.body).to.be.an('array').that.deep.includes({
+        expect(response.body.data).to.be.an('array').that.deep.includes({
           Country: 'Japan',
           Code: 'JP',
           Number: 3,
@@ -255,9 +256,9 @@ describe('Running Post-Deployment Integration Tests on Preprod', () => {
       .request('https://preprod.adobeioruntime.net/')
       .get(`${getbaseurl()}/${url}`)
       .then((response) => {
-        console.log(response.body);
+        // console.log(response.body);
         expect(response).to.be.json;
-        expect(response.body).to.be.an('array').that.eql([{ Code: 'DE', Country: 'Germany', Number: 5 }]);
+        expect(response.body.data).to.be.an('array').that.eql([{ Code: 'DE', Country: 'Germany', Number: 5 }]);
         expect(response).to.have.status(200);
       }).catch((e) => {
         throw e;
@@ -273,9 +274,9 @@ describe('Running Post-Deployment Integration Tests on Preprod', () => {
       .request('https://preprod.adobeioruntime.net/')
       .get(url)
       .then((response) => {
-        console.log(response.body);
+        // console.log(response.body);
         expect(response).to.be.json;
-        expect(response.body).to.be.an('array').that.eql([{ Code: 'DE', Country: 'Germany', Number: 5 }]);
+        expect(response.body.data).to.be.an('array').that.eql([{ Code: 'DE', Country: 'Germany', Number: 5 }]);
         expect(response).to.have.status(200);
       }).catch((e) => {
         throw e;
@@ -290,7 +291,7 @@ describe('Running Post-Deployment Integration Tests on Preprod', () => {
       .get(`${getbaseurl()}/https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@v2/error500?fromMins=1000&toMins=0`)
       .then((response) => {
         expect(response).to.be.json;
-        expect(response.body).to.be.an('array');
+        expect(response.body.data).to.be.an('array');
         expect(response).to.have.status(200);
       }).catch((e) => {
         throw e;
@@ -305,7 +306,7 @@ describe('Running Post-Deployment Integration Tests on Preprod', () => {
       .get(`${getbaseurl()}/https://example.com/_query/run-query/error500?fromMins=1000&toMins=0`)
       .then((response) => {
         expect(response).to.be.json;
-        expect(response.body).to.be.an('array');
+        expect(response.body.data).to.be.an('array');
         expect(response).to.have.status(200);
       }).catch((e) => {
         throw e;

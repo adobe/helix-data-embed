@@ -11,7 +11,17 @@
  */
 /* eslint-env mocha */
 const assert = require('assert');
+const proxyquire = require('proxyquire');
 const { main } = require('../src/index');
+
+const TEST_DATA = [];
+for (let i = 0; i < 10000; i += 1) {
+  const col = [];
+  TEST_DATA.push(col);
+  for (let j = 0; j < 10; j += 1) {
+    col.push(`cell(${i},${j})`);
+  }
+}
 
 describe('Integration Tests', () => {
   it('Rejects missing URLs', async () => {
@@ -30,10 +40,11 @@ describe('Integration Tests', () => {
       __ow_path: '/https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@2.4.11/error500',
     });
 
-    assert.ok(Array.isArray(body));
+    assert.ok(Array.isArray(body.data));
     assert.deepEqual(headers, EXPECTED_HEADERS);
     assert.equal(statusCode, 200);
-  }).timeout(6000);
+  })
+    .timeout(6000);
 
   it('tests index with relative run_query url', async () => {
     const EXPECTED_HEADERS = {
@@ -45,7 +56,7 @@ describe('Integration Tests', () => {
       __ow_query: 'fromMins=1000&toMins=0',
     });
 
-    assert.ok(Array.isArray(body));
+    assert.ok(Array.isArray(body.data));
     assert.deepEqual(headers, EXPECTED_HEADERS);
     assert.equal(statusCode, 200);
   }).timeout(60000);
@@ -60,5 +71,87 @@ describe('Integration Tests', () => {
       __ow_path: '/https://example.com',
     });
     assert.equal(result.statusCode, 404);
+  });
+});
+
+describe('Index result Tests', () => {
+  it('handles limit correctly', async () => {
+    const { main: customMain } = proxyquire('../src/index.js', {
+      './embed.js': () => ({
+        body: TEST_DATA,
+      }),
+    });
+    const result = await customMain({
+      src: 'https://foo.com',
+      'hlx_p.limit': 10,
+    });
+    assert.deepEqual(result, {
+      body: {
+        data: TEST_DATA.slice(0, 10),
+        limit: 10,
+        offset: 0,
+        total: 10000,
+      },
+    });
+  });
+
+  it('handles offset correctly', async () => {
+    const { main: customMain } = proxyquire('../src/index.js', {
+      './embed.js': () => ({
+        body: TEST_DATA,
+      }),
+    });
+    const result = await customMain({
+      src: 'https://foo.com',
+      'hlx_p.offset': 9000,
+    });
+    assert.deepEqual(result, {
+      body: {
+        data: TEST_DATA.slice(9000),
+        limit: 1000,
+        offset: 9000,
+        total: 10000,
+      },
+    });
+  });
+
+  it('handles limit and offset correctly', async () => {
+    const { main: customMain } = proxyquire('../src/index.js', {
+      './embed.js': () => ({
+        body: TEST_DATA,
+      }),
+    });
+    const result = await customMain({
+      src: 'https://foo.com',
+      'hlx_p.limit': 50,
+      'hlx_p.offset': 100,
+    });
+    assert.deepEqual(result, {
+      body: {
+        data: TEST_DATA.slice(100, 150),
+        limit: 50,
+        offset: 100,
+        total: 10000,
+      },
+    });
+  });
+
+  it('truncates result if too large for action response', async () => {
+    const { main: customMain } = proxyquire('../src/index.js', {
+      './embed.js': () => ({
+        body: TEST_DATA,
+      }),
+    });
+    const result = await customMain({
+      src: 'https://foo.com',
+    });
+    assert.deepEqual(result, {
+      body: {
+        data: TEST_DATA.slice(0, 4970),
+        limit: 4970,
+        offset: 0,
+        total: 10000,
+      },
+    });
   });
 });
