@@ -1,3 +1,11 @@
+## [2.0.11](https://github.com/adobe/helix-data-embed/compare/v2.0.10...v2.0.11) (2020-11-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-onedrive-support to v3.1.2 ([#208](https://github.com/adobe/helix-data-embed/issues/208)) ([bc4bb9e](https://github.com/adobe/helix-data-embed/commit/bc4bb9ea4b6e27fe724fd519ea3e5197ef0579b8))
+* **deps:** update dependency googleapis to v65 ([#209](https://github.com/adobe/helix-data-embed/issues/209)) ([3760ee8](https://github.com/adobe/helix-data-embed/commit/3760ee8268530c28a777e962b7867a41a4673dbf))
+
 ## [2.0.10](https://github.com/adobe/helix-data-embed/compare/v2.0.9...v2.0.10) (2020-11-13)
 
 
