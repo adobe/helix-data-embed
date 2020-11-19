@@ -1,3 +1,10 @@
+## [2.0.13](https://github.com/adobe/helix-data-embed/compare/v2.0.12...v2.0.13) (2020-11-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-status to v8.2.2 ([#213](https://github.com/adobe/helix-data-embed/issues/213)) ([ef6e42f](https://github.com/adobe/helix-data-embed/commit/ef6e42fb10feb3455e683e5dd2ae1b1276f0a348))
+
 ## [2.0.12](https://github.com/adobe/helix-data-embed/compare/v2.0.11...v2.0.12) (2020-11-19)
 
 
