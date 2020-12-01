@@ -1,3 +1,10 @@
+## [2.0.17](https://github.com/adobe/helix-data-embed/compare/v2.0.16...v2.0.17) (2020-12-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-shared to v7.16.3 ([#219](https://github.com/adobe/helix-data-embed/issues/219)) ([0729f12](https://github.com/adobe/helix-data-embed/commit/0729f12fb0268115f1a8131007f00b4015ee8df9))
+
 ## [2.0.16](https://github.com/adobe/helix-data-embed/compare/v2.0.15...v2.0.16) (2020-11-30)
 
 
