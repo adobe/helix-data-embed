@@ -10,7 +10,11 @@
  * governing permissions and limitations under the License.
  */
 /* eslint-disable camelcase */
-const { fetch } = require('@adobe/helix-fetch');
+const { fetch } = require('@adobe/helix-fetch').context({
+  // force HTTP/1 in order to avoid issues with long-lived HTTP/2 sessions
+  // on azure/kubernetes based I/O Runtime
+  httpsProtocols: ['http1'],
+});
 const { utils } = require('@adobe/helix-shared');
 
 async function extract(url, params, log = console) {
