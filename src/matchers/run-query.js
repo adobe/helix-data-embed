@@ -10,7 +10,15 @@
  * governing permissions and limitations under the License.
  */
 /* eslint-disable camelcase */
-const { fetch } = require('@adobe/helix-fetch');
+
+// force HTTP/1 in order to avoid issues with long-lived HTTP/2 sessions
+// on azure/kubernetes based I/O Runtime
+process.env.HELIX_FETCH_FORCE_HTTP1 = true;
+const { fetch } = require('@adobe/helix-fetch').context({
+  httpsProtocols:
+    /* istanbul ignore next */
+    process.env.HELIX_FETCH_FORCE_HTTP1 ? ['http1'] : ['http2', 'http1'],
+});
 const { utils } = require('@adobe/helix-shared');
 
 async function extract(url, params, log = console) {
