@@ -1,3 +1,11 @@
+# [2.1.0](https://github.com/adobe/helix-data-embed/compare/v2.0.19...v2.1.0) (2020-12-06)
+
+
+### Features
+
+* address feedback ([1204f0b](https://github.com/adobe/helix-data-embed/commit/1204f0ba7a37421e50d8b04565b59bf67f04a3ea))
+* force http1 when invoking other runtime actions ([cf89209](https://github.com/adobe/helix-data-embed/commit/cf89209dab4e7c03daaef04dc5560dc877801555))
+
 ## [2.0.19](https://github.com/adobe/helix-data-embed/compare/v2.0.18...v2.0.19) (2020-12-05)
 
 
