@@ -1,3 +1,10 @@
+## [2.1.6](https://github.com/adobe/helix-data-embed/compare/v2.1.5...v2.1.6) (2020-12-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency rss-parser to v3.10.0 ([#231](https://github.com/adobe/helix-data-embed/issues/231)) ([a5640b4](https://github.com/adobe/helix-data-embed/commit/a5640b4e4adbc2cd321b0c2cda712fc232a55534))
+
 ## [2.1.5](https://github.com/adobe/helix-data-embed/compare/v2.1.4...v2.1.5) (2020-12-10)
 
 
