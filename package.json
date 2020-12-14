@@ -40,7 +40,7 @@
     "@adobe/openwhisk-action-utils": "4.4.0",
     "@flighter/a1-notation": "1.0.6",
     "googleapis": "66.0.0",
-    "rss-parser": "3.9.0"
+    "rss-parser": "3.10.0"
   },
   "devDependencies": {
     "@adobe/eslint-config-helix": "1.1.3",
