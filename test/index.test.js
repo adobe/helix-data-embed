@@ -62,7 +62,7 @@ describe('Integration Tests', () => {
   }).timeout(60000);
 
   it('Rejects missing parameters', async () => {
-    const result = await main();
+    const result = await main({});
     assert.equal(result.statusCode, 400);
   });
 
