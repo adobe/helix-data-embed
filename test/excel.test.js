@@ -37,14 +37,33 @@ class DummyOneDrive extends OneDriveMock {
     this.registerShareLink(TEST_SHARE_LINK_NO_TABLES, 'my-drive', 'my-item-no-tables');
     this.registerShareLink(TEST_SHARE_LINK_NO_DEFAULT, 'my-drive', 'my-item-no-default');
     this.registerShareLink(TEST_SHARE_LINK_NO_HELIX, 'my-drive', 'my-item-no-helix');
+    this.registerDriveItem('my-drive', 'my-item', { lastModifiedDateTime: new Date().toISOString() });
+    this.registerDriveItem('my-drive', 'my-item-no-tables', { lastModifiedDateTime: new Date().toISOString() });
+    this.registerDriveItem('my-drive', 'my-item-no-default', { lastModifiedDateTime: new Date().toISOString() });
+    this.registerDriveItem('my-drive', 'my-item-no-helix', {});
+  }
+
+  registerDriveItem(driveId, itemId, data) {
+    super.registerDriveItem(driveId, itemId, {
+      id: itemId,
+      parentReference: {
+        driveId,
+      },
+      ...data,
+    });
   }
 }
 
 describe('Excel Tests', () => {
-  const { extract } = proxyquire('../src/matchers/excel.js', {
+  const { extract, accept } = proxyquire('../src/matchers/excel.js', {
     '@adobe/helix-onedrive-support': {
       OneDrive: DummyOneDrive,
     },
+  });
+
+  it('Test patterns', () => {
+    assert.ok(accept(new URL('https://example.sharepoint.com/')));
+    assert.ok(accept(new URL('onedrive:/drives/my-drive/items/my-item')));
   });
 
   it('Returns 404 for Excel Workbooks with no default sheet', async () => {
