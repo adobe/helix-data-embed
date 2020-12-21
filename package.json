@@ -33,10 +33,10 @@
   "dependencies": {
     "@adobe/helix-fetch": "1.9.2",
     "@adobe/helix-epsagon": "1.5.5",
-    "@adobe/helix-onedrive-support": "3.1.5",
+    "@adobe/helix-onedrive-support": "3.1.6",
     "@adobe/helix-shared": "7.18.0",
     "@adobe/helix-status": "9.0.0",
-    "@adobe/openwhisk-action-logger": "2.3.0",
+    "@adobe/openwhisk-action-logger": "2.3.1",
     "@adobe/openwhisk-action-utils": "4.4.0",
     "@flighter/a1-notation": "1.0.6",
     "googleapis": "66.0.0",
