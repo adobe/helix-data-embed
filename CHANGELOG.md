@@ -1,3 +1,15 @@
+# [2.2.0](https://github.com/adobe/helix-data-embed/compare/v2.1.6...v2.2.0) (2020-12-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-status to v9 ([#236](https://github.com/adobe/helix-data-embed/issues/236)) ([4b0634d](https://github.com/adobe/helix-data-embed/commit/4b0634d27e8842adbc1a04d11133ee1b9b49ef9a))
+
+
+### Features
+
+* return last-modified of a resource if available ([f980af2](https://github.com/adobe/helix-data-embed/commit/f980af251739a7f55919cbb5b654eda5951ed9fb))
+
 ## [2.1.6](https://github.com/adobe/helix-data-embed/compare/v2.1.5...v2.1.6) (2020-12-14)
 
 
