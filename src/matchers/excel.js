@@ -27,7 +27,11 @@ async function extract(url, params, log = console) {
       password,
       log,
     });
-    const item = await drive.getDriveItemFromShareLink(url);
+    let item = await drive.getDriveItemFromShareLink(url);
+    if (!item.lastModifiedDateTime) {
+      item = await drive.getDriveItem(item);
+    }
+    const { lastModifiedDateTime } = item;
     const workbook = drive.getWorkbook(item);
 
     // if a sheet is specified, use it
@@ -80,12 +84,16 @@ async function extract(url, params, log = console) {
       return worksheet.table(encodeURIComponent(tableName)).getRowsAsObjects();
     })();
     log.info(`returning ${body.length} rows.`);
+    const headers = {
+      'Content-Type': 'application/json',
+      'cache-control': 'no-store, private, must-revalidate',
+    };
+    if (lastModifiedDateTime) {
+      headers['Last-Modified'] = new Date(lastModifiedDateTime).toUTCString();
+    }
     return {
       statusCode: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'cache-control': 'no-store, private, must-revalidate',
-      },
+      headers,
       body,
     };
   } catch (e) {
