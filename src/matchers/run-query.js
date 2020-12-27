@@ -21,7 +21,7 @@ const { fetch } = require('@adobe/helix-fetch').context({
 });
 const { utils } = require('@adobe/helix-shared');
 
-async function extract(url, params, log = console) {
+async function extract(url, params, env, log = console) {
   const host = 'https://adobeioruntime.net';
   const path = '/api/v1/web/helix/helix-services/run-query@v2/';
   const query = url.toString().split('/').pop();

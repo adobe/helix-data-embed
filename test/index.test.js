@@ -11,6 +11,7 @@
  */
 /* eslint-env mocha */
 const assert = require('assert');
+const querystring = require('querystring');
 const proxyquire = require('proxyquire');
 const { main } = require('../src/index');
 
@@ -26,51 +27,60 @@ for (let i = 0; i < 10000; i += 1) {
 describe('Integration Tests', () => {
   it('Rejects missing URLs', async () => {
     const result = await main({
-      __ow_logger: console,
-    });
-    assert.equal(result.statusCode, 400);
+      url: 'https://www.example.com/data-embed-action',
+    }, {});
+    assert.equal(result.status, 400);
   });
 
   it('tests index with absolute run_query url', async () => {
     const EXPECTED_HEADERS = {
-      'Cache-Control': 'max-age=600',
-      'Content-Type': 'application/json',
+      'Cache-Control': ['max-age=600'],
+      'Content-Type': ['application/json'],
     };
-    const { body, headers, statusCode } = await main({
-      __ow_path: '/https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@2.4.11/error500',
+    const { body, headers, status } = await main({
+      url: 'https://www.example.com/data-embed-action',
+    }, {
+      env: {},
+      pathInfo: {
+        suffix: '/https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@2.4.11/error500',
+      },
     });
 
-    assert.ok(Array.isArray(body.data));
-    assert.deepEqual(headers, EXPECTED_HEADERS);
-    assert.equal(statusCode, 200);
+    assert.ok(Array.isArray(JSON.parse(body).data));
+    assert.deepEqual(headers.raw(), EXPECTED_HEADERS);
+    assert.equal(status, 200);
   })
-    .timeout(6000);
+    .timeout(60000);
 
   it('tests index with relative run_query url', async () => {
     const EXPECTED_HEADERS = {
-      'Cache-Control': 'max-age=600',
-      'Content-Type': 'application/json',
+      'Cache-Control': ['max-age=600'],
+      'Content-Type': ['application/json'],
     };
-    const { body, headers, statusCode } = await main({
-      __ow_path: '/https://example.com/_query/run-query/error500',
-      __ow_query: 'fromMins=1000&toMins=0',
+    const { body, headers, status } = await main({
+      url: 'https://www.example.com/data-embed-action?fromMins=1000&toMins=0',
+    }, {
+      env: {},
+      pathInfo: {
+        suffix: '/https://example.com/_query/run-query/error500',
+      },
     });
 
-    assert.ok(Array.isArray(body.data));
-    assert.deepEqual(headers, EXPECTED_HEADERS);
-    assert.equal(statusCode, 200);
+    assert.ok(Array.isArray(JSON.parse(body).data));
+    assert.deepEqual(headers.raw(), EXPECTED_HEADERS);
+    assert.equal(status, 200);
   }).timeout(60000);
-
-  it('Rejects missing parameters', async () => {
-    const result = await main({});
-    assert.equal(result.statusCode, 400);
-  });
 
   it('Rejects unknown URLs', async () => {
     const result = await main({
-      __ow_path: '/https://example.com',
+      url: 'https://www.example.com/data-embed-action?',
+    }, {
+      env: {},
+      pathInfo: {
+        suffix: '/https://example.com',
+      },
     });
-    assert.equal(result.statusCode, 404);
+    assert.equal(result.status, 404);
   });
 });
 
@@ -82,16 +92,16 @@ describe('Index result Tests', () => {
       }),
     });
     const result = await customMain({
-      src: 'https://foo.com',
-      'hlx_p.limit': 10,
-    });
-    assert.deepEqual(result, {
-      body: {
-        data: TEST_DATA.slice(0, 10),
-        limit: 10,
-        offset: 0,
-        total: 10000,
-      },
+      url: `https://www.example.com/data-embed-action?${querystring.stringify({
+        src: 'https://foo.com',
+        'hlx_p.limit': 10,
+      })}`,
+    }, {});
+    assert.deepEqual(JSON.parse(result.body), {
+      data: TEST_DATA.slice(0, 10),
+      limit: 10,
+      offset: 0,
+      total: 10000,
     });
   });
 
@@ -102,16 +112,16 @@ describe('Index result Tests', () => {
       }),
     });
     const result = await customMain({
-      src: 'https://foo.com',
-      'hlx_p.offset': 9000,
-    });
-    assert.deepEqual(result, {
-      body: {
-        data: TEST_DATA.slice(9000),
-        limit: 1000,
-        offset: 9000,
-        total: 10000,
-      },
+      url: `https://www.example.com/data-embed-action?${querystring.stringify({
+        src: 'https://foo.com',
+        'hlx_p.offset': 9000,
+      })}`,
+    }, {});
+    assert.deepEqual(JSON.parse(result.body), {
+      data: TEST_DATA.slice(9000),
+      limit: 1000,
+      offset: 9000,
+      total: 10000,
     });
   });
 
@@ -122,17 +132,17 @@ describe('Index result Tests', () => {
       }),
     });
     const result = await customMain({
-      src: 'https://foo.com',
-      'hlx_p.limit': 50,
-      'hlx_p.offset': 100,
-    });
-    assert.deepEqual(result, {
-      body: {
-        data: TEST_DATA.slice(100, 150),
-        limit: 50,
-        offset: 100,
-        total: 10000,
-      },
+      url: `https://www.example.com/data-embed-action?${querystring.stringify({
+        src: 'https://foo.com',
+        'hlx_p.limit': 50,
+        'hlx_p.offset': 100,
+      })}`,
+    }, {});
+    assert.deepEqual(JSON.parse(result.body), {
+      data: TEST_DATA.slice(100, 150),
+      limit: 50,
+      offset: 100,
+      total: 10000,
     });
   });
 
@@ -143,15 +153,15 @@ describe('Index result Tests', () => {
       }),
     });
     const result = await customMain({
-      src: 'https://foo.com',
-    });
-    assert.deepEqual(result, {
-      body: {
-        data: TEST_DATA.slice(0, 4970),
-        limit: 4970,
-        offset: 0,
-        total: 10000,
-      },
+      url: `https://www.example.com/data-embed-action?${querystring.stringify({
+        src: 'https://foo.com',
+      })}`,
+    }, {});
+    assert.deepEqual(JSON.parse(result.body), {
+      data: TEST_DATA.slice(0, 4970),
+      limit: 4970,
+      offset: 0,
+      total: 10000,
     });
   });
 });

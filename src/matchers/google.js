@@ -36,13 +36,15 @@ function createOAuthClient(options, creds) {
   return oAuth2Client;
 }
 
-async function extract(url, params, log = console) {
+async function extract(url, params, env, log = console) {
+  const {
+    sheet,
+  } = params;
   const {
     GOOGLE_DOCS2MD_CLIENT_ID: clientId,
     GOOGLE_DOCS2MD_CLIENT_SECRET: clientSecret,
     GOOGLE_DOCS2MD_REFRESH_TOKEN: refresh_token,
-    sheet,
-  } = params;
+  } = env;
 
   try {
     const spreadsheetId = getId(url);

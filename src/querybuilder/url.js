@@ -177,8 +177,11 @@ function nest(obj) {
   return transformconjunctions(root);
 }
 
-function cast(obj) {
-  return Object.entries(obj).reduce((o, [k, v]) => {
+function cast(searchParams) {
+  const entries = searchParams instanceof URLSearchParams
+    ? Array.from(searchParams.entries())
+    : Object.entries(searchParams);
+  return entries.reduce((o, [k, v]) => {
     if (v === 'true' || v === 'false') {
       o[k] = (v === 'true');
     } else if (!Number.isNaN(Number.parseFloat(v))) {
@@ -190,8 +193,10 @@ function cast(obj) {
   }, {});
 }
 
-function loadquerystring(str, prefix = '') {
-  const obj = cast(parse(str));
+function loadquerystring(searchParams, prefix = '') {
+  const obj = searchParams instanceof URLSearchParams
+    ? cast(searchParams)
+    : cast(parse(searchParams));
 
   return nest(Object.entries(obj).reduce((o, [k, v]) => {
     if (k.startsWith(prefix)) {

@@ -12,12 +12,30 @@
 /* eslint-env mocha */
 
 const assert = require('assert');
+const querystring = require('querystring');
 const { condit } = require('@adobe/helix-testutils');
-const { main } = require('../src/index');
+const { main: universalMain } = require('../src/index');
 
 require('dotenv').config();
 
 const condition = condit.hasenv('AZURE_WORD2MD_CLIENT_ID', 'AZURE_HELIX_USER', 'AZURE_HELIX_PASSWORD');
+
+async function main(params = {}, env = {}) {
+  const resp = await universalMain({
+    url: `https://data-emmbed.com/fetch?${querystring.encode(params)}`,
+  }, {
+    env,
+  });
+  return {
+    statusCode: resp.status,
+    body: JSON.parse(resp.body.toString()),
+    headers: [...resp.headers.keys()].reduce((result, key) => {
+      // eslint-disable-next-line no-param-reassign
+      result[key] = resp.headers.get(key);
+      return result;
+    }, {}),
+  };
+}
 
 const DATA_COUNTRIES = [{ Country: 'Japan', Code: 'JP', Number: 3 },
   { Country: 'Germany', Code: 'DE', Number: 5 },
@@ -29,8 +47,8 @@ const DATA_COUNTRIES = [{ Country: 'Japan', Code: 'JP', Number: 3 },
 describe('Excel Integration Test', () => {
   condit('Excel Spreadsheet without helix-default sheet returns 404', condition, async () => {
     const result = await main({
-      __ow_logger: console,
       src: 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/data-embed-no-default.xlsx?d=wf80aa1d65efb4e41bd16ba3ca0a4564b&csf=1&web=1&e=9WnXzf',
+    }, {
       AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
       AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
       AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
@@ -40,9 +58,9 @@ describe('Excel Integration Test', () => {
 
   condit('Excel Spreadsheet without helix-default but sheet params', condition, async () => {
     const result = await main({
-      __ow_logger: console,
       src: 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/data-embed-no-default.xlsx?d=wf80aa1d65efb4e41bd16ba3ca0a4564b&csf=1&web=1&e=9WnXzf',
       sheet: 'countries',
+    }, {
       AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
       AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
       AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
@@ -58,8 +76,8 @@ describe('Excel Integration Test', () => {
 
   condit('Excel Spreadsheet without helix returns first sheet', condition, async () => {
     const result = await main({
-      __ow_logger: console,
       src: 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/data-embed-no-helix.xlsx?d=w88ace0003b6847a48b6bb84b79a5b72b&csf=1&web=1&e=Sg8lKt',
+    }, {
       AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
       AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
       AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
@@ -75,9 +93,9 @@ describe('Excel Integration Test', () => {
 
   condit('Excel Spreadsheet without helix-default but sheet params Unicode', condition, async () => {
     const result = await main({
-      __ow_logger: console,
       src: 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data.xlsx?d=w6911fff4a52a4b3fb80560d8785adfa3&csf=1&web=1&e=fkkA2a',
       sheet: '日本',
+    }, {
       AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
       AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
       AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
@@ -93,8 +111,8 @@ describe('Excel Integration Test', () => {
 
   condit('Retrieves Excel Spreadsheet with helix-default (range)', condition, async () => {
     const result = await main({
-      __ow_logger: console,
       src: 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data.xlsx?d=w6911fff4a52a4b3fb80560d8785adfa3&csf=1&web=1&e=fkkA2a',
+    }, {
       AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
       AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
       AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
@@ -110,10 +128,10 @@ describe('Excel Integration Test', () => {
 
   condit('Retrieves Excel Spreadsheet with tables and table name', condition, async () => {
     const result = await main({
-      __ow_logger: console,
       src: 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data.xlsx?d=w6911fff4a52a4b3fb80560d8785adfa3&csf=1&web=1&e=fkkA2a',
       sheet: 'tables',
       table: 'Table1',
+    }, {
       AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
       AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
       AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
@@ -129,10 +147,10 @@ describe('Excel Integration Test', () => {
 
   condit('Retrieves Excel Spreadsheet with tables and table index', condition, async () => {
     const result = await main({
-      __ow_logger: console,
       src: 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data.xlsx?d=w6911fff4a52a4b3fb80560d8785adfa3&csf=1&web=1&e=fkkA2a',
       sheet: 'tables',
       table: 1,
+    }, {
       AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
       AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
       AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
@@ -149,13 +167,13 @@ describe('Excel Integration Test', () => {
 
   condit('Retrieves Excel Spreadsheet via drive uri', condition, async () => {
     const result = await main({
-      __ow_logger: console,
       src: 'onedrive:/drives/b!DyVXacYnlkm_17hZL307Me9vzRzaKwZCpVMBYbPOKaVT_gD5WmlHRbC-PCpiwGPx/items/012VWERI7U74IWSKVFH5F3QBLA3B4FVX5D',
+      'hlx_p.limit': 2,
+      'hlx_p.offset': 3,
+    }, {
       AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
       AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
       AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
-      'hlx_p.limit': 2,
-      'hlx_p.offset': 3,
     });
     assert.equal(result.statusCode, 200);
     assert.deepEqual(result.body, {
