@@ -19,21 +19,24 @@ const qb = require('../src/querybuilder/qb');
 
 describe('Test Query Builder URL Parser', () => {
   it('Works for empty strings', () => {
-    assert.deepEqual(loadquerystring(''), {
+    const sp = new URLSearchParams();
+    assert.deepEqual(loadquerystring(sp), {
       _type: 'and',
       predicates: [],
     });
   });
 
   it('Works with non-matching prefixes', () => {
-    assert.deepEqual(loadquerystring('foo=bar', '_hlx'), {
+    const sp = new URLSearchParams('foo=bar');
+    assert.deepEqual(loadquerystring(sp, '_hlx'), {
       _type: 'and',
       predicates: [],
     });
   });
 
   it('Works with matching prefixes', () => {
-    assert.deepEqual(loadquerystring('foo=bar&hlx_p.limit=10&hlx_fulltext=Management', 'hlx_'), {
+    const sp = new URLSearchParams('foo=bar&hlx_p.limit=10&hlx_fulltext=Management');
+    assert.deepEqual(loadquerystring(sp, 'hlx_'), {
       _type: 'and',
       limit: 10,
       predicates: [{

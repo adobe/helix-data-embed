@@ -70,6 +70,7 @@ describe('Excel Tests', () => {
     const result = await extract(
       new URL('https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data-no-default.xlsx'),
       {},
+      {},
     );
     assert.equal(result.statusCode, 404);
   });
@@ -80,6 +81,7 @@ describe('Excel Tests', () => {
       {
         sheet: 'foo',
       },
+      {},
     );
     assert.equal(result.statusCode, 404);
   });
@@ -91,6 +93,7 @@ describe('Excel Tests', () => {
       {
         sheet: 'countries',
       },
+      {},
     );
     assert.equal(result.statusCode, 200);
     assert.deepEqual(result.body, expected);
@@ -100,6 +103,7 @@ describe('Excel Tests', () => {
     const expected = await fs.readJson(path.resolve(__dirname, 'fixtures', 'example-data-sheet1.json'));
     const result = await extract(
       new URL('https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data-no-helix.xlsx'),
+      {},
       {},
     );
     assert.equal(result.statusCode, 200);
@@ -111,6 +115,7 @@ describe('Excel Tests', () => {
     const result = await extract(
       new URL('https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data-no-tables.xlsx'),
       {},
+      {},
     );
     assert.equal(result.statusCode, 200);
     assert.deepEqual(result.body, expected);
@@ -120,6 +125,7 @@ describe('Excel Tests', () => {
     const expected = await fs.readJson(path.resolve(__dirname, 'fixtures', 'example-data-sheet1.json'));
     const result = await extract(
       new URL('onedrive:/drives/my-drive/items/my-item'),
+      {},
       {},
     );
     assert.equal(result.statusCode, 200);
@@ -133,6 +139,7 @@ describe('Excel Tests', () => {
       {
         table: '0',
       },
+      {},
     );
     assert.equal(result.statusCode, 200);
     assert.deepEqual(result.body, expected);
@@ -145,6 +152,7 @@ describe('Excel Tests', () => {
       {
         table: 'Table1',
       },
+      {},
     );
     assert.equal(result.statusCode, 200);
     assert.deepEqual(result.body, expected);
@@ -156,6 +164,7 @@ describe('Excel Tests', () => {
       {
         table: 'foo',
       },
+      {},
     );
     assert.equal(result.statusCode, 404);
   });
@@ -166,6 +175,7 @@ describe('Excel Tests', () => {
       {
         table: '99',
       },
+      {},
     );
     assert.equal(result.statusCode, 404);
   });
@@ -173,6 +183,7 @@ describe('Excel Tests', () => {
   it('Fails with 404 for non existing Excel workbook', async () => {
     const result = await extract(
       new URL('https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/not-exist.xlsx'),
+      {},
       {},
     );
 
@@ -184,6 +195,7 @@ describe('Excel Tests', () => {
     const result = await extract(
       new URL('onedrive:/drives/1234/items/5678'),
       {},
+      {},
     );
 
     assert.equal(result.statusCode, 404);
@@ -194,6 +206,7 @@ describe('Excel Tests', () => {
     const result = await extract(
       new URL('onedrive:/drives/1234/root'),
       {},
+      {},
     );
 
     assert.equal(result.statusCode, 500);
@@ -203,6 +216,7 @@ describe('Excel Tests', () => {
   it('Fails for invalid onedrive uri', async () => {
     const result = await extract(
       new URL('onedrive:/1234'),
+      {},
       {},
     );
 

@@ -16,28 +16,41 @@ const { main } = require('../src/index');
 describe('Feed Tests', () => {
   it('Works for RSS Feeds', async () => {
     const result = await main({
-      __ow_path: '/https://daringfireball.net/feeds/articles',
-      __ow_query: '',
+      url: 'https://www.example.com/data-embed-action',
+    }, {
+      env: {},
+      pathInfo: {
+        suffix: '/https://daringfireball.net/feeds/articles',
+      },
     });
-    assert.equal(result.statusCode, 200);
-    assert.ok(result.body.data.length > 1);
+    assert.equal(result.status, 200);
+    const body = JSON.parse(result.body);
+    assert.ok(body.data.length > 1);
   }).timeout(10000);
 
   it('Works for RSS Feeds with Limits', async () => {
     const result = await main({
-      __ow_path: '/https://daringfireball.net/feeds/main',
-      __ow_query: 'hlx_p.limit=1',
+      url: 'https://www.example.com/data-embed-action?hlx_p.limit=1',
+    }, {
+      env: {},
+      pathInfo: {
+        suffix: '/https://daringfireball.net/feeds/main',
+      },
     });
-    assert.equal(result.statusCode, 200);
-    assert.equal(result.body.data.length, 1);
+    assert.equal(result.status, 200);
+    const body = JSON.parse(result.body);
+    assert.equal(body.data.length, 1);
   }).timeout(10000);
 
   it('Rejects invalid RSS Feeds', async () => {
     const result = await main({
-      __ow_path: '/https://example.com',
-      feed: 'atom',
-      foo: 'bar',
+      url: 'https://www.example.com/data-embed-action?feed=atom&foo=bar',
+    }, {
+      env: {},
+      pathInfo: {
+        suffix: '/https://example.com',
+      },
     });
-    assert.equal(result.statusCode, 500);
+    assert.equal(result.status, 500);
   }).timeout(5000);
 });

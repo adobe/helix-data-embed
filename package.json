@@ -1,6 +1,6 @@
 {
   "name": "@adobe/helix-data-embed",
-  "version": "2.2.1",
+  "version": "2.2.1-hedy",
   "private": true,
   "description": "Helix Data Embed",
   "main": "src/index.js",
@@ -11,14 +11,15 @@
     "lint": "./node_modules/.bin/eslint .",
     "semantic-release": "semantic-release",
     "commit": "git-cz",
-    "build": "wsk-builder -v",
-    "deploy": "wsk-builder -v --deploy --test=/_status_check/healthcheck.json",
-    "deploy-sequences": "wsk-builder --no-build -no-hints -l latest -l major -l minor",
-    "deploy-ci": "wsk-builder -v --deploy --test=/_status_check/healthcheck.json --pkgVersion=ci$CIRCLE_BUILD_NUM -l ci"
+    "build": "hedy -v",
+    "deploy": "hedy -v --deploy --test=/_status_check/healthcheck.json",
+    "deploy-sequences": "hedy --no-build -no-hints -l latest -l major -l minor",
+    "deploy-ci": "hedy -v --deploy --test=/_status_check/healthcheck.json --pkgVersion=ci$CIRCLE_BUILD_NUM -l ci"
   },
   "wsk": {
     "namespace": "helix",
-    "name": "helix-services/data-embed@${version}"
+    "name": "helix-services/data-embed@${version}",
+    "memory": 512
   },
   "repository": {
     "type": "git",
@@ -31,8 +32,8 @@
   },
   "homepage": "https://github.com/adobe/helix-data-embed#readme",
   "dependencies": {
-    "@adobe/helix-fetch": "1.9.2",
     "@adobe/helix-epsagon": "1.5.5",
+    "@adobe/helix-fetch": "1.9.2",
     "@adobe/helix-onedrive-support": "3.1.6",
     "@adobe/helix-shared": "7.18.0",
     "@adobe/helix-status": "9.0.0",
@@ -40,13 +41,14 @@
     "@adobe/openwhisk-action-utils": "4.4.0",
     "@flighter/a1-notation": "1.0.6",
     "googleapis": "66.0.0",
+    "node-fetch": "2.6.1",
     "rss-parser": "3.10.0"
   },
   "devDependencies": {
     "@adobe/eslint-config-helix": "1.1.3",
+    "@adobe/helix-deploy": "1.14.0",
     "@adobe/helix-ops": "1.12.3",
     "@adobe/helix-testutils": "0.4.2",
-    "@adobe/openwhisk-action-builder": "2.15.1",
     "@semantic-release/changelog": "5.0.1",
     "@semantic-release/exec": "5.0.0",
     "@semantic-release/git": "9.0.0",

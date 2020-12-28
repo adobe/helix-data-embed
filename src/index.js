@@ -9,10 +9,10 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+const { Response } = require('node-fetch');
 const { wrap } = require('@adobe/openwhisk-action-utils');
 const { logger } = require('@adobe/openwhisk-action-logger');
-const { wrap: status } = require('@adobe/helix-status');
-const { epsagon } = require('@adobe/helix-epsagon');
+const { wrap: helixStatus } = require('@adobe/helix-status');
 const embed = require('./embed');
 const { loadquerystring } = require('./querybuilder/url');
 const { createfilter } = require('./querybuilder/filter');
@@ -20,51 +20,70 @@ const dataSource = require('./data-source.js');
 
 const MAX_DATA_SIZE = 750000;
 
-async function main(params) {
+async function main(req, context) {
   /* istanbul ignore next */
-  const { __ow_logger: log = console } = params;
-  const url = dataSource((params));
+  const { log = console } = context;
+  const url = dataSource(req, context);
   if (!url) {
-    return {
-      statusCode: 400,
-      body: 'Expecting a datasource',
-    };
+    return new Response('Expecting a datasource', {
+      status: 400,
+    });
   }
-  log.info(`data-embed for datasource ${url}`);
-  const qbquery = loadquerystring(params.__ow_query, 'hlx_');
-  log.debug('QB query', qbquery);
-  const filter = createfilter(qbquery);
-  log.debug('QB filter', filter);
-  const result = await embed(url, params, log);
+  try {
+    const { searchParams } = new URL(req.url);
 
-  const { body } = result;
-  delete result.body;
-  log.debug('result', result);
-  log.debug(`result body size: ${JSON.stringify(body).length}`);
-  const filtered = filter(body);
-  let size = JSON.stringify(filtered).length;
-  log.info(`filtered result ${filtered.length} rows. size: ${size}`);
-  if (size > MAX_DATA_SIZE) {
-    // todo: could be optimized to be more accurate using some binary search approach
-    const avgRowSize = size / filtered.length;
-    const retain = Math.floor(MAX_DATA_SIZE / avgRowSize);
-    filtered.splice(retain, filtered.length - retain);
-    size = JSON.stringify(filtered).length;
-    log.info(`result truncated to ${filtered.length} rows. size: ${size}`);
-  }
-  return {
-    ...result,
-    body: {
+    log.info(`data-embed for datasource ${url}`);
+    const qbquery = loadquerystring(searchParams, 'hlx_');
+    log.debug('QB query', qbquery);
+    const filter = createfilter(qbquery);
+    log.debug('QB filter', filter);
+    const params = Array.from(searchParams.entries()).reduce((p, [key, value]) => {
+      // eslint-disable-next-line no-param-reassign
+      p[key] = value;
+      return p;
+    }, {});
+    const result = await embed(url, params, context.env, log);
+
+    const {
+      body,
+      statusCode: status,
+      headers,
+    } = result;
+    log.debug(`result body size: ${JSON.stringify(body).length}`);
+    const filtered = filter(body);
+    let size = JSON.stringify(filtered).length;
+    log.info(`filtered result ${filtered.length} rows. size: ${size}`);
+    if (size > MAX_DATA_SIZE) {
+      // todo: could be optimized to be more accurate using some binary search approach
+      const avgRowSize = size / filtered.length;
+      const retain = Math.floor(MAX_DATA_SIZE / avgRowSize);
+      filtered.splice(retain, filtered.length - retain);
+      size = JSON.stringify(filtered).length;
+      log.info(`result truncated to ${filtered.length} rows. size: ${size}`);
+    }
+    const bodyText = JSON.stringify({
       total: body.length,
       offset: filter.offset || 0,
       limit: filtered.length,
       data: filtered,
-    },
-  };
+    });
+    return new Response(bodyText, {
+      status,
+      headers,
+    });
+  } catch (e) {
+    log.error('error fetching data', e);
+    return new Response('error fetching data', {
+      status: 500,
+      headers: {
+        'content-type': 'application/json',
+        'cache-control': 'no-store, private, must-revalidate',
+      },
+    });
+  }
 }
 
 module.exports.main = wrap(main)
-  .with(epsagon)
-  .with(status)
+  .with(helixStatus)
   .with(logger.trace)
   .with(logger);

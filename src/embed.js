@@ -27,13 +27,14 @@ function hasParams(list, params) {
 /**
  * Returns the data representation of the resource addressed by url.
  * @param {URL} url The url of the resource
- * @param {object} params The action params
+ * @param {Object} params additional params
+ * @param {object} env The action environment
  * @param {Logger} log logger
  * @returns {object} an action response with the body containing the data.
  */
-function embed(url, params, log) {
+function embed(url, params, env, log) {
   const candidates = matchers
-    .filter((candidate) => hasParams(candidate.required, params));
+    .filter((candidate) => hasParams(candidate.required, env));
 
   const matching = candidates.find((candidate) => candidate.accept(url));
 
@@ -50,7 +51,7 @@ function embed(url, params, log) {
   }
   log.info(`found handler for ${url}: ${matching.name}`);
 
-  return matching.extract(url, params, log);
+  return matching.extract(url, params, env, log);
 }
 
 module.exports = embed;

@@ -11,14 +11,16 @@
  */
 const { OneDrive } = require('@adobe/helix-onedrive-support');
 
-async function extract(url, params, log = console) {
+async function extract(url, params, env, log = console) {
+  const {
+    sheet,
+    table,
+  } = params;
   const {
     AZURE_WORD2MD_CLIENT_ID: clientId,
     AZURE_HELIX_USER: username,
     AZURE_HELIX_PASSWORD: password,
-    sheet,
-    table,
-  } = params;
+  } = env;
 
   try {
     const drive = new OneDrive({

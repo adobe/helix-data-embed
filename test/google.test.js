@@ -131,6 +131,7 @@ describe('Google Sheets Tests (mocked)', () => {
   it('Works for mocked Google Sheets', async () => {
     const result = await extract(
       new URL('https://docs.google.com/spreadsheets/d/1IX0g5P74QnHPR3GW1AMCdTk_-m954A-FKZRT2uOZY7k/edit?ouid=107837958797411838063&usp=sheets_home&ths=true'),
+      {},
       {
         GOOGLE_DOCS2MD_CLIENT_ID: 'fake',
         GOOGLE_DOCS2MD_CLIENT_SECRET: 'fake',
@@ -147,10 +148,12 @@ describe('Google Sheets Tests (mocked)', () => {
     const result = await extract(
       new URL('https://docs.google.com/spreadsheets/d/1IX0g5P74QnHPR3GW1AMCdTk_-m954A-FKZRT2uOZY7k/edit?ouid=107837958797411838063&usp=sheets_home&ths=true'),
       {
+        sheet: 'foo',
+      },
+      {
         GOOGLE_DOCS2MD_CLIENT_ID: 'fake',
         GOOGLE_DOCS2MD_CLIENT_SECRET: 'fake',
         GOOGLE_DOCS2MD_REFRESH_TOKEN: 'fake',
-        sheet: 'foo',
       },
     );
     assert.equal(result.statusCode, 404);
@@ -159,6 +162,7 @@ describe('Google Sheets Tests (mocked)', () => {
   it('Returns 404 for sheets with no helix-default', async () => {
     const result = await extract(
       new URL('https://docs.google.com/spreadsheets/d/3333333333333333333/edit?ouid=107837958797411838063&usp=sheets_home&ths=true'),
+      {},
       {
         GOOGLE_DOCS2MD_CLIENT_ID: 'fake',
         GOOGLE_DOCS2MD_CLIENT_SECRET: 'fake',
@@ -171,6 +175,7 @@ describe('Google Sheets Tests (mocked)', () => {
   it('Returns first sheet if no helix-sheets', async () => {
     const result = await extract(
       new URL('https://docs.google.com/spreadsheets/d/2222222222222222222/edit?ouid=107837958797411838063&usp=sheets_home&ths=true'),
+      {},
       {
         GOOGLE_DOCS2MD_CLIENT_ID: 'fake',
         GOOGLE_DOCS2MD_CLIENT_SECRET: 'fake',
@@ -185,10 +190,12 @@ describe('Google Sheets Tests (mocked)', () => {
     const result = await extract(
       new URL('https://docs.google.com/spreadsheets/d/3333333333333333333/edit?ouid=107837958797411838063&usp=sheets_home&ths=true'),
       {
+        sheet: 'countries',
+      },
+      {
         GOOGLE_DOCS2MD_CLIENT_ID: 'fake',
         GOOGLE_DOCS2MD_CLIENT_SECRET: 'fake',
         GOOGLE_DOCS2MD_REFRESH_TOKEN: 'fake',
-        sheet: 'countries',
       },
     );
     assert.equal(result.statusCode, 200);
@@ -198,6 +205,7 @@ describe('Google Sheets Tests (mocked)', () => {
   it('Fails (in a good way) for mocked Google Sheets', async () => {
     const result = await extract(
       new URL('https://docs.google.com/spreadsheets/d/1IX0g5P74QnHPR3GW1AMCdTk_-m954A-FKZRT2uOZY7k/edit?ouid=107837958797411838063&usp=sheets_home&ths=true'),
+      {},
       {
         GOOGLE_DOCS2MD_CLIENT_ID: 'fail',
         GOOGLE_DOCS2MD_CLIENT_SECRET: 'fake',
@@ -220,6 +228,7 @@ describe('Google Sheets Tests (online)', () => {
   it.skip('Works for real Google Sheets', async () => {
     const result = await extract(
       new URL('https://docs.google.com/spreadsheets/d/1IX0g5P74QnHPR3GW1AMCdTk_-m954A-FKZRT2uOZY7k/edit?ouid=107837958797411838063&usp=sheets_home&ths=true'),
+      {},
       {
         GOOGLE_DOCS2MD_CLIENT_ID: process.env.GOOGLE_DOCS2MD_CLIENT_ID,
         GOOGLE_DOCS2MD_CLIENT_SECRET: process.env.GOOGLE_DOCS2MD_CLIENT_SECRET,
