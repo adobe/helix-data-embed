@@ -1,3 +1,10 @@
+# [2.3.0](https://github.com/adobe/helix-data-embed/compare/v2.2.1...v2.3.0) (2020-12-28)
+
+
+### Features
+
+* migrate to helix-deploy ([#240](https://github.com/adobe/helix-data-embed/issues/240)) ([63a4707](https://github.com/adobe/helix-data-embed/commit/63a47076debfa4ce30d403ce70942e87180b343c)), closes [#238](https://github.com/adobe/helix-data-embed/issues/238)
+
 ## [2.2.1](https://github.com/adobe/helix-data-embed/compare/v2.2.0...v2.2.1) (2020-12-25)
 
 
