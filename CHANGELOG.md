@@ -1,3 +1,11 @@
+## [2.3.3](https://github.com/adobe/helix-data-embed/compare/v2.3.2...v2.3.3) (2021-01-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-shared to v7.18.3 ([#250](https://github.com/adobe/helix-data-embed/issues/250)) ([1b4818c](https://github.com/adobe/helix-data-embed/commit/1b4818c1beb87143e030549e152943570953f469))
+* **deps:** update dependency googleapis to v67 ([4158823](https://github.com/adobe/helix-data-embed/commit/41588234c17f98ba0df7898dc34f37de1cd228ca))
+
 ## [2.3.2](https://github.com/adobe/helix-data-embed/compare/v2.3.1...v2.3.2) (2021-01-10)
 
 
