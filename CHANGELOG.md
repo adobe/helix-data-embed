@@ -1,3 +1,10 @@
+## [2.3.6](https://github.com/adobe/helix-data-embed/compare/v2.3.5...v2.3.6) (2021-02-02)
+
+
+### Bug Fixes
+
+* **ci:** use node 12 and enable aws monitor ([b44600c](https://github.com/adobe/helix-data-embed/commit/b44600c2215dcebb32670627e59546da80703e5f))
+
 ## [2.3.5](https://github.com/adobe/helix-data-embed/compare/v2.3.4...v2.3.5) (2021-01-21)
 
 
