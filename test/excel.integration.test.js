@@ -28,7 +28,7 @@ async function main(params = {}, env = {}) {
   });
   return {
     statusCode: resp.status,
-    body: JSON.parse(resp.body.toString()),
+    body: await resp.json(),
     headers: [...resp.headers.keys()].reduce((result, key) => {
       // eslint-disable-next-line no-param-reassign
       result[key] = resp.headers.get(key);
