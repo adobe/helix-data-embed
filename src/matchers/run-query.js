@@ -11,15 +11,13 @@
  */
 /* eslint-disable camelcase */
 
-// force HTTP/1 in order to avoid issues with long-lived HTTP/2 sessions
-// on azure/kubernetes based I/O Runtime
-process.env.HELIX_FETCH_FORCE_HTTP1 = true;
-const { fetch } = require('@adobe/helix-fetch').context({
-  httpsProtocols:
-    /* istanbul ignore next */
-    process.env.HELIX_FETCH_FORCE_HTTP1 ? ['http1'] : ['http2', 'http1'],
-});
 const { utils } = require('@adobe/helix-shared');
+const fetchAPI = require('@adobe/helix-fetch');
+
+const { fetch } = process.env.HELIX_FETCH_FORCE_HTTP1
+  ? fetchAPI.context({ alpnProtocols: [fetchAPI.ALPN_HTTP1_1] })
+  /* istanbul ignore next */
+  : fetchAPI;
 
 async function extract(url, params, env, log = console) {
   const host = 'https://adobeioruntime.net';

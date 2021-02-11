@@ -24,20 +24,20 @@ for (let i = 0; i < 10000; i += 1) {
   }
 }
 
-describe('Integration Tests', () => {
+describe('Integration Tests', async () => {
   it('Rejects missing URLs', async () => {
-    const result = await main({
+    const response = await main({
       url: 'https://www.example.com/data-embed-action',
     }, {});
-    assert.equal(result.status, 400);
+    assert.equal(response.status, 400);
   });
 
   it('tests index with absolute run_query url', async () => {
     const EXPECTED_HEADERS = {
-      'Cache-Control': ['max-age=600'],
-      'Content-Type': ['application/json'],
+      'cache-control': 'max-age=600',
+      'content-type': 'application/json',
     };
-    const { body, headers, status } = await main({
+    const response = await main({
       url: 'https://www.example.com/data-embed-action',
     }, {
       env: {},
@@ -46,18 +46,20 @@ describe('Integration Tests', () => {
       },
     });
 
-    assert.ok(Array.isArray(JSON.parse(body).data));
-    assert.deepEqual(headers.raw(), EXPECTED_HEADERS);
+    const { headers, status } = response;
+    const body = await response.json();
+    assert.ok(Array.isArray(body.data));
+    assert.deepEqual(headers.plain(), EXPECTED_HEADERS);
     assert.equal(status, 200);
   })
     .timeout(60000);
 
   it('tests index with relative run_query url', async () => {
     const EXPECTED_HEADERS = {
-      'Cache-Control': ['max-age=600'],
-      'Content-Type': ['application/json'],
+      'cache-control': 'max-age=600',
+      'content-type': 'application/json',
     };
-    const { body, headers, status } = await main({
+    const response = await main({
       url: 'https://www.example.com/data-embed-action?fromMins=1000&toMins=0',
     }, {
       env: {},
@@ -66,13 +68,15 @@ describe('Integration Tests', () => {
       },
     });
 
-    assert.ok(Array.isArray(JSON.parse(body).data));
-    assert.deepEqual(headers.raw(), EXPECTED_HEADERS);
+    const { headers, status } = response;
+    const body = await response.json();
+    assert.ok(Array.isArray(body.data));
+    assert.deepEqual(headers.plain(), EXPECTED_HEADERS);
     assert.equal(status, 200);
   }).timeout(60000);
 
   it('Rejects unknown URLs', async () => {
-    const result = await main({
+    const response = await main({
       url: 'https://www.example.com/data-embed-action?',
     }, {
       env: {},
@@ -80,7 +84,7 @@ describe('Integration Tests', () => {
         suffix: '/https://example.com',
       },
     });
-    assert.equal(result.status, 404);
+    assert.equal(response.status, 404);
   });
 });
 
@@ -91,13 +95,13 @@ describe('Index result Tests', () => {
         body: TEST_DATA,
       }),
     });
-    const result = await customMain({
+    const response = await customMain({
       url: `https://www.example.com/data-embed-action?${querystring.stringify({
         src: 'https://foo.com',
         'hlx_p.limit': 10,
       })}`,
     }, {});
-    assert.deepEqual(JSON.parse(result.body), {
+    assert.deepEqual(await response.json(), {
       data: TEST_DATA.slice(0, 10),
       limit: 10,
       offset: 0,
@@ -111,13 +115,13 @@ describe('Index result Tests', () => {
         body: TEST_DATA,
       }),
     });
-    const result = await customMain({
+    const response = await customMain({
       url: `https://www.example.com/data-embed-action?${querystring.stringify({
         src: 'https://foo.com',
         'hlx_p.offset': 9000,
       })}`,
     }, {});
-    assert.deepEqual(JSON.parse(result.body), {
+    assert.deepEqual(await response.json(), {
       data: TEST_DATA.slice(9000),
       limit: 1000,
       offset: 9000,
@@ -131,14 +135,14 @@ describe('Index result Tests', () => {
         body: TEST_DATA,
       }),
     });
-    const result = await customMain({
+    const response = await customMain({
       url: `https://www.example.com/data-embed-action?${querystring.stringify({
         src: 'https://foo.com',
         'hlx_p.limit': 50,
         'hlx_p.offset': 100,
       })}`,
     }, {});
-    assert.deepEqual(JSON.parse(result.body), {
+    assert.deepEqual(await response.json(), {
       data: TEST_DATA.slice(100, 150),
       limit: 50,
       offset: 100,
@@ -152,12 +156,12 @@ describe('Index result Tests', () => {
         body: TEST_DATA,
       }),
     });
-    const result = await customMain({
+    const response = await customMain({
       url: `https://www.example.com/data-embed-action?${querystring.stringify({
         src: 'https://foo.com',
       })}`,
     }, {});
-    assert.deepEqual(JSON.parse(result.body), {
+    assert.deepEqual(await response.json(), {
       data: TEST_DATA.slice(0, 4970),
       limit: 4970,
       offset: 0,
