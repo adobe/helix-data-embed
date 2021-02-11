@@ -30,6 +30,7 @@ async function extract(url, params, env, log = console) {
       log,
     });
     let item = await drive.getDriveItemFromShareLink(url);
+    /* istanbul ignore else */
     if (!item.lastModifiedDateTime) {
       item = await drive.getDriveItem(item);
     }
