@@ -1,3 +1,10 @@
+## [2.3.8](https://github.com/adobe/helix-data-embed/compare/v2.3.7...v2.3.8) (2021-02-12)
+
+
+### Bug Fixes
+
+* **deps:** migrate to helix-fetch v2 and re-enable Http/2 ([3365bbd](https://github.com/adobe/helix-data-embed/commit/3365bbd93fd4b2f253e5e73afaee1be028c40c65))
+
 ## [2.3.7](https://github.com/adobe/helix-data-embed/compare/v2.3.6...v2.3.7) (2021-02-08)
 
 
