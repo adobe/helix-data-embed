@@ -82,7 +82,6 @@ class AWSTarget extends OpenwhiskTarget {
 
 const ALL_TARGETS = [
   OpenwhiskTarget,
-  OpenwhiskPreprodTarget,
   AWSTarget,
 ];
 
