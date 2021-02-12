@@ -47,18 +47,6 @@ class OpenwhiskTarget {
   }
 }
 
-class OpenwhiskPreprodTarget extends OpenwhiskTarget {
-  // eslint-disable-next-line class-methods-use-this
-  title() {
-    return 'OpenWhisk - Preprod';
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  host() {
-    return 'https://preprod.adobeioruntime.net';
-  }
-}
-
 class AWSTarget extends OpenwhiskTarget {
   // eslint-disable-next-line class-methods-use-this
   title() {
