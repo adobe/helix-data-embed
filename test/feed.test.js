@@ -15,7 +15,7 @@ const { main } = require('../src/index');
 
 describe('Feed Tests', () => {
   it('Works for RSS Feeds', async () => {
-    const result = await main({
+    const response = await main({
       url: 'https://www.example.com/data-embed-action',
     }, {
       env: {},
@@ -23,13 +23,13 @@ describe('Feed Tests', () => {
         suffix: '/https://daringfireball.net/feeds/articles',
       },
     });
-    assert.equal(result.status, 200);
-    const body = JSON.parse(result.body);
+    assert.equal(response.status, 200);
+    const body = await response.json();
     assert.ok(body.data.length > 1);
   }).timeout(10000);
 
   it('Works for RSS Feeds with Limits', async () => {
-    const result = await main({
+    const response = await main({
       url: 'https://www.example.com/data-embed-action?hlx_p.limit=1',
     }, {
       env: {},
@@ -37,13 +37,13 @@ describe('Feed Tests', () => {
         suffix: '/https://daringfireball.net/feeds/main',
       },
     });
-    assert.equal(result.status, 200);
-    const body = JSON.parse(result.body);
+    assert.equal(response.status, 200);
+    const body = await response.json();
     assert.equal(body.data.length, 1);
   }).timeout(10000);
 
   it('Rejects invalid RSS Feeds', async () => {
-    const result = await main({
+    const response = await main({
       url: 'https://www.example.com/data-embed-action?feed=atom&foo=bar',
     }, {
       env: {},
@@ -51,6 +51,6 @@ describe('Feed Tests', () => {
         suffix: '/https://example.com',
       },
     });
-    assert.equal(result.status, 500);
+    assert.equal(response.status, 500);
   }).timeout(5000);
 });

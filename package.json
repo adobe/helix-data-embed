@@ -32,27 +32,26 @@
   },
   "homepage": "https://github.com/adobe/helix-data-embed#readme",
   "dependencies": {
-    "@adobe/helix-epsagon": "1.5.6",
-    "@adobe/helix-fetch": "1.9.2",
+    "@adobe/helix-epsagon": "1.5.8",
+    "@adobe/helix-fetch": "2.1.3",
     "@adobe/helix-onedrive-support": "3.1.6",
-    "@adobe/helix-shared": "7.19.1",
-    "@adobe/helix-status": "9.0.0",
+    "@adobe/helix-shared": "7.19.5",
+    "@adobe/helix-status": "9.0.2",
     "@adobe/openwhisk-action-logger": "2.3.1",
     "@adobe/openwhisk-action-utils": "4.4.0",
     "@flighter/a1-notation": "1.0.7",
     "googleapis": "67.0.0",
-    "node-fetch": "2.6.1",
     "rss-parser": "3.11.0"
   },
   "devDependencies": {
     "@adobe/eslint-config-helix": "1.1.3",
-    "@adobe/helix-deploy": "1.18.0",
-    "@adobe/helix-ops": "1.12.3",
+    "@adobe/helix-deploy": "3.0.14",
+    "@adobe/helix-ops": "2.0.10",
     "@adobe/helix-testutils": "0.4.2",
     "@semantic-release/changelog": "5.0.1",
     "@semantic-release/exec": "5.0.0",
     "@semantic-release/git": "9.0.0",
-    "ajv": "7.0.4",
+    "ajv": "7.1.0",
     "chai": "4.3.0",
     "chai-http": "4.3.0",
     "codecov": "3.8.1",
@@ -69,7 +68,7 @@
     "mocha": "8.2.1",
     "nyc": "15.1.0",
     "proxyquire": "2.1.3",
-    "semantic-release": "17.3.7"
+    "semantic-release": "17.3.8"
   },
   "lint-staged": {
     "*.js": "eslint"
