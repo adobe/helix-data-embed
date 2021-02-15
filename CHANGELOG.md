@@ -1,3 +1,10 @@
+## [2.3.10](https://github.com/adobe/helix-data-embed/compare/v2.3.9...v2.3.10) (2021-02-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-status to v9.0.3 ([#266](https://github.com/adobe/helix-data-embed/issues/266)) ([3c93327](https://github.com/adobe/helix-data-embed/commit/3c93327252ab0e3530ad3c997a3425a25f9b92c2))
+
 ## [2.3.9](https://github.com/adobe/helix-data-embed/compare/v2.3.8...v2.3.9) (2021-02-15)
 
 
