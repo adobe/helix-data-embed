@@ -1,6 +1,6 @@
 {
   "name": "@adobe/helix-data-embed",
-  "version": "2.3.11",
+  "version": "2.3.12",
   "private": true,
   "description": "Helix Data Embed",
   "main": "src/index.js",
