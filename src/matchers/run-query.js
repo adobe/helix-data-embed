@@ -12,12 +12,7 @@
 /* eslint-disable camelcase */
 
 const { utils } = require('@adobe/helix-shared');
-const fetchAPI = require('@adobe/helix-fetch');
-
-const { fetch } = process.env.HELIX_FETCH_FORCE_HTTP1
-  ? fetchAPI.context({ alpnProtocols: [fetchAPI.ALPN_HTTP1_1] })
-  /* istanbul ignore next */
-  : fetchAPI;
+const { fetch } = require('@adobe/helix-fetch');
 
 async function extract(url, params, env, log = console) {
   const host = 'https://adobeioruntime.net';
