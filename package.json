@@ -37,7 +37,7 @@
     "@adobe/helix-onedrive-support": "3.1.6",
     "@adobe/helix-shared": "7.19.10",
     "@adobe/helix-status": "9.0.4",
-    "@adobe/openwhisk-action-logger": "2.4.0",
+    "@adobe/openwhisk-action-logger": "2.4.1",
     "@adobe/openwhisk-action-utils": "4.4.1",
     "@flighter/a1-notation": "1.0.7",
     "googleapis": "67.1.0",
