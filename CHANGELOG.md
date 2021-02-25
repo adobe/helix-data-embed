@@ -1,3 +1,10 @@
+## [2.3.15](https://github.com/adobe/helix-data-embed/compare/v2.3.14...v2.3.15) (2021-02-25)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([#279](https://github.com/adobe/helix-data-embed/issues/279)) ([3266d71](https://github.com/adobe/helix-data-embed/commit/3266d7148ee1c2429cee25c031baa327d790bec7))
+
 ## [2.3.14](https://github.com/adobe/helix-data-embed/compare/v2.3.13...v2.3.14) (2021-02-25)
 
 
