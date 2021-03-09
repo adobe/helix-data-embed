@@ -36,7 +36,7 @@
     "@adobe/helix-fetch": "2.1.7",
     "@adobe/helix-onedrive-support": "3.1.7",
     "@adobe/helix-shared": "7.21.2",
-    "@adobe/helix-status": "9.0.8",
+    "@adobe/helix-status": "9.0.9",
     "@adobe/openwhisk-action-logger": "2.4.1",
     "@adobe/openwhisk-action-utils": "4.4.1",
     "@flighter/a1-notation": "2.0.1",
@@ -45,7 +45,7 @@
   },
   "devDependencies": {
     "@adobe/eslint-config-helix": "1.1.4",
-    "@adobe/helix-deploy": "3.9.0",
+    "@adobe/helix-deploy": "3.9.1",
     "@adobe/helix-ops": "2.0.14",
     "@adobe/helix-testutils": "0.4.3",
     "@semantic-release/changelog": "5.0.1",
