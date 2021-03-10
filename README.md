@@ -15,19 +15,19 @@
 ## Usage
 
 ```bash
-curl https://adobeioruntime.net/api/v1/web/helix/helix-services/data-embed@v1/https://blogs.adobe.com/psirt/?feed=atom
+curl https://adobeioruntime.net/api/v1/web/helix/helix-services/data-embed@v2/https://blogs.adobe.com/psirt/?feed=atom
 ```
 
 While the above is simple to type, it is more safe to escape the url and optionally pass it as `src` query parameter:
 
 ```bash
-curl https://adobeioruntime.net/api/v1/web/helix/helix-services/data-embed@v1/https%3A%2F%2Fblogs.adobe.com%2Fpsirt%2F%3Ffeed%3Datom
+curl https://adobeioruntime.net/api/v1/web/helix/helix-services/data-embed@v2/https%3A%2F%2Fblogs.adobe.com%2Fpsirt%2F%3Ffeed%3Datom
 ```
 
 or
 
 ```bash
-curl https://adobeioruntime.net/api/v1/web/helix/helix-services/data-embed@v1?src=https%3A%2F%2Fblogs.adobe.com%2Fpsirt%2F%3Ffeed%3Datom
+curl https://adobeioruntime.net/api/v1/web/helix/helix-services/data-embed@v2?src=https%3A%2F%2Fblogs.adobe.com%2Fpsirt%2F%3Ffeed%3Datom
 ```
 
 ### Data Sources
