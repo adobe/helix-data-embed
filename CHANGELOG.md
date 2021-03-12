@@ -1,3 +1,10 @@
+## [2.3.25](https://github.com/adobe/helix-data-embed/compare/v2.3.24...v2.3.25) (2021-03-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-deploy to v3.14.0 ([#304](https://github.com/adobe/helix-data-embed/issues/304)) ([9a44745](https://github.com/adobe/helix-data-embed/commit/9a44745bec3c7617c512b7d8c41124258823459c))
+
 ## [2.3.24](https://github.com/adobe/helix-data-embed/compare/v2.3.23...v2.3.24) (2021-03-11)
 
 
