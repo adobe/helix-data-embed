@@ -34,7 +34,7 @@
   "dependencies": {
     "@adobe/helix-epsagon": "1.6.0",
     "@adobe/helix-fetch": "2.1.7",
-    "@adobe/helix-onedrive-support": "3.1.7",
+    "@adobe/helix-onedrive-support": "4.0.2",
     "@adobe/helix-shared": "7.21.4",
     "@adobe/helix-status": "9.1.0",
     "@adobe/openwhisk-action-logger": "2.4.1",
