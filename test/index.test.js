@@ -19,6 +19,8 @@ const log = {
   debug: console.log,
   info: console.log,
   warn: console.log,
+  error: console.error,
+  trace: console.log,
 };
 
 const TEST_DATA = [];
