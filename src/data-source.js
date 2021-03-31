@@ -24,7 +24,7 @@ function dataSource(req, context) {
   const src = searchParams.get('src') || '';
   log.debug(`Full URL: ${req.url} src=${src}`);
   let url = null;
-  if (!suffix) {
+  if (!suffix || suffix === '/') {
     try {
       log.debug('suffix is undefined');
       url = new URL(src);
