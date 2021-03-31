@@ -18,14 +18,18 @@
  * @return {HEDYContext} the universal deploy context
  */
 function dataSource(req, context) {
+  const { log } = context;
   const { pathInfo: { suffix } = {} } = context;
   const { searchParams } = new URL(req.url);
   const src = searchParams.get('src') || '';
+  log.debug(`Full URL: ${req.url} src=${src}`);
   let url = null;
   if (!suffix) {
     try {
+      log.debug('suffix is undefined');
       url = new URL(src);
     } catch (e) {
+      log.warn(e.message);
       return null;
     }
 
@@ -35,6 +39,7 @@ function dataSource(req, context) {
     url = new URL(decodeURIComponent(suffix.substring(1)
       .replace(/^https(:|%3A)%2F([^%])/, 'https://$2')));
   } else if (!suffix.startsWith('/https:/')) {
+    log.warn(`suffix ${suffix} does not start with https://`);
     return null;
   } else {
     url = new URL(suffix.substring(1)
