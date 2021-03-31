@@ -15,6 +15,12 @@ const querystring = require('querystring');
 const proxyquire = require('proxyquire');
 const { main } = require('../src/index');
 
+const log = {
+  debug: console.log,
+  info: console.log,
+  warn: console.log,
+};
+
 const TEST_DATA = [];
 for (let i = 0; i < 10000; i += 1) {
   const col = [];
@@ -28,7 +34,7 @@ describe('Integration Tests', async () => {
   it('Rejects missing URLs', async () => {
     const response = await main({
       url: 'https://www.example.com/data-embed-action',
-    }, {});
+    }, { log });
     assert.equal(response.status, 400);
   });
 
@@ -41,6 +47,7 @@ describe('Integration Tests', async () => {
       url: 'https://www.example.com/data-embed-action',
     }, {
       env: {},
+      log,
       pathInfo: {
         suffix: '/https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@2.4.11/error500',
       },
@@ -62,6 +69,7 @@ describe('Integration Tests', async () => {
     const response = await main({
       url: 'https://www.example.com/data-embed-action?fromMins=1000&toMins=0',
     }, {
+      log,
       env: {},
       pathInfo: {
         suffix: '/https://example.com/_query/run-query/error500',
@@ -79,6 +87,7 @@ describe('Integration Tests', async () => {
     const response = await main({
       url: 'https://www.example.com/data-embed-action?',
     }, {
+      log,
       env: {},
       pathInfo: {
         suffix: '/https://example.com',
@@ -100,7 +109,7 @@ describe('Index result Tests', () => {
         src: 'https://foo.com',
         'hlx_p.limit': 10,
       })}`,
-    }, {});
+    }, { log });
     assert.deepEqual(await response.json(), {
       data: TEST_DATA.slice(0, 10),
       limit: 10,
@@ -120,7 +129,7 @@ describe('Index result Tests', () => {
         src: 'https://foo.com',
         'hlx_p.offset': 9000,
       })}`,
-    }, {});
+    }, { log });
     assert.deepEqual(await response.json(), {
       data: TEST_DATA.slice(9000),
       limit: 1000,
@@ -141,7 +150,7 @@ describe('Index result Tests', () => {
         'hlx_p.limit': 50,
         'hlx_p.offset': 100,
       })}`,
-    }, {});
+    }, { log });
     assert.deepEqual(await response.json(), {
       data: TEST_DATA.slice(100, 150),
       limit: 50,
@@ -160,7 +169,7 @@ describe('Index result Tests', () => {
       url: `https://www.example.com/data-embed-action?${querystring.stringify({
         src: 'https://foo.com',
       })}`,
-    }, {});
+    }, { log });
     assert.deepEqual(await response.json(), {
       data: TEST_DATA.slice(0, 4970),
       limit: 4970,
