@@ -14,17 +14,25 @@ const assert = require('assert');
 const querystring = require('querystring');
 const dataSource = require('../src/data-source.js');
 
+const log = {
+  debug: console.log,
+  info: console.log,
+  warn: console.log,
+};
+const context = { log };
+
 describe('Data Source Tests', () => {
   it('returns null for no path or src', () => {
     assert.equal(dataSource({
       url: 'https://www.example.com/foo',
-    }, {}), null);
+    }, context), null);
   });
 
   it('rejects paths not starting with https://', () => {
     assert.equal(dataSource({
       url: 'https://www.example.com/foo',
     }, {
+      log,
       pathInfo: {
         suffix: '/http://example.com',
       },
@@ -35,6 +43,7 @@ describe('Data Source Tests', () => {
     assert.equal(dataSource({
       url: 'https://www.example.com/foo',
     }, {
+      log,
       pathInfo: {
         suffix: `/${querystring.escape('http://example.com')}`,
       },
@@ -44,7 +53,7 @@ describe('Data Source Tests', () => {
   it('rejects src parameters not starting with scheme', () => {
     assert.equal(dataSource({
       url: 'https://www.example.com/foo?src=/example.com',
-    }, {}), null);
+    }, context), null);
   });
 
   it('src parameters allows for different scheme', () => {
@@ -52,7 +61,7 @@ describe('Data Source Tests', () => {
       url: `https://www.example.com/foo?${querystring.stringify({
         src: 'onedrive://drives/123123/items/234234',
       })}`,
-    }, {}),
+    }, context),
     'onedrive://drives/123123/items/234234');
   });
 
@@ -63,7 +72,7 @@ describe('Data Source Tests', () => {
         hlx_limit: '1',
         foo: 'bar',
       })}`,
-    }, {}),
+    }, context),
     'https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@2.4.11/error500?a=1&b=2');
   });
 
@@ -74,7 +83,7 @@ describe('Data Source Tests', () => {
         hlx_limit: '1',
         foo: 'bar',
       })}`,
-    }, {}),
+    }, context),
     'onedrive://drives/1234/items/5677?a=1&b=2');
   });
 
@@ -82,6 +91,7 @@ describe('Data Source Tests', () => {
     assert.equal(dataSource({
       url: 'https://www.example.com/foo',
     }, {
+      log,
       pathInfo: {
         suffix: '/https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@2.4.11/error500?a=1&b=2',
       },
@@ -97,6 +107,7 @@ describe('Data Source Tests', () => {
         hlx_limit: 1,
       })}`,
     }, {
+      log,
       pathInfo: {
         suffix: '/https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@2.4.11/error500',
       },
@@ -108,6 +119,7 @@ describe('Data Source Tests', () => {
     assert.equal(dataSource({
       url: 'https://www.example.com/foo',
     }, {
+      log,
       pathInfo: {
         suffix: `/${querystring.escape('https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@2.4.11/error500?a=1&b=2')}`,
       },
@@ -119,6 +131,7 @@ describe('Data Source Tests', () => {
     assert.equal(dataSource({
       url: 'https://www.example.com/foo',
     }, {
+      log,
       pathInfo: {
         suffix: '/https:%2F%2Fwww.youtube.com%2Fwatch%3Fv=TTCVn4EByfI',
       },
@@ -130,6 +143,7 @@ describe('Data Source Tests', () => {
     assert.equal(dataSource({
       url: 'https://www.example.com/foo',
     }, {
+      log,
       pathInfo: {
         suffix: '/https:/www.youtube.com/watch?v=TTCVn4EByfI',
       },
