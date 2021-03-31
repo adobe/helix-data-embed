@@ -1,3 +1,15 @@
+# [2.4.0](https://github.com/adobe/helix-data-embed/compare/v2.3.30...v2.4.0) (2021-03-31)
+
+
+### Bug Fixes
+
+* **google:** google suffix is always / even when there is no suffix ([d9e4bbe](https://github.com/adobe/helix-data-embed/commit/d9e4bbe5b821e6f959a63296e3d4c31051121cdf))
+
+
+### Features
+
+* **deploy:** deploy to google ([c3b650e](https://github.com/adobe/helix-data-embed/commit/c3b650e13b70e7b6ceb0b0fba5b32d6063f5b9e3))
+
 ## [2.3.30](https://github.com/adobe/helix-data-embed/compare/v2.3.29...v2.3.30) (2021-03-26)
 
 
