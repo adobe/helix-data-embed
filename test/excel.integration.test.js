@@ -13,19 +13,22 @@
 
 const assert = require('assert');
 const querystring = require('querystring');
+const { Request } = require('@adobe/helix-universal');
 const { condit } = require('@adobe/helix-testutils');
+const { OneDrive } = require('@adobe/helix-onedrive-support');
 const { main: universalMain } = require('../src/index');
 
 require('dotenv').config();
 
 const condition = condit.hasenv('AZURE_WORD2MD_CLIENT_ID', 'AZURE_HELIX_USER', 'AZURE_HELIX_PASSWORD');
 
-async function main(params = {}, env = {}) {
-  const resp = await universalMain({
-    url: `https://data-emmbed.com/fetch?${querystring.encode(params)}`,
-  }, {
-    env,
-  });
+async function main(params = {}, env = {}, headers = {}) {
+  const resp = await universalMain(
+    new Request(`https://data-emmbed.com/fetch?${querystring.encode(params)}`, { headers }),
+    {
+      env,
+    },
+  );
   return {
     statusCode: resp.status,
     body: await resp.json(),
@@ -116,6 +119,31 @@ describe('Excel Integration Test', () => {
       AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
       AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
       AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
+    });
+    assert.equal(result.statusCode, 200);
+    assert.deepEqual(result.body, {
+      data: DATA_COUNTRIES,
+      limit: 6,
+      offset: 0,
+      total: 6,
+    });
+  }).timeout(15000);
+
+  condit('Retrieves Excel Spreadsheet with access token', condition, async () => {
+    const od = new OneDrive({
+      clientId: process.env.AZURE_WORD2MD_CLIENT_ID,
+      username: process.env.AZURE_HELIX_USER,
+      password: process.env.AZURE_HELIX_PASSWORD,
+    });
+
+    const { accessToken } = await od.getAccessToken();
+    await od.dispose();
+    const result = await main({
+      src: 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data.xlsx?d=w6911fff4a52a4b3fb80560d8785adfa3&csf=1&web=1&e=fkkA2a',
+    }, {
+      AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
+    }, {
+      authorization: `Bearer ${accessToken}`,
     });
     assert.equal(result.statusCode, 200);
     assert.deepEqual(result.body, {
