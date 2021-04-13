@@ -28,10 +28,6 @@ async function getOneDriveClient(env, log) {
     AUTHORIZATION: auth,
   } = env;
 
-  if (!clientId) {
-    throw new Error('AZURE_WORD2MD_CLIENT_ID parameter missing.');
-  }
-
   // check for authenticated request
   if (auth && auth.startsWith('Bearer ')) {
     const od = new OneDrive({
@@ -69,8 +65,9 @@ async function extract(url, params, env, log = console) {
     sheet,
     table,
   } = params;
+  let drive;
   try {
-    const drive = await getOneDriveClient(env, log);
+    drive = await getOneDriveClient(env, log);
 
     let item = await drive.getDriveItemFromShareLink(url);
     /* istanbul ignore else */
@@ -152,6 +149,10 @@ async function extract(url, params, env, log = console) {
       },
       body: [],
     };
+  } finally {
+    if (drive) {
+      await drive.dispose();
+    }
   }
 }
 

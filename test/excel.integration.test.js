@@ -48,6 +48,26 @@ const DATA_COUNTRIES = [{ Country: 'Japan', Code: 'JP', Number: 3 },
   { Country: 'Australia', Code: 'AUS', Number: 12 }];
 
 describe('Excel Integration Test', () => {
+  condit('Excel Spreadsheet without AZURE_HELIX_USER throws error', condition, async () => {
+    const result = await main({
+      src: 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/data-embed-no-default.xlsx?d=wf80aa1d65efb4e41bd16ba3ca0a4564b&csf=1&web=1&e=9WnXzf',
+    }, {
+      AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
+      AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
+    });
+    assert.equal(result.statusCode, 500);
+  }).timeout(15000);
+
+  condit('Excel Spreadsheet without AZURE_HELIX_PASSWORD throws error', condition, async () => {
+    const result = await main({
+      src: 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/data-embed-no-default.xlsx?d=wf80aa1d65efb4e41bd16ba3ca0a4564b&csf=1&web=1&e=9WnXzf',
+    }, {
+      AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
+      AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
+    });
+    assert.equal(result.statusCode, 500);
+  }).timeout(15000);
+
   condit('Excel Spreadsheet without helix-default sheet returns 404', condition, async () => {
     const result = await main({
       src: 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/data-embed-no-default.xlsx?d=wf80aa1d65efb4e41bd16ba3ca0a4564b&csf=1&web=1&e=9WnXzf',
