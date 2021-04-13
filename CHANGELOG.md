@@ -1,3 +1,10 @@
+## [2.4.2](https://github.com/adobe/helix-data-embed/compare/v2.4.1...v2.4.2) (2021-04-13)
+
+
+### Bug Fixes
+
+* use helix-universal ([8142dd1](https://github.com/adobe/helix-data-embed/commit/8142dd15c31d9d5f2cac7e99b9d9f3bd7d1294e0))
+
 ## [2.4.1](https://github.com/adobe/helix-data-embed/compare/v2.4.0...v2.4.1) (2021-04-06)
 
 
