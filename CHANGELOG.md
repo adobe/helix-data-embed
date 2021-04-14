@@ -1,3 +1,10 @@
+# [2.5.0](https://github.com/adobe/helix-data-embed/compare/v2.4.2...v2.5.0) (2021-04-14)
+
+
+### Features
+
+* **excel:** respect auth header if present ([9def732](https://github.com/adobe/helix-data-embed/commit/9def7324fbf6ab9bf61f326aad389c553f9f9f49)), closes [#335](https://github.com/adobe/helix-data-embed/issues/335)
+
 ## [2.4.2](https://github.com/adobe/helix-data-embed/compare/v2.4.1...v2.4.2) (2021-04-13)
 
 
