@@ -26,6 +26,13 @@ const TEST_SHARE_LINK_NO_TABLES = 'https://adobe.sharepoint.com/:x:/r/sites/cg-h
 const TEST_SHARE_LINK_NO_DEFAULT = 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data-no-default.xlsx';
 const TEST_SHARE_LINK_NO_HELIX = 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data-no-helix.xlsx';
 
+const DEFAULT_ENV = {
+  AZURE_WORD2MD_CLIENT_ID: 'clientId',
+  AZURE_WORD2MD_CLIENT_SECRET: 'clientSecret',
+  AZURE_HELIX_USER: 'username',
+  AZURE_HELIX_PASSWORD: 'password',
+};
+
 class DummyOneDrive extends OneDriveMock {
   constructor() {
     super();
@@ -70,7 +77,7 @@ describe('Excel Tests', () => {
     const result = await extract(
       new URL('https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data-no-default.xlsx'),
       {},
-      {},
+      DEFAULT_ENV,
     );
     assert.equal(result.statusCode, 404);
   });
@@ -81,7 +88,7 @@ describe('Excel Tests', () => {
       {
         sheet: 'foo',
       },
-      {},
+      DEFAULT_ENV,
     );
     assert.equal(result.statusCode, 404);
   });
@@ -93,7 +100,7 @@ describe('Excel Tests', () => {
       {
         sheet: 'countries',
       },
-      {},
+      DEFAULT_ENV,
     );
     assert.equal(result.statusCode, 200);
     assert.deepEqual(result.body, expected);
@@ -104,7 +111,7 @@ describe('Excel Tests', () => {
     const result = await extract(
       new URL('https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data-no-helix.xlsx'),
       {},
-      {},
+      DEFAULT_ENV,
     );
     assert.equal(result.statusCode, 200);
     assert.deepEqual(result.body, expected);
@@ -115,7 +122,7 @@ describe('Excel Tests', () => {
     const result = await extract(
       new URL('https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data-no-tables.xlsx'),
       {},
-      {},
+      DEFAULT_ENV,
     );
     assert.equal(result.statusCode, 200);
     assert.deepEqual(result.body, expected);
@@ -126,7 +133,7 @@ describe('Excel Tests', () => {
     const result = await extract(
       new URL('onedrive:/drives/my-drive/items/my-item'),
       {},
-      {},
+      DEFAULT_ENV,
     );
     assert.equal(result.statusCode, 200);
     assert.deepEqual(result.body, expected);
@@ -139,7 +146,7 @@ describe('Excel Tests', () => {
       {
         table: '0',
       },
-      {},
+      DEFAULT_ENV,
     );
     assert.equal(result.statusCode, 200);
     assert.deepEqual(result.body, expected);
@@ -152,7 +159,7 @@ describe('Excel Tests', () => {
       {
         table: 'Table1',
       },
-      {},
+      DEFAULT_ENV,
     );
     assert.equal(result.statusCode, 200);
     assert.deepEqual(result.body, expected);
@@ -164,7 +171,7 @@ describe('Excel Tests', () => {
       {
         table: 'foo',
       },
-      {},
+      DEFAULT_ENV,
     );
     assert.equal(result.statusCode, 404);
   });
@@ -175,7 +182,7 @@ describe('Excel Tests', () => {
       {
         table: '99',
       },
-      {},
+      DEFAULT_ENV,
     );
     assert.equal(result.statusCode, 404);
   });
@@ -184,7 +191,7 @@ describe('Excel Tests', () => {
     const result = await extract(
       new URL('https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/not-exist.xlsx'),
       {},
-      {},
+      DEFAULT_ENV,
     );
 
     assert.equal(result.statusCode, 404);
@@ -195,7 +202,7 @@ describe('Excel Tests', () => {
     const result = await extract(
       new URL('onedrive:/drives/1234/items/5678'),
       {},
-      {},
+      DEFAULT_ENV,
     );
 
     assert.equal(result.statusCode, 404);
@@ -206,7 +213,7 @@ describe('Excel Tests', () => {
     const result = await extract(
       new URL('onedrive:/drives/1234/root'),
       {},
-      {},
+      DEFAULT_ENV,
     );
 
     assert.equal(result.statusCode, 500);
@@ -217,7 +224,7 @@ describe('Excel Tests', () => {
     const result = await extract(
       new URL('onedrive:/1234'),
       {},
-      {},
+      DEFAULT_ENV,
     );
 
     assert.equal(result.statusCode, 500);

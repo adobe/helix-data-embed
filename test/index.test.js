@@ -13,6 +13,7 @@
 const assert = require('assert');
 const querystring = require('querystring');
 const proxyquire = require('proxyquire');
+const { Request } = require('@adobe/helix-universal');
 const { main } = require('../src/index');
 
 const log = {
@@ -45,15 +46,16 @@ describe('Integration Tests', async () => {
       'cache-control': 'max-age=600',
       'content-type': 'application/json',
     };
-    const response = await main({
-      url: 'https://www.example.com/data-embed-action',
-    }, {
-      env: {},
-      log,
-      pathInfo: {
-        suffix: '/https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@2.4.11/error500',
+    const response = await main(
+      new Request('https://www.example.com/data-embed-action'),
+      {
+        env: {},
+        log,
+        pathInfo: {
+          suffix: '/https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@2.4.11/error500',
+        },
       },
-    });
+    );
 
     const { headers, status } = response;
     const body = await response.json();
@@ -68,15 +70,16 @@ describe('Integration Tests', async () => {
       'cache-control': 'max-age=600',
       'content-type': 'application/json',
     };
-    const response = await main({
-      url: 'https://www.example.com/data-embed-action?fromMins=1000&toMins=0',
-    }, {
-      log,
-      env: {},
-      pathInfo: {
-        suffix: '/https://example.com/_query/run-query/error500',
+    const response = await main(
+      new Request('https://www.example.com/data-embed-action?fromMins=1000&toMins=0'),
+      {
+        log,
+        env: {},
+        pathInfo: {
+          suffix: '/https://example.com/_query/run-query/error500',
+        },
       },
-    });
+    );
 
     const { headers, status } = response;
     const body = await response.json();
@@ -86,15 +89,16 @@ describe('Integration Tests', async () => {
   }).timeout(60000);
 
   it('Rejects unknown URLs', async () => {
-    const response = await main({
-      url: 'https://www.example.com/data-embed-action?',
-    }, {
-      log,
-      env: {},
-      pathInfo: {
-        suffix: '/https://example.com',
+    const response = await main(
+      new Request('https://www.example.com/data-embed-action?'),
+      {
+        log,
+        env: {},
+        pathInfo: {
+          suffix: '/https://example.com',
+        },
       },
-    });
+    );
     assert.equal(response.status, 404);
   });
 });
@@ -106,12 +110,13 @@ describe('Index result Tests', () => {
         body: TEST_DATA,
       }),
     });
-    const response = await customMain({
-      url: `https://www.example.com/data-embed-action?${querystring.stringify({
+    const response = await customMain(
+      new Request(`https://www.example.com/data-embed-action?${querystring.stringify({
         src: 'https://foo.com',
         'hlx_p.limit': 10,
-      })}`,
-    }, { log });
+      })}`),
+      { log },
+    );
     assert.deepEqual(await response.json(), {
       data: TEST_DATA.slice(0, 10),
       limit: 10,
@@ -126,12 +131,13 @@ describe('Index result Tests', () => {
         body: TEST_DATA,
       }),
     });
-    const response = await customMain({
-      url: `https://www.example.com/data-embed-action?${querystring.stringify({
+    const response = await customMain(
+      new Request(`https://www.example.com/data-embed-action?${querystring.stringify({
         src: 'https://foo.com',
         'hlx_p.offset': 9000,
-      })}`,
-    }, { log });
+      })}`),
+      { log },
+    );
     assert.deepEqual(await response.json(), {
       data: TEST_DATA.slice(9000),
       limit: 1000,
@@ -146,13 +152,14 @@ describe('Index result Tests', () => {
         body: TEST_DATA,
       }),
     });
-    const response = await customMain({
-      url: `https://www.example.com/data-embed-action?${querystring.stringify({
+    const response = await customMain(
+      new Request(`https://www.example.com/data-embed-action?${querystring.stringify({
         src: 'https://foo.com',
         'hlx_p.limit': 50,
         'hlx_p.offset': 100,
-      })}`,
-    }, { log });
+      })}`),
+      { log },
+    );
     assert.deepEqual(await response.json(), {
       data: TEST_DATA.slice(100, 150),
       limit: 50,
@@ -167,11 +174,12 @@ describe('Index result Tests', () => {
         body: TEST_DATA,
       }),
     });
-    const response = await customMain({
-      url: `https://www.example.com/data-embed-action?${querystring.stringify({
+    const response = await customMain(
+      new Request(`https://www.example.com/data-embed-action?${querystring.stringify({
         src: 'https://foo.com',
-      })}`,
-    }, { log });
+      })}`),
+      { log },
+    );
     assert.deepEqual(await response.json(), {
       data: TEST_DATA.slice(0, 4970),
       limit: 4970,

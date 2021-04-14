@@ -13,19 +13,22 @@
 
 const assert = require('assert');
 const querystring = require('querystring');
+const { Request } = require('@adobe/helix-universal');
 const { condit } = require('@adobe/helix-testutils');
+const { OneDrive } = require('@adobe/helix-onedrive-support');
 const { main: universalMain } = require('../src/index');
 
 require('dotenv').config();
 
 const condition = condit.hasenv('AZURE_WORD2MD_CLIENT_ID', 'AZURE_HELIX_USER', 'AZURE_HELIX_PASSWORD');
 
-async function main(params = {}, env = {}) {
-  const resp = await universalMain({
-    url: `https://data-emmbed.com/fetch?${querystring.encode(params)}`,
-  }, {
-    env,
-  });
+async function main(params = {}, env = {}, headers = {}) {
+  const resp = await universalMain(
+    new Request(`https://data-emmbed.com/fetch?${querystring.encode(params)}`, { headers }),
+    {
+      env,
+    },
+  );
   return {
     statusCode: resp.status,
     body: await resp.json(),
@@ -45,6 +48,26 @@ const DATA_COUNTRIES = [{ Country: 'Japan', Code: 'JP', Number: 3 },
   { Country: 'Australia', Code: 'AUS', Number: 12 }];
 
 describe('Excel Integration Test', () => {
+  condit('Excel Spreadsheet without AZURE_HELIX_USER throws error', condition, async () => {
+    const result = await main({
+      src: 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/data-embed-no-default.xlsx?d=wf80aa1d65efb4e41bd16ba3ca0a4564b&csf=1&web=1&e=9WnXzf',
+    }, {
+      AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
+      AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
+    });
+    assert.equal(result.statusCode, 500);
+  }).timeout(15000);
+
+  condit('Excel Spreadsheet without AZURE_HELIX_PASSWORD throws error', condition, async () => {
+    const result = await main({
+      src: 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/data-embed-no-default.xlsx?d=wf80aa1d65efb4e41bd16ba3ca0a4564b&csf=1&web=1&e=9WnXzf',
+    }, {
+      AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
+      AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
+    });
+    assert.equal(result.statusCode, 500);
+  }).timeout(15000);
+
   condit('Excel Spreadsheet without helix-default sheet returns 404', condition, async () => {
     const result = await main({
       src: 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/data-embed-no-default.xlsx?d=wf80aa1d65efb4e41bd16ba3ca0a4564b&csf=1&web=1&e=9WnXzf',
@@ -116,6 +139,55 @@ describe('Excel Integration Test', () => {
       AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
       AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
       AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
+    });
+    assert.equal(result.statusCode, 200);
+    assert.deepEqual(result.body, {
+      data: DATA_COUNTRIES,
+      limit: 6,
+      offset: 0,
+      total: 6,
+    });
+  }).timeout(15000);
+
+  condit('Retrieves Excel Spreadsheet with access token', condition, async () => {
+    const od = new OneDrive({
+      clientId: process.env.AZURE_WORD2MD_CLIENT_ID,
+      username: process.env.AZURE_HELIX_USER,
+      password: process.env.AZURE_HELIX_PASSWORD,
+    });
+
+    const { accessToken } = await od.getAccessToken();
+    await od.dispose();
+    const result = await main({
+      src: 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data.xlsx?d=w6911fff4a52a4b3fb80560d8785adfa3&csf=1&web=1&e=fkkA2a',
+    }, {
+      AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
+    }, {
+      authorization: `Bearer ${accessToken}`,
+    });
+    assert.equal(result.statusCode, 200);
+    assert.deepEqual(result.body, {
+      data: DATA_COUNTRIES,
+      limit: 6,
+      offset: 0,
+      total: 6,
+    });
+  }).timeout(15000);
+
+  condit('Retrieves Excel Spreadsheet with refresh token', condition, async () => {
+    const od = new OneDrive({
+      clientId: process.env.AZURE_WORD2MD_CLIENT_ID,
+      username: process.env.AZURE_HELIX_USER,
+      password: process.env.AZURE_HELIX_PASSWORD,
+    });
+
+    const { refreshToken } = await od.getAccessToken();
+    await od.dispose();
+    const result = await main({
+      src: 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data.xlsx?d=w6911fff4a52a4b3fb80560d8785adfa3&csf=1&web=1&e=fkkA2a',
+    }, {
+      AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
+      AZURE_WORD2MD_REFRESH_TOKEN: refreshToken,
     });
     assert.equal(result.statusCode, 200);
     assert.deepEqual(result.body, {

@@ -11,46 +11,50 @@
  */
 /* eslint-env mocha */
 const assert = require('assert');
+const { Request } = require('@adobe/helix-universal');
 const { main } = require('../src/index');
 
 describe('Feed Tests', () => {
   it('Works for RSS Feeds', async () => {
-    const response = await main({
-      url: 'https://www.example.com/data-embed-action',
-    }, {
-      env: {},
-      pathInfo: {
-        suffix: '/https://daringfireball.net/feeds/articles',
+    const response = await main(
+      new Request('https://www.example.com/data-embed-action'),
+      {
+        env: {},
+        pathInfo: {
+          suffix: '/https://daringfireball.net/feeds/articles',
+        },
       },
-    });
+    );
     assert.equal(response.status, 200);
     const body = await response.json();
     assert.ok(body.data.length > 1);
   }).timeout(10000);
 
   it('Works for RSS Feeds with Limits', async () => {
-    const response = await main({
-      url: 'https://www.example.com/data-embed-action?hlx_p.limit=1',
-    }, {
-      env: {},
-      pathInfo: {
-        suffix: '/https://daringfireball.net/feeds/main',
+    const response = await main(
+      new Request('https://www.example.com/data-embed-action?hlx_p.limit=1'),
+      {
+        env: {},
+        pathInfo: {
+          suffix: '/https://daringfireball.net/feeds/main',
+        },
       },
-    });
+    );
     assert.equal(response.status, 200);
     const body = await response.json();
     assert.equal(body.data.length, 1);
   }).timeout(10000);
 
   it('Rejects invalid RSS Feeds', async () => {
-    const response = await main({
-      url: 'https://www.example.com/data-embed-action?feed=atom&foo=bar',
-    }, {
-      env: {},
-      pathInfo: {
-        suffix: '/https://example.com',
+    const response = await main(
+      new Request('https://www.example.com/data-embed-action?feed=atom&foo=bar'),
+      {
+        env: {},
+        pathInfo: {
+          suffix: '/https://example.com',
+        },
       },
-    });
+    );
     assert.equal(response.status, 500);
   }).timeout(5000);
 });

@@ -11,24 +11,64 @@
  */
 const { OneDrive } = require('@adobe/helix-onedrive-support');
 
+/**
+ * Returns the onedrive client - authenticated either via bearer token or env credentials.
+ *
+ * @param {object} env environment params
+ * @param {Logger} log logger
+ * @returns {OneDrive} the onedrive client
+ */
+async function getOneDriveClient(env, log) {
+  const {
+    AZURE_WORD2MD_CLIENT_ID: clientId,
+    AZURE_WORD2MD_CLIENT_SECRET: clientSecret,
+    AZURE_WORD2MD_REFRESH_TOKEN: refreshToken,
+    AZURE_HELIX_USER: username,
+    AZURE_HELIX_PASSWORD: password,
+    AUTHORIZATION: auth,
+  } = env;
+
+  // check for authenticated request
+  if (auth && auth.startsWith('Bearer ')) {
+    const od = new OneDrive({
+      clientId,
+      clientSecret,
+      log,
+    });
+    od.getAccessToken = () => ({
+      accessToken: auth.substring(7),
+    });
+    return od;
+  }
+
+  if (!refreshToken) {
+    if (!username) {
+      throw new Error('AZURE_HELIX_USER or AZURE_WORD2MD_REFRESH_TOKEN parameter missing.');
+    }
+    if (!password) {
+      throw new Error('AZURE_HELIX_PASSWORD or AZURE_WORD2MD_REFRESH_TOKEN parameter missing.');
+    }
+  }
+
+  return new OneDrive({
+    clientId,
+    clientSecret,
+    refreshToken,
+    username,
+    password,
+    log,
+  });
+}
+
 async function extract(url, params, env, log = console) {
   const {
     sheet,
     table,
   } = params;
-  const {
-    AZURE_WORD2MD_CLIENT_ID: clientId,
-    AZURE_HELIX_USER: username,
-    AZURE_HELIX_PASSWORD: password,
-  } = env;
-
+  let drive;
   try {
-    const drive = new OneDrive({
-      clientId,
-      username,
-      password,
-      log,
-    });
+    drive = await getOneDriveClient(env, log);
+
     let item = await drive.getDriveItemFromShareLink(url);
     /* istanbul ignore else */
     if (!item.lastModifiedDateTime) {
@@ -109,12 +149,16 @@ async function extract(url, params, env, log = console) {
       },
       body: [],
     };
+  } finally {
+    if (drive) {
+      await drive.dispose();
+    }
   }
 }
 
 module.exports = {
   name: 'excel',
-  required: ['AZURE_WORD2MD_CLIENT_ID', 'AZURE_HELIX_USER', 'AZURE_HELIX_PASSWORD'],
+  required: ['AZURE_WORD2MD_CLIENT_ID'],
   accept: (url) => url.protocol === 'onedrive:' || /^https:\/\/.*\.sharepoint\.com\//.test(url),
   extract,
 };

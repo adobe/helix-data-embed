@@ -31,6 +31,11 @@ async function main(req, context) {
   }
   try {
     const { searchParams } = new URL(req.url);
+    // little workaround to get authorization header to the embedders
+    const env = {
+      ...context.env,
+      AUTHORIZATION: req.headers.get('authorization'),
+    };
 
     log.info(`data-embed for datasource ${url}`);
     const qbquery = loadquerystring(searchParams, 'hlx_');
@@ -42,7 +47,7 @@ async function main(req, context) {
       p[key] = value;
       return p;
     }, {});
-    const result = await embed(url, params, context.env, log);
+    const result = await embed(url, params, env, log);
 
     const {
       body,
