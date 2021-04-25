@@ -34,7 +34,7 @@
   "dependencies": {
     "@adobe/helix-fetch": "2.2.0",
     "@adobe/helix-onedrive-support": "4.1.0",
-    "@adobe/helix-shared": "7.26.3",
+    "@adobe/helix-shared": "7.27.0",
     "@adobe/helix-status": "9.1.6",
     "@adobe/helix-universal": "1.2.1",
     "@adobe/helix-universal-logger": "1.0.2",
