@@ -1,3 +1,10 @@
+## [2.5.8](https://github.com/adobe/helix-data-embed/compare/v2.5.7...v2.5.8) (2021-04-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-shared to v7.29.1 ([#348](https://github.com/adobe/helix-data-embed/issues/348)) ([56e73a5](https://github.com/adobe/helix-data-embed/commit/56e73a5c6b09b515c91f7839670182f724c2a6cf))
+
 ## [2.5.7](https://github.com/adobe/helix-data-embed/compare/v2.5.6...v2.5.7) (2021-04-27)
 
 
