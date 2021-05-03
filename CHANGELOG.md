@@ -1,3 +1,10 @@
+## [2.5.9](https://github.com/adobe/helix-data-embed/compare/v2.5.8...v2.5.9) (2021-05-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-universal-logger to v1.0.3 ([#353](https://github.com/adobe/helix-data-embed/issues/353)) ([6df05fb](https://github.com/adobe/helix-data-embed/commit/6df05fbd8e23bd18b1b6a931751db8895b3fe7ec))
+
 ## [2.5.8](https://github.com/adobe/helix-data-embed/compare/v2.5.7...v2.5.8) (2021-04-28)
 
 
