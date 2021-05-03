@@ -11,7 +11,7 @@
  */
 /* eslint-disable camelcase */
 
-const { utils } = require('@adobe/helix-shared');
+const { propagateStatusCode, logLevelForStatusCode } = require('@adobe/helix-shared-utils');
 const { fetch } = require('@adobe/helix-fetch');
 
 async function extract(url, params, env, log = console) {
@@ -22,8 +22,8 @@ async function extract(url, params, env, log = console) {
   const DEFAULT_CACHE = 'max-age=600';
 
   const results = await fetch(url.hostname === 'adobeioruntime.net' ? url.toString() : resource);
-  const statusCode = utils.propagateStatusCode(results.status);
-  const logLevel = utils.logLevelForStatusCode(results.status);
+  const statusCode = propagateStatusCode(results.status);
+  const logLevel = logLevelForStatusCode(results.status);
   const cacheControl = results.headers.get('cache-control');
 
   try {
