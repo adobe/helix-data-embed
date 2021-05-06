@@ -9,6 +9,8 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+process.env.HELIX_FETCH_FORCE_HTTP1 = true;
+
 /* eslint-env mocha */
 
 const assert = require('assert');
@@ -31,7 +33,7 @@ async function main(params = {}, env = {}, headers = {}) {
   );
   return {
     statusCode: resp.status,
-    body: await resp.json(),
+    body: resp.headers.get('content-type') === 'application/json' ? await resp.json() : await resp.text(),
     headers: [...resp.headers.keys()].reduce((result, key) => {
       // eslint-disable-next-line no-param-reassign
       result[key] = resp.headers.get(key);
@@ -56,7 +58,7 @@ describe('Excel Integration Test', () => {
       AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
     });
     assert.equal(result.statusCode, 500);
-  }).timeout(15000);
+  }).timeout(30000);
 
   condit('Excel Spreadsheet without AZURE_HELIX_PASSWORD throws error', condition, async () => {
     const result = await main({
@@ -66,9 +68,9 @@ describe('Excel Integration Test', () => {
       AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
     });
     assert.equal(result.statusCode, 500);
-  }).timeout(15000);
+  }).timeout(30000);
 
-  condit('Excel Spreadsheet without helix-default sheet returns 404', condition, async () => {
+  condit('Excel Spreadsheet returns all helix sheets', condition, async () => {
     const result = await main({
       src: 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/data-embed-no-default.xlsx?d=wf80aa1d65efb4e41bd16ba3ca0a4564b&csf=1&web=1&e=9WnXzf',
     }, {
@@ -76,8 +78,14 @@ describe('Excel Integration Test', () => {
       AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
       AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
     });
-    assert.equal(result.statusCode, 404);
-  }).timeout(15000);
+    assert.equal(result.statusCode, 200);
+    assert.deepEqual(result.body, {
+      data: DATA_COUNTRIES,
+      limit: 6,
+      offset: 0,
+      total: 6,
+    });
+  }).timeout(30000);
 
   condit('Excel Spreadsheet without helix-default but sheet params', condition, async () => {
     const result = await main({
@@ -95,7 +103,7 @@ describe('Excel Integration Test', () => {
       offset: 0,
       total: 6,
     });
-  }).timeout(15000);
+  }).timeout(30000);
 
   condit('Excel Spreadsheet without helix returns first sheet', condition, async () => {
     const result = await main({
@@ -112,7 +120,7 @@ describe('Excel Integration Test', () => {
       offset: 0,
       total: 1,
     });
-  }).timeout(15000);
+  }).timeout(30000);
 
   condit('Excel Spreadsheet without helix-default but sheet params Unicode', condition, async () => {
     const result = await main({
@@ -130,7 +138,7 @@ describe('Excel Integration Test', () => {
       offset: 0,
       total: 1,
     });
-  }).timeout(15000);
+  }).timeout(30000);
 
   condit('Retrieves Excel Spreadsheet with helix-default (range)', condition, async () => {
     const result = await main({

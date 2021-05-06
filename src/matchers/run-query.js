@@ -10,9 +10,17 @@
  * governing permissions and limitations under the License.
  */
 /* eslint-disable camelcase */
-
 const { propagateStatusCode, logLevelForStatusCode } = require('@adobe/helix-shared-utils');
-const { fetch } = require('@adobe/helix-fetch');
+const fetchAPI = require('@adobe/helix-fetch');
+
+const { context, ALPN_HTTP1_1 } = fetchAPI;
+const { fetch } = process.env.HELIX_FETCH_FORCE_HTTP1
+  ? context({
+    alpnProtocols: [ALPN_HTTP1_1],
+    userAgent: 'helix-fetch', // static user agent for test recordings
+  })
+  /* istanbul ignore next */
+  : fetchAPI;
 
 async function extract(url, params, env, log = console) {
   const host = 'https://adobeioruntime.net';
@@ -36,7 +44,10 @@ async function extract(url, params, env, log = console) {
         'Content-Type': 'application/json',
         'Cache-Control': cacheControl || DEFAULT_CACHE,
       },
-      body: (await results.json()).results,
+      body: [{
+        name: 'run-query',
+        data: (await results.json()).results,
+      }],
     };
   } catch (e) {
     log[logLevel](`data request to ${resource} failed ${e.message}`);

@@ -9,6 +9,8 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+process.env.HELIX_FETCH_FORCE_HTTP1 = true;
+
 /* eslint-env mocha */
 const assert = require('assert');
 const querystring = require('querystring');
@@ -58,10 +60,10 @@ describe('Integration Tests', async () => {
     );
 
     const { headers, status } = response;
+    assert.equal(status, 200);
     const body = await response.json();
     assert.ok(Array.isArray(body.data));
     assert.deepEqual(headers.plain(), EXPECTED_HEADERS);
-    assert.equal(status, 200);
   })
     .timeout(60000);
 
@@ -107,7 +109,10 @@ describe('Index result Tests', () => {
   it('handles limit correctly', async () => {
     const { main: customMain } = proxyquire('../src/index.js', {
       './embed.js': () => ({
-        body: TEST_DATA,
+        body: [{
+          name: 'helix-default',
+          data: TEST_DATA,
+        }],
       }),
     });
     const response = await customMain(
@@ -128,7 +133,10 @@ describe('Index result Tests', () => {
   it('handles offset correctly', async () => {
     const { main: customMain } = proxyquire('../src/index.js', {
       './embed.js': () => ({
-        body: TEST_DATA,
+        body: [{
+          name: 'helix-default',
+          data: TEST_DATA,
+        }],
       }),
     });
     const response = await customMain(
@@ -149,7 +157,10 @@ describe('Index result Tests', () => {
   it('handles limit and offset correctly', async () => {
     const { main: customMain } = proxyquire('../src/index.js', {
       './embed.js': () => ({
-        body: TEST_DATA,
+        body: [{
+          name: 'helix-default',
+          data: TEST_DATA,
+        }],
       }),
     });
     const response = await customMain(
@@ -168,10 +179,54 @@ describe('Index result Tests', () => {
     });
   });
 
+  it('handles limit and offset correctly for multiple sheets', async () => {
+    const { main: customMain } = proxyquire('../src/index.js', {
+      './embed.js': () => ({
+        body: [{
+          name: 'one',
+          data: TEST_DATA,
+        }, {
+          name: 'two',
+          data: TEST_DATA,
+        }],
+      }),
+    });
+    const response = await customMain(
+      new Request(`https://www.example.com/data-embed-action?${querystring.stringify({
+        src: 'https://foo.com',
+        'hlx_p.limit': 50,
+        'hlx_p.offset': 100,
+      })}`),
+      { log },
+    );
+    assert.deepEqual(await response.json(), {
+      ':names': [
+        'one',
+        'two',
+      ],
+      ':type': 'multi-sheet',
+      one: {
+        data: TEST_DATA.slice(100, 150),
+        limit: 50,
+        offset: 100,
+        total: 10000,
+      },
+      two: {
+        data: TEST_DATA.slice(100, 150),
+        limit: 50,
+        offset: 100,
+        total: 10000,
+      },
+    });
+  });
+
   it('truncates result if too large for action response', async () => {
     const { main: customMain } = proxyquire('../src/index.js', {
       './embed.js': () => ({
-        body: TEST_DATA,
+        body: [{
+          name: 'helix-default',
+          data: TEST_DATA,
+        }],
       }),
     });
     const response = await customMain(

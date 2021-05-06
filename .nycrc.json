@@ -6,5 +6,5 @@
   "check-coverage": true,
   "lines": 100,
   "branches": 100,
-  "statements": 95
+  "statements": 100
 }

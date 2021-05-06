@@ -18,6 +18,10 @@ const { loadquerystring } = require('./querybuilder/url');
 const { createfilter } = require('./querybuilder/filter');
 const dataSource = require('./data-source.js');
 
+const TYPE_KEY = ':type';
+
+const NAMES_KEY = ':names';
+
 const MAX_DATA_SIZE = 750000;
 
 async function main(req, context) {
@@ -54,24 +58,58 @@ async function main(req, context) {
       statusCode: status,
       headers,
     } = result;
-    log.debug(`result body size: ${JSON.stringify(body).length}`);
-    const filtered = filter(body);
-    let size = JSON.stringify(filtered).length;
-    log.info(`filtered result ${filtered.length} rows. size: ${size}`);
+
+    // if not data set, return
+    if (body.length === 0) {
+      return new Response('[]', {
+        status,
+        headers,
+      });
+    }
+
+    // default to multi sheet
+    let ret = {
+      [TYPE_KEY]: 'multi-sheet',
+      [NAMES_KEY]: [],
+    };
+
+    // todo: support per-sheet limits, offsets
+    let numRows = 0;
+    body.forEach(({ name, data }) => {
+      ret[NAMES_KEY].push(name);
+      const filtered = filter(data);
+      ret[name] = {
+        total: data.length,
+        offset: filter.offset || 0,
+        limit: filtered.length,
+        data: filtered,
+      };
+      numRows += filtered.length;
+    });
+
+    let size = JSON.stringify(ret).length;
+    log.info(`filtered result ${numRows} rows. size: ${size}.`);
     if (size > MAX_DATA_SIZE) {
       // todo: could be optimized to be more accurate using some binary search approach
-      const avgRowSize = size / filtered.length;
+      const avgRowSize = size / numRows;
       const retain = Math.floor(MAX_DATA_SIZE / avgRowSize);
-      filtered.splice(retain, filtered.length - retain);
-      size = JSON.stringify(filtered).length;
-      log.info(`result truncated to ${filtered.length} rows. size: ${size}`);
+      const retainPerDataSet = Math.ceil(retain / body.length);
+      numRows = 0;
+      ret[NAMES_KEY].forEach((name) => {
+        const set = ret[name];
+        set.data.splice(retainPerDataSet, set.data.length - retainPerDataSet);
+        set.limit = set.data.length;
+        numRows += set.data.length;
+      });
+      size = JSON.stringify(ret).length;
+      log.info(`result truncated to ${numRows} rows. size: ${size}.`);
     }
-    const bodyText = JSON.stringify({
-      total: body.length,
-      offset: filter.offset || 0,
-      limit: filtered.length,
-      data: filtered,
-    });
+
+    // if only 1 data set, unwrap it
+    if (ret[NAMES_KEY].length === 1) {
+      ret = ret[ret[NAMES_KEY][0]];
+    }
+    const bodyText = JSON.stringify(ret);
     return new Response(bodyText, {
       status,
       headers,
@@ -81,7 +119,7 @@ async function main(req, context) {
     return new Response('error fetching data', {
       status: 500,
       headers: {
-        'content-type': 'application/json',
+        'content-type': 'text/plain',
         'cache-control': 'no-store, private, must-revalidate',
       },
     });
