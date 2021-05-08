@@ -220,7 +220,7 @@ describe('Index result Tests', () => {
     });
   });
 
-  it('truncates result if too large for action response', async () => {
+  it('truncates result if too large for action response in openwhisk', async () => {
     const { main: customMain } = proxyquire('../src/index.js', {
       './embed.js': () => ({
         body: [{
@@ -233,11 +233,44 @@ describe('Index result Tests', () => {
       new Request(`https://www.example.com/data-embed-action?${querystring.stringify({
         src: 'https://foo.com',
       })}`),
-      { log },
+      {
+        log,
+        runtime: {
+          name: 'apache-openwhisk',
+        },
+      },
     );
     assert.deepEqual(await response.json(), {
       data: TEST_DATA.slice(0, 4970),
       limit: 4970,
+      offset: 0,
+      total: 10000,
+    });
+  });
+
+  it('does not truncate result if too large for action response in lambda', async () => {
+    const { main: customMain } = proxyquire('../src/index.js', {
+      './embed.js': () => ({
+        body: [{
+          name: 'helix-default',
+          data: TEST_DATA,
+        }],
+      }),
+    });
+    const response = await customMain(
+      new Request(`https://www.example.com/data-embed-action?${querystring.stringify({
+        src: 'https://foo.com',
+      })}`),
+      {
+        log,
+        runtime: {
+          name: 'aws-lambda',
+        },
+      },
+    );
+    assert.deepEqual(await response.json(), {
+      data: TEST_DATA,
+      limit: 10000,
       offset: 0,
       total: 10000,
     });

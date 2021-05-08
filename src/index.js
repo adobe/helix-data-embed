@@ -22,7 +22,22 @@ const TYPE_KEY = ':type';
 
 const NAMES_KEY = ':names';
 
-const MAX_DATA_SIZE = 750000;
+const MAX_SIZES = {
+  'apache-openwhisk': 750000,
+  'aws-lambda': 1024 * 1024 * 10,
+  'googlecloud-functions': 1024 * 1024 * 32,
+  'azure-functions': 1024 * 1024 * 100,
+};
+
+/**
+ * Returns the max size for the given environment
+ * @param {UniversalContext} context
+ * @return {number} the maximum response size
+ */
+function getMaxSize(context) {
+  const name = context.runtime && context.runtime.name;
+  return MAX_SIZES[name] || Number.MAX_SAFE_INTEGER;
+}
 
 async function main(req, context) {
   /* istanbul ignore next */
@@ -89,10 +104,11 @@ async function main(req, context) {
 
     let size = JSON.stringify(ret).length;
     log.info(`filtered result ${numRows} rows. size: ${size}.`);
-    if (size > MAX_DATA_SIZE) {
+    const maxSize = getMaxSize(context);
+    if (size > maxSize) {
       // todo: could be optimized to be more accurate using some binary search approach
       const avgRowSize = size / numRows;
-      const retain = Math.floor(MAX_DATA_SIZE / avgRowSize);
+      const retain = Math.floor(maxSize / avgRowSize);
       const retainPerDataSet = Math.ceil(retain / body.length);
       numRows = 0;
       ret[NAMES_KEY].forEach((name) => {
