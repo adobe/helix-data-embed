@@ -20,6 +20,8 @@ const dataSource = require('./data-source.js');
 
 const TYPE_KEY = ':type';
 
+const VERSION_KEY = ':version';
+
 const NAMES_KEY = ':names';
 
 const MAX_SIZES = {
@@ -124,7 +126,9 @@ async function main(req, context) {
     // if only 1 data set, unwrap it
     if (ret[NAMES_KEY].length === 1) {
       ret = ret[ret[NAMES_KEY][0]];
+      ret[TYPE_KEY] = 'sheet';
     }
+    ret[VERSION_KEY] = 3;
     const bodyText = JSON.stringify(ret);
     return new Response(bodyText, {
       status,

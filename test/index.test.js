@@ -16,6 +16,7 @@ const assert = require('assert');
 const querystring = require('querystring');
 const proxyquire = require('proxyquire');
 const { Request } = require('@adobe/helix-universal');
+const { DataEmbedValidator } = require('@adobe/helix-shared-config');
 const { main } = require('../src/index');
 
 const log = {
@@ -28,11 +29,16 @@ const log = {
 
 const TEST_DATA = [];
 for (let i = 0; i < 10000; i += 1) {
-  const col = [];
-  TEST_DATA.push(col);
+  const row = {};
+  TEST_DATA.push(row);
   for (let j = 0; j < 10; j += 1) {
-    col.push(`cell(${i},${j})`);
+    row[`col${j}`] = `cell(${i},${j})`;
   }
+}
+
+function validate(data) {
+  const validator = new DataEmbedValidator();
+  validator.assertValid(data);
 }
 
 describe('Integration Tests', async () => {
@@ -62,7 +68,7 @@ describe('Integration Tests', async () => {
     const { headers, status } = response;
     assert.equal(status, 200);
     const body = await response.json();
-    assert.ok(Array.isArray(body.data));
+    await validate(body);
     assert.deepEqual(headers.plain(), EXPECTED_HEADERS);
   })
     .timeout(60000);
@@ -85,7 +91,7 @@ describe('Integration Tests', async () => {
 
     const { headers, status } = response;
     const body = await response.json();
-    assert.ok(Array.isArray(body.data));
+    await validate(body);
     assert.deepEqual(headers.plain(), EXPECTED_HEADERS);
     assert.equal(status, 200);
   }).timeout(60000);
@@ -122,7 +128,11 @@ describe('Index result Tests', () => {
       })}`),
       { log },
     );
-    assert.deepEqual(await response.json(), {
+    const data = await response.json();
+    await validate(data);
+    assert.deepEqual(data, {
+      ':version': 3,
+      ':type': 'sheet',
       data: TEST_DATA.slice(0, 10),
       limit: 10,
       offset: 0,
@@ -146,7 +156,11 @@ describe('Index result Tests', () => {
       })}`),
       { log },
     );
-    assert.deepEqual(await response.json(), {
+    const data = await response.json();
+    await validate(data);
+    assert.deepEqual(data, {
+      ':version': 3,
+      ':type': 'sheet',
       data: TEST_DATA.slice(9000),
       limit: 1000,
       offset: 9000,
@@ -171,7 +185,11 @@ describe('Index result Tests', () => {
       })}`),
       { log },
     );
-    assert.deepEqual(await response.json(), {
+    const data = await response.json();
+    await validate(data);
+    assert.deepEqual(data, {
+      ':version': 3,
+      ':type': 'sheet',
       data: TEST_DATA.slice(100, 150),
       limit: 50,
       offset: 100,
@@ -199,12 +217,15 @@ describe('Index result Tests', () => {
       })}`),
       { log },
     );
-    assert.deepEqual(await response.json(), {
+    const data = await response.json();
+    await validate(data);
+    assert.deepEqual(data, {
+      ':type': 'multi-sheet',
+      ':version': 3,
       ':names': [
         'one',
         'two',
       ],
-      ':type': 'multi-sheet',
       one: {
         data: TEST_DATA.slice(100, 150),
         limit: 50,
@@ -240,9 +261,13 @@ describe('Index result Tests', () => {
         },
       },
     );
-    assert.deepEqual(await response.json(), {
-      data: TEST_DATA.slice(0, 4970),
-      limit: 4970,
+    const data = await response.json();
+    await validate(data);
+    assert.deepEqual(data, {
+      ':version': 3,
+      ':type': 'sheet',
+      data: TEST_DATA.slice(0, 3395),
+      limit: 3395,
       offset: 0,
       total: 10000,
     });
@@ -268,7 +293,11 @@ describe('Index result Tests', () => {
         },
       },
     );
-    assert.deepEqual(await response.json(), {
+    const data = await response.json();
+    await validate(data);
+    assert.deepEqual(data, {
+      ':version': 3,
+      ':type': 'sheet',
       data: TEST_DATA,
       limit: 10000,
       offset: 0,

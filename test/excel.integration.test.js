@@ -80,6 +80,8 @@ describe('Excel Integration Test', () => {
     });
     assert.equal(result.statusCode, 200);
     assert.deepEqual(result.body, {
+      ':version': 3,
+      ':type': 'sheet',
       data: DATA_COUNTRIES,
       limit: 6,
       offset: 0,
@@ -98,6 +100,8 @@ describe('Excel Integration Test', () => {
     });
     assert.equal(result.statusCode, 200);
     assert.deepEqual(result.body, {
+      ':version': 3,
+      ':type': 'sheet',
       data: DATA_COUNTRIES,
       limit: 6,
       offset: 0,
@@ -115,6 +119,8 @@ describe('Excel Integration Test', () => {
     });
     assert.equal(result.statusCode, 200);
     assert.deepEqual(result.body, {
+      ':version': 3,
+      ':type': 'sheet',
       data: [{ Country: 'Japan', Code: 'JP', Number: 81 }],
       limit: 1,
       offset: 0,
@@ -133,6 +139,8 @@ describe('Excel Integration Test', () => {
     });
     assert.equal(result.statusCode, 200);
     assert.deepEqual(result.body, {
+      ':version': 3,
+      ':type': 'sheet',
       data: [{ Country: 'Japan', Code: 'JP', Number: 3 }],
       limit: 1,
       offset: 0,
@@ -150,6 +158,8 @@ describe('Excel Integration Test', () => {
     });
     assert.equal(result.statusCode, 200);
     assert.deepEqual(result.body, {
+      ':version': 3,
+      ':type': 'sheet',
       data: DATA_COUNTRIES,
       limit: 6,
       offset: 0,
@@ -175,6 +185,8 @@ describe('Excel Integration Test', () => {
     });
     assert.equal(result.statusCode, 200);
     assert.deepEqual(result.body, {
+      ':version': 3,
+      ':type': 'sheet',
       data: DATA_COUNTRIES,
       limit: 6,
       offset: 0,
@@ -199,6 +211,8 @@ describe('Excel Integration Test', () => {
     });
     assert.equal(result.statusCode, 200);
     assert.deepEqual(result.body, {
+      ':version': 3,
+      ':type': 'sheet',
       data: DATA_COUNTRIES,
       limit: 6,
       offset: 0,
@@ -218,6 +232,8 @@ describe('Excel Integration Test', () => {
     });
     assert.equal(result.statusCode, 200);
     assert.deepEqual(result.body, {
+      ':version': 3,
+      ':type': 'sheet',
       data: [{ A: 112, B: 224, C: 135 }, { A: 2244, B: 234, C: 53 }],
       limit: 2,
       offset: 0,
@@ -238,6 +254,8 @@ describe('Excel Integration Test', () => {
     });
     assert.equal(result.statusCode, 200);
     assert.deepEqual(result.body, {
+      ':version': 3,
+      ':type': 'sheet',
       data: [{ X: 111, Y: 222, Z: 333 }, { X: 444, Y: 555, Z: 666 }],
       limit: 2,
       offset: 0,
@@ -257,6 +275,8 @@ describe('Excel Integration Test', () => {
     });
     assert.equal(result.statusCode, 200);
     assert.deepEqual(result.body, {
+      ':version': 3,
+      ':type': 'sheet',
       data: [{ Code: 'CH', Country: 'Switzerland', Number: 27 }, { Code: 'FR', Country: 'France', Number: 99 }],
       limit: 2,
       offset: 3,
