@@ -13,7 +13,7 @@
     "build": "hedy -v",
     "deploy": "hedy -v --deploy --test",
     "deploy-ci": "hedy -v --deploy --test --pkgVersion=ci$CIRCLE_BUILD_NUM -l ci",
-    "deploy-sequences": "hedy --no-build -no-hints -l latest -l major -l minor"
+    "deploy-sequences": "hedy --no-build -no-hints -l major -l minor"
   },
   "wsk": {
     "namespace": "helix",
