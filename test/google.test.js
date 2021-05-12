@@ -12,6 +12,8 @@
 /* eslint-env mocha */
 /* eslint-disable global-require, class-methods-use-this */
 const assert = require('assert');
+const path = require('path');
+const fs = require('fs-extra');
 const proxyquire = require('proxyquire');
 
 class MockOAuth2 {
@@ -129,6 +131,9 @@ describe('Google Sheets Tests (mocked)', () => {
   });
 
   it('Works for mocked Google Sheets', async () => {
+    const expected = await fs.readJson(path.resolve(__dirname, 'fixtures', 'google-data-sheet1.json'));
+    // eslint-disable-next-line no-param-reassign,no-return-assign
+    expected.forEach((row) => Object.entries(row).forEach(([key, value]) => row[key] = value === '[undefined]' ? undefined : value));
     const result = await extract(
       new URL('https://docs.google.com/spreadsheets/d/1IX0g5P74QnHPR3GW1AMCdTk_-m954A-FKZRT2uOZY7k/edit?ouid=107837958797411838063&usp=sheets_home&ths=true'),
       {},
@@ -139,9 +144,10 @@ describe('Google Sheets Tests (mocked)', () => {
       },
     );
     assert.equal(result.statusCode, 200);
-    assert.notEqual(result.body.length, 0);
-    assert.equal(result.body[0].Modell, 'Trajet');
-    assert.ok(result.body[0].Preis);
+    assert.deepEqual(result.body, [{
+      name: 'default',
+      data: expected,
+    }]);
   }).timeout(15000);
 
   it('Returns 404 for unknown sheet', async () => {
@@ -159,7 +165,10 @@ describe('Google Sheets Tests (mocked)', () => {
     assert.equal(result.statusCode, 404);
   }).timeout(15000);
 
-  it('Returns 404 for sheets with no helix-default', async () => {
+  it('Returns 404 all helix sheets', async () => {
+    const expected = await fs.readJson(path.resolve(__dirname, 'fixtures', 'google-data-sheet1.json'));
+    // eslint-disable-next-line no-param-reassign,no-return-assign
+    expected.forEach((row) => Object.entries(row).forEach(([key, value]) => row[key] = value === '[undefined]' ? undefined : value));
     const result = await extract(
       new URL('https://docs.google.com/spreadsheets/d/3333333333333333333/edit?ouid=107837958797411838063&usp=sheets_home&ths=true'),
       {},
@@ -169,7 +178,15 @@ describe('Google Sheets Tests (mocked)', () => {
         GOOGLE_DOCS2MD_REFRESH_TOKEN: 'fake',
       },
     );
-    assert.equal(result.statusCode, 404);
+    assert.equal(result.statusCode, 200);
+    assert.deepEqual(result.body, [{
+      name: 'countries',
+      data: [{
+        Code: 'CH',
+        Country: 'Switzerland',
+        Number: '41',
+      }],
+    }]);
   }).timeout(15000);
 
   it('Returns first sheet if no helix-sheets', async () => {
@@ -183,7 +200,16 @@ describe('Google Sheets Tests (mocked)', () => {
       },
     );
     assert.equal(result.statusCode, 200);
-    assert.deepEqual(result.body, [{ Code: 'JP', Country: 'Japan', Number: '81' }]);
+    assert.deepEqual(result.body, [
+      {
+        data: [{
+          Code: 'JP',
+          Country: 'Japan',
+          Number: '81',
+        }],
+        name: 'Sheet1',
+      },
+    ]);
   }).timeout(15000);
 
   it('Returns correct sheet', async () => {
@@ -199,11 +225,20 @@ describe('Google Sheets Tests (mocked)', () => {
       },
     );
     assert.equal(result.statusCode, 200);
-    assert.deepEqual(result.body, [{ Code: 'CH', Country: 'Switzerland', Number: '41' }]);
+    assert.deepEqual(result.body, [
+      {
+        data: [{
+          Code: 'CH',
+          Country: 'Switzerland',
+          Number: '41',
+        }],
+        name: 'countries',
+      },
+    ]);
   }).timeout(15000);
 
-  it('Fails (in a good way) for mocked Google Sheets', async () => {
-    const result = await extract(
+  it('Fails for mocked Google Sheets', async () => {
+    await assert.rejects(extract(
       new URL('https://docs.google.com/spreadsheets/d/1IX0g5P74QnHPR3GW1AMCdTk_-m954A-FKZRT2uOZY7k/edit?ouid=107837958797411838063&usp=sheets_home&ths=true'),
       {},
       {
@@ -211,9 +246,7 @@ describe('Google Sheets Tests (mocked)', () => {
         GOOGLE_DOCS2MD_CLIENT_SECRET: 'fake',
         GOOGLE_DOCS2MD_REFRESH_TOKEN: 'fake',
       },
-    );
-    assert.equal(result.statusCode, 500);
-    assert.equal(result.body.length, 0);
+    ));
   }).timeout(15000);
 });
 

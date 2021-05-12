@@ -9,6 +9,8 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+process.env.HELIX_FETCH_FORCE_HTTP1 = true;
+
 /* eslint-env mocha */
 const assert = require('assert');
 // eslint-disable-next-line camelcase

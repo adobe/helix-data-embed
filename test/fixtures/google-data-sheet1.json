@@ -1,0 +1,202 @@
+[
+  {
+    "Hersteller": "Hyundai",
+    "Modell": "Trajet",
+    "Preis": 23000,
+    "Verbrauch": 7.2,
+    "Kofferraum": 304,
+    "Preis2": 1.1,
+    "Verbrauch pro Jahr": 5976,
+    "Gesamtkosten": 28976
+  },
+  {
+    "Hersteller": "Ford",
+    "Modell": "Galaxy Ambiente",
+    "Preis": 24400,
+    "Verbrauch": 10.1,
+    "Kofferraum": 330,
+    "Preis2": 1.3,
+    "Verbrauch pro Jahr": 8383,
+    "Gesamtkosten": 32783
+  },
+  {
+    "Hersteller": "Fiat",
+    "Modell": "Ulysse",
+    "Preis": 25200,
+    "Verbrauch": 9.2,
+    "Kofferraum": 324,
+    "Preis2": 1.3,
+    "Verbrauch pro Jahr": 7635.999999999999,
+    "Gesamtkosten": 32836
+  },
+  {
+    "Hersteller": "Citroën",
+    "Modell": "C8",
+    "Preis": 25400,
+    "Verbrauch": 9.1,
+    "Kofferraum": 324,
+    "Preis2": 1.3,
+    "Verbrauch pro Jahr": 7553,
+    "Gesamtkosten": 32953
+  },
+  {
+    "Hersteller": "Peugeot",
+    "Modell": "807 2.0",
+    "Preis": 25450,
+    "Verbrauch": 9.1,
+    "Kofferraum": 324,
+    "Preis2": 1.3,
+    "Verbrauch pro Jahr": 7553,
+    "Gesamtkosten": 33003
+  },
+  {
+    "Hersteller": "Renault",
+    "Modell": "Espace 2.0 Advantage",
+    "Preis": 25500,
+    "Verbrauch": 9.4,
+    "Kofferraum": 291,
+    "Preis2": 1.3,
+    "Verbrauch pro Jahr": 7802,
+    "Gesamtkosten": 33302
+  },
+  {
+    "Hersteller": "Chrysler",
+    "Modell": "Voyager Family",
+    "Preis": 25900,
+    "Verbrauch": 10.1,
+    "Kofferraum": 660,
+    "Preis2": 1.3,
+    "Verbrauch pro Jahr": 8383,
+    "Gesamtkosten": 34283
+  },
+  {
+    "Hersteller": "VW",
+    "Modell": "Multivan Startline",
+    "Preis": 29000,
+    "Verbrauch": 8,
+    "Kofferraum": 664,
+    "Preis2": 1.3,
+    "Verbrauch pro Jahr": 6640,
+    "Gesamtkosten": 35640
+  },
+  {
+    "Hersteller": "Lancia",
+    "Modell": "Phedra",
+    "Preis": 30900,
+    "Verbrauch": 6.9,
+    "Kofferraum": 324,
+    "Preis2": 1.1,
+    "Verbrauch pro Jahr": 5727,
+    "Gesamtkosten": 36627
+  },
+  {
+    "Hersteller": "VW",
+    "Modell": "Sharan 2.0",
+    "Preis": 29300,
+    "Verbrauch": 9.4,
+    "Kofferraum": 1200,
+    "Preis2": 1.3,
+    "Verbrauch pro Jahr": 7802,
+    "Gesamtkosten": 37102
+  },
+  {
+    "Hersteller": "Mercedes-Benz",
+    "Modell": "Viano Lang",
+    "Preis": 33150,
+    "Verbrauch": 8.9,
+    "Kofferraum": 730,
+    "Preis2": 1.1,
+    "Verbrauch pro Jahr": 7387,
+    "Gesamtkosten": 40537
+  },
+  {
+    "Hersteller": "[undefined]",
+    "Modell": "[undefined]",
+    "Preis": "[undefined]",
+    "Verbrauch": "[undefined]",
+    "Kofferraum": "[undefined]",
+    "Preis2": "[undefined]",
+    "Verbrauch pro Jahr": "[undefined]",
+    "Gesamtkosten": "[undefined]"
+  },
+  {
+    "Hersteller": "Hyundai",
+    "Modell": "H-1 Travel",
+    "Preis": 20400,
+    "Verbrauch": 8.3,
+    "Kofferraum": "",
+    "Preis2": 1.1,
+    "Verbrauch pro Jahr": 6889.000000000001,
+    "Gesamtkosten": 27289
+  },
+  {
+    "Hersteller": "Ford",
+    "Modell": "Transit Cityline",
+    "Preis": 19611,
+    "Verbrauch": 7,
+    "Kofferraum": "",
+    "Preis2": 1.1,
+    "Verbrauch pro Jahr": 5810,
+    "Gesamtkosten": 25421
+  },
+  {
+    "Hersteller": "Opel",
+    "Modell": "Vivaro",
+    "Preis": 19660,
+    "Verbrauch": 7.7,
+    "Kofferraum": "",
+    "Preis2": 1.1,
+    "Verbrauch pro Jahr": 6391,
+    "Gesamtkosten": 26051
+  },
+  {
+    "Hersteller": "Renault",
+    "Modell": "Trafic",
+    "Preis": "",
+    "Verbrauch": "",
+    "Kofferraum": "",
+    "Preis2": 1.1,
+    "Verbrauch pro Jahr": 0,
+    "Gesamtkosten": 0
+  },
+  {
+    "Hersteller": "Nissan",
+    "Modell": "Primastar",
+    "Preis": "",
+    "Verbrauch": "",
+    "Kofferraum": "",
+    "Preis2": 1.1,
+    "Verbrauch pro Jahr": 0,
+    "Gesamtkosten": 0
+  },
+  {
+    "Hersteller": "Citroën",
+    "Modell": "Jumper",
+    "Preis": "",
+    "Verbrauch": "",
+    "Kofferraum": "",
+    "Preis2": 1.1,
+    "Verbrauch pro Jahr": 0,
+    "Gesamtkosten": 0
+  },
+  {
+    "Hersteller": "Peugeot",
+    "Modell": "Boxer",
+    "Preis": 19490,
+    "Verbrauch": 7,
+    "Kofferraum": "",
+    "Preis2": 1.1,
+    "Verbrauch pro Jahr": 5810,
+    "Gesamtkosten": 25300
+  },
+  {
+    "Hersteller": "Fiat",
+    "Modell": "Ducato",
+    "Preis": 19390,
+    "Verbrauch": 7.3,
+    "Kofferraum": "",
+    "Preis2": 1.1,
+    "Verbrauch pro Jahr": 6059,
+    "Gesamtkosten": 25449
+  }
+]

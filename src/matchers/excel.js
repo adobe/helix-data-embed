@@ -10,6 +10,8 @@
  * governing permissions and limitations under the License.
  */
 const { OneDrive } = require('@adobe/helix-onedrive-support');
+const Tabular = require('./Tabular.js');
+const sheets = require('./sheets.js');
 
 /**
  * Returns the onedrive client - authenticated either via bearer token or env credentials.
@@ -60,95 +62,96 @@ async function getOneDriveClient(env, log) {
   });
 }
 
+class Excel extends Tabular {
+  constructor(drive, url) {
+    super();
+    this.drive = drive;
+    this.url = url;
+  }
+
+  /**
+   * @returns {Promise<DriveItem>}
+   * @private
+   */
+  async _getDriveItem() {
+    if (!this.item) {
+      this.item = await this.drive.getDriveItemFromShareLink(this.url);
+      /* istanbul ignore else */
+      if (!this.item.lastModifiedDateTime) {
+        this.item = await this.drive.getDriveItem(this.item);
+      }
+    }
+    return this.item;
+  }
+
+  /**
+   * @returns {Promise<Workbook>}
+   * @private
+   */
+  async _getWorkbook() {
+    if (!this.workbook) {
+      this.workbook = this.drive.getWorkbook(await this._getDriveItem());
+    }
+    return this.workbook;
+  }
+
+  /**
+   * Returns the last modified time
+   * @returns {Promise<string>}
+   */
+  async getLastModified() {
+    /* istanbul ignore next */
+    if (!this.lastModified) {
+      this.lastModified = (await this._getDriveItem()).lastModifiedDateTime;
+    }
+    return this.lastModified;
+  }
+
+  /**
+   * Returns the sheet names.
+   * @returns {Promise<string[]>}
+   */
+  async getSheetNames() {
+    return (await this._getWorkbook()).getWorksheetNames();
+  }
+
+  /**
+   * Returns the data for the given sheet and optional table
+   * @param {string} sheetName Sheet name
+   * @param {string} [table] Table name or number
+   * @returns {Promise<Array<Object>>}
+   */
+  async getData(sheetName, table) {
+    const worksheet = (await this._getWorkbook()).worksheet(encodeURIComponent(sheetName));
+    if (!table) {
+      this.log.info(`returning used-range for ${sheetName}.`);
+      return worksheet.usedRange().getRowsAsObjects();
+    }
+
+    // if table is a number, get the names
+    let tableName = table;
+    if (/^\d+$/.test(table)) {
+      const tableNum = Number.parseInt(table, 10);
+      const tableNames = await worksheet.getTableNames();
+      if (tableNum < 0 || tableNum >= tableNames.length) {
+        this.log.info(`table index out of range: 0 >= ${tableNum} < ${tableNames.length}`);
+        const error = new Error('index out of range');
+        error.statusCode = 404;
+        throw error;
+      }
+      tableName = tableNames[tableNum];
+    }
+    this.log.info(`fetching table data for worksheet ${sheetName} with name ${tableName}`);
+    return worksheet.table(encodeURIComponent(tableName)).getRowsAsObjects();
+  }
+}
+
 async function extract(url, params, env, log = console) {
-  const {
-    sheet,
-    table,
-  } = params;
   let drive;
   try {
     drive = await getOneDriveClient(env, log);
-
-    let item = await drive.getDriveItemFromShareLink(url);
-    /* istanbul ignore else */
-    if (!item.lastModifiedDateTime) {
-      item = await drive.getDriveItem(item);
-    }
-    const { lastModifiedDateTime } = item;
-    const workbook = drive.getWorkbook(item);
-
-    // if a sheet is specified, use it
-    let worksheetName;
-    if (sheet) {
-      worksheetName = `helix-${sheet}`;
-    } else {
-      // get the sheet names and check if any of them starts with `helix-`
-      const sheetNames = await workbook.getWorksheetNames();
-      const hasHelixSheets = !!sheetNames.find((n) => n.startsWith('helix-'));
-      if (hasHelixSheets) {
-        if (sheetNames.indexOf('helix-default') < 0) {
-          // no helix-default -> not found
-          log.info('Workbook has helix sheets but no helix-default');
-          return {
-            statusCode: 404,
-            headers: {
-              'cache-control': 'no-store, private, must-revalidate',
-            },
-            body: [],
-          };
-        }
-        worksheetName = 'helix-default';
-      } else {
-        [worksheetName] = sheetNames;
-        log.info(`Workbook has no helix sheets. using first one: ${worksheetName}`);
-      }
-    }
-
-    const worksheet = workbook.worksheet(encodeURIComponent(worksheetName));
-    const body = await (async () => {
-      if (!table) {
-        log.info(`returning used-range for ${worksheetName}.`);
-        return worksheet.usedRange().getRowsAsObjects();
-      }
-      // if table is a number, get the names
-      let tableName = table;
-      if (/^\d+$/.test(table)) {
-        const tableNum = Number.parseInt(table, 10);
-        const tableNames = await worksheet.getTableNames();
-        if (tableNum < 0 || tableNum >= tableNames.length) {
-          log.info(`table index out of range: 0 >= ${tableNum} < ${tableNames.length}`);
-          const error = new Error('index out of range');
-          error.statusCode = 404;
-          throw error;
-        }
-        tableName = tableNames[tableNum];
-      }
-      log.info(`fetching table data for worksheet ${worksheetName} with name ${tableName}`);
-      return worksheet.table(encodeURIComponent(tableName)).getRowsAsObjects();
-    })();
-    log.info(`returning ${body.length} rows.`);
-    const headers = {
-      'Content-Type': 'application/json',
-      'cache-control': 'no-store, private, must-revalidate',
-    };
-    if (lastModifiedDateTime) {
-      headers['Last-Modified'] = new Date(lastModifiedDateTime).toUTCString();
-    }
-    return {
-      statusCode: 200,
-      headers,
-      body,
-    };
-  } catch (e) {
-    log.error(e.message);
-    return {
-      statusCode: e.statusCode || 500,
-      headers: {
-        'Content-Type': 'application/json',
-        'cache-control': 'no-store, private, must-revalidate',
-      },
-      body: [],
-    };
+    const tabular = new Excel(drive, url).withLog(log);
+    return sheets(tabular, params, log);
   } finally {
     if (drive) {
       await drive.dispose();

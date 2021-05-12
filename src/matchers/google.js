@@ -12,6 +12,8 @@
 /* eslint-disable camelcase */
 const { google } = require('googleapis');
 const A1 = require('@flighter/a1-notation');
+const Tabular = require('./Tabular.js');
+const sheets = require('./sheets.js');
 
 /**
  * Remember the access token for future action invocations.
@@ -36,94 +38,82 @@ function createOAuthClient(options, creds) {
   return oAuth2Client;
 }
 
+class Google extends Tabular {
+  constructor(sheetsClient, url) {
+    super();
+    this.sheets = sheetsClient;
+    this.spreadsheetId = getId(url);
+  }
+
+  /**
+   * @returns {Promise<GoogleSheet>}
+   * @private
+   */
+  async _getSheetData() {
+    if (!this.data) {
+      const { data } = await this.sheets.spreadsheets.get({
+        spreadsheetId: this.spreadsheetId,
+      });
+      this.data = data;
+    }
+    return this.data;
+  }
+
+  /**
+   * Returns the sheet names.
+   * @returns {Promise<string[]>}
+   */
+  async getSheetNames() {
+    return (await this._getSheetData()).sheets.map((s) => s.properties.title);
+  }
+
+  /**
+   * Returns the data for the given sheet and optional table
+   * @param {string} sheetName Sheet name
+   * @param {string} [table] Table name or number
+   * @returns {Promise<Array<Object>>}
+   */
+  // eslint-disable-next-line no-unused-vars
+  async getData(sheetName, table) {
+    const data = await this._getSheetData();
+    const sheet = data.sheets.find((s) => s.properties.title === sheetName);
+    const range = `${sheet.properties.title}!${new A1({
+      colStart: 1,
+      rowStart: 1,
+      nRows: sheet.properties.gridProperties.rowCount,
+      nCols: sheet.properties.gridProperties.columnCount,
+    })}`;
+
+    const result = await this.sheets.spreadsheets.values.get({
+      spreadsheetId: this.spreadsheetId,
+      range,
+      valueRenderOption: 'UNFORMATTED_VALUE',
+    });
+    const { values } = result.data;
+    const colNames = values[0];
+    const rowValues = values.map((row) => colNames.reduce((obj, name, index) => {
+      // eslint-disable-next-line no-param-reassign
+      obj[name] = row[index];
+      return obj;
+    }, {}));
+
+    // discard the first row
+    rowValues.shift();
+    return rowValues;
+  }
+}
+
 async function extract(url, params, env, log = console) {
-  const {
-    sheet,
-  } = params;
   const {
     GOOGLE_DOCS2MD_CLIENT_ID: clientId,
     GOOGLE_DOCS2MD_CLIENT_SECRET: clientSecret,
     GOOGLE_DOCS2MD_REFRESH_TOKEN: refresh_token,
   } = env;
 
-  try {
-    const spreadsheetId = getId(url);
-    const auth = createOAuthClient({ clientId, clientSecret }, { refresh_token });
-    const sheets = google.sheets({ version: 'v4', auth });
-    const { data } = await sheets.spreadsheets.get({
-      spreadsheetId,
-    });
-
-    let sheetTitle;
-    if (sheet) {
-      sheetTitle = `helix-${sheet}`;
-    } else {
-      const hasHelixSheets = !!data.sheets.find((s) => s.properties.title.startsWith('helix-'));
-      if (hasHelixSheets) {
-        sheetTitle = 'helix-default';
-      } else {
-        sheetTitle = data.sheets[0].properties.title;
-        log.info(`Workbook has no helix sheets. using first one: ${sheetTitle}`);
-      }
-    }
-
-    const sheet1 = data.sheets.find((s) => s.properties.title === sheetTitle);
-    if (!sheet1) {
-      log.info(`no sheet found with name ${sheetTitle}`);
-      return {
-        statusCode: 404,
-        headers: {
-          'cache-control': 'no-store, private, must-revalidate',
-        },
-        body: '',
-      };
-    }
-
-    const range = `${sheet1.properties.title}!${new A1({
-      colStart: 1,
-      rowStart: 1,
-      nRows: sheet1.properties.gridProperties.rowCount,
-      nCols: sheet1.properties.gridProperties.columnCount,
-    })}`;
-
-    const values = await sheets.spreadsheets.values.get({
-      spreadsheetId,
-      range,
-      valueRenderOption: 'UNFORMATTED_VALUE',
-    });
-
-    const dataarray = values.data.values;
-
-    const columnnames = dataarray[0];
-
-    const rowvalues = dataarray.map((row) => columnnames.reduce((obj, name, index) => {
-    // eslint-disable-next-line no-param-reassign
-      obj[name] = row[index];
-      return obj;
-    }, {}));
-
-    // discard the first row
-    rowvalues.shift();
-
-    return {
-      statusCode: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'cache-control': 'no-store, private, must-revalidate',
-      },
-      body: rowvalues,
-    };
-  } catch (e) {
-    log.error(e.message);
-    return {
-      statusCode: 500,
-      headers: {
-        'Content-Type': 'application/json',
-        'cache-control': 'no-store, private, must-revalidate',
-      },
-      body: [],
-    };
-  }
+  const auth = createOAuthClient({ clientId, clientSecret }, { refresh_token });
+  const sheetsClient = google.sheets({ version: 'v4', auth });
+  const tabular = new Google(sheetsClient, url).withLog(log);
+  return sheets(tabular, params, log);
 }
 
 module.exports = {
