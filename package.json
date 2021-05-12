@@ -12,8 +12,8 @@
     "semantic-release": "semantic-release",
     "build": "hedy -v",
     "deploy": "hedy -v --deploy --test",
-    "deploy-ci": "hedy -v --deploy --test --pkgVersion=ci$CIRCLE_BUILD_NUM -l ci",
-    "deploy-sequences": "hedy --no-build -no-hints -l major -l minor"
+    "deploy-ci": "hedy -v --deploy --test --pkgVersion=ci$CIRCLE_BUILD_NUM -l ci --cleanup-ci 24h",
+    "deploy-sequences": "hedy --no-build -no-hints -l major -l minor --cleanup-patch 7d --cleanup-minor 30d --cleanup-major 1y"
   },
   "wsk": {
     "namespace": "helix",
