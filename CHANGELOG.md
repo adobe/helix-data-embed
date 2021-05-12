@@ -1,3 +1,36 @@
+# [3.0.0](https://github.com/adobe/helix-data-embed/compare/v2.5.10...v3.0.0) (2021-05-12)
+
+
+### Bug Fixes
+
+* **data:** adjust response size depending on runtime ([f7bb0a8](https://github.com/adobe/helix-data-embed/commit/f7bb0a84950c83c150ea66832cbaec7202e311c0))
+
+
+### Features
+
+* **data:** return all helix sheets by default ([23a39ae](https://github.com/adobe/helix-data-embed/commit/23a39ae72c8d61633e99892989621022f451b940)), closes [#315](https://github.com/adobe/helix-data-embed/issues/315)
+
+
+### BREAKING CHANGES
+
+* **data:** if a workbook or google sheets contains multiple sheets with the
+                 helix- prefix the returned data is a multi-sheet reponse:
+
+{
+  "type": "multi-sheet",
+  "names": ["helix-one", "helix-two"],
+  "helix-one": {
+    "limit": 10,
+    "offset": 5,
+    "data": [...]
+  },
+  "helix-two": {
+    "limit": 20,
+    "offset": 0,
+    "data": [...]
+  }
+}
+
 ## [2.5.10](https://github.com/adobe/helix-data-embed/compare/v2.5.9...v2.5.10) (2021-05-08)
 
 
