@@ -26,7 +26,7 @@ const NAMES_KEY = ':names';
 
 const MAX_SIZES = {
   'apache-openwhisk': 750000,
-  'aws-lambda': 1024 * 1024 * 10,
+  'aws-lambda': 900 * 1000 * 6, // give 10% error margin
   'googlecloud-functions': 1024 * 1024 * 32,
   'azure-functions': 1024 * 1024 * 100,
 };
