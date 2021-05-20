@@ -1,3 +1,10 @@
+## [3.0.1](https://github.com/adobe/helix-data-embed/compare/v3.0.0...v3.0.1) (2021-05-20)
+
+
+### Bug Fixes
+
+* use correct response size for aws ([#372](https://github.com/adobe/helix-data-embed/issues/372)) ([41d69e3](https://github.com/adobe/helix-data-embed/commit/41d69e3338fc922f8fab8cf9930b26a2ce7f2245))
+
 # [3.0.0](https://github.com/adobe/helix-data-embed/compare/v2.5.10...v3.0.0) (2021-05-12)
 
 
