@@ -1,3 +1,10 @@
+## [3.0.2](https://github.com/adobe/helix-data-embed/compare/v3.0.1...v3.0.2) (2021-05-31)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-universal to v1.6.1 ([#381](https://github.com/adobe/helix-data-embed/issues/381)) ([d3d32f3](https://github.com/adobe/helix-data-embed/commit/d3d32f3a31635bec47673a18bd51c25ef7f30d30))
+
 ## [3.0.1](https://github.com/adobe/helix-data-embed/compare/v3.0.0...v3.0.1) (2021-05-20)
 
 
