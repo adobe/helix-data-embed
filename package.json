@@ -37,7 +37,7 @@
     "@adobe/helix-shared-utils": "1.0.3",
     "@adobe/helix-shared-wrap": "1.0.0",
     "@adobe/helix-status": "9.1.7",
-    "@adobe/helix-universal": "1.6.0",
+    "@adobe/helix-universal": "1.6.1",
     "@adobe/helix-universal-logger": "1.0.4",
     "@flighter/a1-notation": "2.0.1",
     "googleapis": "70.0.0",
