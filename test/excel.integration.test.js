@@ -70,7 +70,7 @@ describe('Excel Integration Test', () => {
     assert.equal(result.statusCode, 500);
   }).timeout(30000);
 
-  condit('Excel Spreadsheet returns all helix sheets', condition, async () => {
+  condit('Excel Spreadsheet returns default helix sheets', condition, async () => {
     const result = await main({
       src: 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/data-embed-no-default.xlsx?d=wf80aa1d65efb4e41bd16ba3ca0a4564b&csf=1&web=1&e=9WnXzf',
     }, {
@@ -145,6 +145,83 @@ describe('Excel Integration Test', () => {
       limit: 1,
       offset: 0,
       total: 1,
+    });
+  }).timeout(30000);
+
+  condit('Excel Spreadsheet returns all helix sheets', condition, async () => {
+    const result = await main({
+      src: 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/multisheet.xlsx',
+      limit: 1,
+    }, {
+      AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
+      AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
+      AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
+    });
+    assert.equal(result.statusCode, 200);
+    assert.deepEqual(result.body, {
+      ':names': ['日本', 'tables', 'foo'],
+      ':type': 'multi-sheet',
+      ':version': 3,
+      foo: {
+        data: [
+          { Code: 'JP', Country: 'Japan', Number: 3 },
+        ],
+        limit: 1,
+        offset: 0,
+        total: 6,
+      },
+      tables: {
+        data: [
+          {
+            '': '', A: 112, B: 224, C: 135,
+          },
+        ],
+        limit: 1,
+        offset: 0,
+        total: 10,
+      },
+      日本: {
+        data: [
+          { Code: 'JP', Country: 'Japan', Number: 3 },
+        ],
+        limit: 1,
+        offset: 0,
+        total: 1,
+      },
+    });
+  }).timeout(30000);
+
+  condit('Excel Spreadsheet returns selected sheets', condition, async () => {
+    const result = await main({
+      src: 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/multisheet.xlsx',
+      sheet: ['foo', '日本'],
+      limit: 1,
+    }, {
+      AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
+      AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
+      AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
+    });
+    assert.equal(result.statusCode, 200);
+    assert.deepEqual(result.body, {
+      ':names': ['日本', 'foo'],
+      ':type': 'multi-sheet',
+      ':version': 3,
+      foo: {
+        data: [
+          { Code: 'JP', Country: 'Japan', Number: 3 },
+        ],
+        limit: 1,
+        offset: 0,
+        total: 6,
+      },
+      日本: {
+        data: [
+          { Code: 'JP', Country: 'Japan', Number: 3 },
+        ],
+        limit: 1,
+        offset: 0,
+        total: 1,
+      },
     });
   }).timeout(30000);
 
@@ -250,7 +327,7 @@ describe('Excel Integration Test', () => {
       AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
       AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,
       AZURE_HELIX_PASSWORD: process.env.AZURE_HELIX_PASSWORD,
-      'hlx_p.limit': 4,
+      limit: 4,
     });
     assert.equal(result.statusCode, 200);
     assert.deepEqual(result.body, {
@@ -266,8 +343,8 @@ describe('Excel Integration Test', () => {
   condit('Retrieves Excel Spreadsheet via drive uri', condition, async () => {
     const result = await main({
       src: 'onedrive:/drives/b!DyVXacYnlkm_17hZL307Me9vzRzaKwZCpVMBYbPOKaVT_gD5WmlHRbC-PCpiwGPx/items/012VWERI7U74IWSKVFH5F3QBLA3B4FVX5D',
-      'hlx_p.limit': 2,
-      'hlx_p.offset': 3,
+      limit: 2,
+      offset: 3,
     }, {
       AZURE_WORD2MD_CLIENT_ID: process.env.AZURE_WORD2MD_CLIENT_ID,
       AZURE_HELIX_USER: process.env.AZURE_HELIX_USER,

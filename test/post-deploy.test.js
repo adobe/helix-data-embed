@@ -95,43 +95,6 @@ createTargets().forEach((target) => {
         });
     }).timeout(10000);
 
-    it('Google Sheets Embed with Query Builder', async () => {
-      const url = 'https://docs.google.com/spreadsheets/d/1KP2-ty18PLmHMduBX-ZOlHUpNCk6uB1Q1i__l3scoTM/edit?hlx_property=Code&hlx_property.value=DE';
-      console.log('Trying', url);
-
-      await chai
-        .request(target.host())
-        .get(`${target.urlPath()}/${url}`)
-        .then((response) => {
-          // console.log(response.body);
-          expect(response).to.be.json;
-          expect(response.body.data).to.be.an('array').that.eql([{ Code: 'DE', Country: 'Germany', Number: 5 }]);
-          expect(response.body.data).to.have.lengthOf(1);
-          expect(response).to.have.status(200);
-        }).catch((e) => {
-          throw e;
-        });
-    }).timeout(10000);
-
-    it('Google Sheets Embed with Query Builder (alternative syntax)', async () => {
-      const src = 'https://docs.google.com/spreadsheets/d/1KP2-ty18PLmHMduBX-ZOlHUpNCk6uB1Q1i__l3scoTM/edit';
-      const url = `${target.urlPath()}?src=${encodeURIComponent(src)}&hlx_property=Code&hlx_property.value=DE`;
-      console.log('Trying', url);
-
-      await chai
-        .request(target.host())
-        .get(url)
-        .then((response) => {
-          // console.log(response.body);
-          expect(response).to.be.json;
-          expect(response.body.data).to.be.an('array').that.eql([{ Code: 'DE', Country: 'Germany', Number: 5 }]);
-          expect(response.body.data).to.have.lengthOf(1);
-          expect(response).to.have.status(200);
-        }).catch((e) => {
-          throw e;
-        });
-    }).timeout(10000);
-
     it('Helix Run Query Embed', async () => {
       console.log('Trying', `https://adobeioruntime.net/${target.urlPath()}/https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@v2/error500`);
 
