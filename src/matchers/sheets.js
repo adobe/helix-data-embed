@@ -48,6 +48,11 @@ async function extract(tabular, params, log) {
     if (lastModified) {
       headers['Last-Modified'] = new Date(lastModified).toUTCString();
     }
+    const sourceLocation = await tabular.getSourceLocation();
+    if (sourceLocation) {
+      headers['x-source-location'] = sourceLocation;
+    }
+
     return {
       statusCode: 200,
       headers,

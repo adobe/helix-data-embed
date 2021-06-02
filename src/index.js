@@ -11,9 +11,11 @@
  */
 const { Response } = require('@adobe/helix-universal');
 const wrap = require('@adobe/helix-shared-wrap');
+const bodyData = require('@adobe/helix-shared-body-data');
 const { logger } = require('@adobe/helix-universal-logger');
 const { wrap: helixStatus } = require('@adobe/helix-status');
 const embed = require('./embed');
+const store = require('./store.js');
 const dataSource = require('./data-source.js');
 
 const TYPE_KEY = ':type';
@@ -64,12 +66,8 @@ async function main(req, context) {
   }
   try {
     log.info(`data-embed for datasource ${url}`);
+    const params = context.data;
 
-    const sp = new URL(req.url).searchParams;
-    const params = Object.fromEntries(sp.entries());
-    if (params.sheet) {
-      params.sheet = sp.getAll('sheet');
-    }
     // little workaround to get authorization header to the embedders
     const env = {
       ...context.env,
@@ -114,6 +112,19 @@ async function main(req, context) {
 
     let size = JSON.stringify(ret).length;
     log.info(`filtered result ${numRows} rows. size: ${size}.`);
+
+    // if only 1 data set, unwrap it
+    if (ret[NAMES_KEY].length === 1) {
+      ret = ret[ret[NAMES_KEY][0]];
+      ret[TYPE_KEY] = 'sheet';
+    }
+    ret[VERSION_KEY] = 3;
+
+    const { presignedStorageUrl } = params;
+    if (presignedStorageUrl) {
+      return store(ret, headers, presignedStorageUrl);
+    }
+
     const maxSize = getMaxSize(context);
     if (size > maxSize) {
       // todo: could be optimized to be more accurate using some binary search approach
@@ -131,12 +142,6 @@ async function main(req, context) {
       log.info(`result truncated to ${numRows} rows. size: ${size}.`);
     }
 
-    // if only 1 data set, unwrap it
-    if (ret[NAMES_KEY].length === 1) {
-      ret = ret[ret[NAMES_KEY][0]];
-      ret[TYPE_KEY] = 'sheet';
-    }
-    ret[VERSION_KEY] = 3;
     const bodyText = JSON.stringify(ret);
     return new Response(bodyText, {
       status,
@@ -155,6 +160,7 @@ async function main(req, context) {
 }
 
 module.exports.main = wrap(main)
+  .with(bodyData)
   .with(helixStatus)
   .with(logger.trace)
   .with(logger);

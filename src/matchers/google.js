@@ -59,6 +59,10 @@ class Google extends Tabular {
     return this.data;
   }
 
+  async getSourceLocation() {
+    return this.spreadsheetId;
+  }
+
   /**
    * Returns the sheet names.
    * @returns {Promise<string[]>}

@@ -55,6 +55,59 @@ createTargets().forEach((target) => {
         });
     }).timeout(10000);
 
+    it('Fetches excel sheet with post', async () => {
+      const url = 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data.xlsx';
+      console.log('Trying', url);
+
+      await chai
+        .request(target.host())
+        .post(`${target.urlPath()}/${url}`)
+        .set('content-type', 'application/x-www-form-urlencoded')
+        .send({
+          src: 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data.xlsx',
+        })
+        .then((response) => {
+          // console.log(response);
+          expect(response).to.have.status(200);
+          expect(response).to.be.json;
+          expect(response.body.data).to.be.an('array').that.deep.includes({
+            Country: 'Japan',
+            Code: 'JP',
+            Number: 3,
+          });
+        })
+        .catch((e) => {
+          throw e;
+        });
+    }).timeout(10000);
+
+    it('Stores excel sheet in s3 with presigned url', async () => {
+      const url = 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data.xlsx';
+      console.log('Trying', url);
+
+      await chai
+        .request(target.host())
+        .post(`${target.urlPath()}/${url}`)
+        .set('content-type', 'application/x-www-form-urlencoded')
+        .send({
+          src: 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/data-embed-no-helix.xlsx',
+          presignedStorageUrl: 'https://h3d4b1d4ea6d84b0229bce7cf6806b0bb3470489ab8205a13f75cfe518fa7.s3.amazonaws.com/live/data-embed-unit-tests/data-embed-no-helix.json?AWSAccessKeyId=AKIARXE2QZFCSXL7IA4R&Content-Type=application%2Fjson&Expires=1622631323&Signature=niwM0kcwJ5aC2y6ZrHRiU1W3gow%3D&X-Amz-SignedHeaders=content-type',
+        })
+        .then((response) => {
+          // console.log(response);
+          expect(response).to.have.status(200);
+          expect(response).to.be.json;
+          expect(response.body.data).to.be.an('array').that.deep.includes({
+            Country: 'Japan',
+            Code: 'JP',
+            Number: 3,
+          });
+        })
+        .catch((e) => {
+          throw e;
+        });
+    }).timeout(10000);
+
     it('Excel Embed (with tables)', async () => {
       const url = 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data.xlsx?d=w6911fff4a52a4b3fb80560d8785adfa3&csf=1&web=1&e=fkkA2a';
       console.log('Trying', url);

@@ -1,6 +1,6 @@
 {
   "name": "@adobe/helix-data-embed",
-  "version": "3.0.3",
+  "version": "3.0.3-test",
   "private": true,
   "description": "Helix Data Embed",
   "main": "src/index.js",
@@ -11,7 +11,7 @@
     "lint": "eslint .",
     "semantic-release": "semantic-release",
     "build": "hedy -v",
-    "deploy": "hedy -v --deploy --test",
+    "deploy": "hedy -v --deploy --test --target=aws",
     "deploy-ci": "hedy -v --deploy --test --pkgVersion=ci$CIRCLE_BUILD_NUM -l ci --cleanup-ci 24h",
     "deploy-sequences": "hedy --no-build -no-hints -l major -l minor --cleanup-patch 7d --cleanup-minor 30d --cleanup-major 1y"
   },
@@ -34,6 +34,7 @@
   "dependencies": {
     "@adobe/helix-fetch": "2.2.1",
     "@adobe/helix-onedrive-support": "5.0.0",
+    "@adobe/helix-shared-body-data": "1.0.7",
     "@adobe/helix-shared-utils": "1.0.3",
     "@adobe/helix-shared-wrap": "1.0.0",
     "@adobe/helix-status": "9.1.7",
@@ -52,6 +53,7 @@
     "@semantic-release/exec": "5.0.0",
     "@semantic-release/git": "9.0.0",
     "ajv": "8.5.0",
+    "aws-sdk": "2.919.0",
     "chai": "4.3.4",
     "chai-http": "4.3.0",
     "codecov": "3.8.2",

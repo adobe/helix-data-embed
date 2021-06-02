@@ -26,6 +26,15 @@ class Tabular {
   }
 
   /**
+   * Returns the source location of this tabular data.
+   * @returns {Promise<string>}
+   */
+  // eslint-disable-next-line class-methods-use-this
+  async getSourceLocation() {
+    return '';
+  }
+
+  /**
    * Returns the sheet names.
    * @returns {Promise<string[]>}
    */

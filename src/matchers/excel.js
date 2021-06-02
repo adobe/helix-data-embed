@@ -108,6 +108,18 @@ class Excel extends Tabular {
   }
 
   /**
+   * Returns the source location of this tabular data.
+   * @returns {Promise<string>}
+   */
+  async getSourceLocation() {
+    if (!this.sourceLocation) {
+      const driveItem = await this._getDriveItem();
+      this.sourceLocation = `/drives/${driveItem.parentReference.driveId}/items/${driveItem.id}`;
+    }
+    return this.sourceLocation;
+  }
+
+  /**
    * Returns the sheet names.
    * @returns {Promise<string[]>}
    */
