@@ -14,8 +14,6 @@ const wrap = require('@adobe/helix-shared-wrap');
 const { logger } = require('@adobe/helix-universal-logger');
 const { wrap: helixStatus } = require('@adobe/helix-status');
 const embed = require('./embed');
-const { loadquerystring } = require('./querybuilder/url');
-const { createfilter } = require('./querybuilder/filter');
 const dataSource = require('./data-source.js');
 
 const TYPE_KEY = ':type';
@@ -41,6 +39,20 @@ function getMaxSize(context) {
   return MAX_SIZES[name] || Number.MAX_SAFE_INTEGER;
 }
 
+function createfilter(params) {
+  const offset = Number.parseInt(params.offset || params['hlx_p.offset'], 10) || 0;
+  let limit = Number.parseInt(params.limit || params['hlx_p.limit'], 10) || undefined;
+  if (limit && offset) {
+    limit += offset;
+  }
+
+  // return a function that can filter the data
+  const filter = (data) => data.slice(offset, limit);
+  filter.offset = offset;
+  filter.limit = limit;
+  return filter;
+}
+
 async function main(req, context) {
   /* istanbul ignore next */
   const { log = console } = context;
@@ -51,23 +63,19 @@ async function main(req, context) {
     });
   }
   try {
-    const { searchParams } = new URL(req.url);
+    log.info(`data-embed for datasource ${url}`);
+
+    const sp = new URL(req.url).searchParams;
+    const params = Object.fromEntries(sp.entries());
+    if (params.sheet) {
+      params.sheet = sp.getAll('sheet');
+    }
     // little workaround to get authorization header to the embedders
     const env = {
       ...context.env,
       AUTHORIZATION: req.headers.get('authorization'),
     };
-
-    log.info(`data-embed for datasource ${url}`);
-    const qbquery = loadquerystring(searchParams, 'hlx_');
-    log.debug('QB query', qbquery);
-    const filter = createfilter(qbquery);
-    log.debug('QB filter', filter);
-    const params = Array.from(searchParams.entries()).reduce((p, [key, value]) => {
-      // eslint-disable-next-line no-param-reassign
-      p[key] = value;
-      return p;
-    }, {});
+    const filter = createfilter(params);
     const result = await embed(url, params, env, log);
 
     const {

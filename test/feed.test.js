@@ -35,7 +35,7 @@ describe('Feed Tests', () => {
 
   it('Works for RSS Feeds with Limits', async () => {
     const response = await main(
-      new Request('https://www.example.com/data-embed-action?hlx_p.limit=1'),
+      new Request('https://www.example.com/data-embed-action?limit=1'),
       {
         env: {},
         pathInfo: {

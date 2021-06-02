@@ -124,7 +124,7 @@ describe('Index result Tests', () => {
     const response = await customMain(
       new Request(`https://www.example.com/data-embed-action?${querystring.stringify({
         src: 'https://foo.com',
-        'hlx_p.limit': 10,
+        limit: 10,
       })}`),
       { log },
     );
@@ -152,7 +152,7 @@ describe('Index result Tests', () => {
     const response = await customMain(
       new Request(`https://www.example.com/data-embed-action?${querystring.stringify({
         src: 'https://foo.com',
-        'hlx_p.offset': 9000,
+        offset: 9000,
       })}`),
       { log },
     );
@@ -169,6 +169,35 @@ describe('Index result Tests', () => {
   });
 
   it('handles limit and offset correctly', async () => {
+    const { main: customMain } = proxyquire('../src/index.js', {
+      './embed.js': () => ({
+        body: [{
+          name: 'helix-default',
+          data: TEST_DATA,
+        }],
+      }),
+    });
+    const response = await customMain(
+      new Request(`https://www.example.com/data-embed-action?${querystring.stringify({
+        src: 'https://foo.com',
+        limit: 50,
+        offset: 100,
+      })}`),
+      { log },
+    );
+    const data = await response.json();
+    await validate(data);
+    assert.deepEqual(data, {
+      ':version': 3,
+      ':type': 'sheet',
+      data: TEST_DATA.slice(100, 150),
+      limit: 50,
+      offset: 100,
+      total: 10000,
+    });
+  });
+
+  it('handles limit and offset with qb properties correctly', async () => {
     const { main: customMain } = proxyquire('../src/index.js', {
       './embed.js': () => ({
         body: [{
@@ -212,8 +241,8 @@ describe('Index result Tests', () => {
     const response = await customMain(
       new Request(`https://www.example.com/data-embed-action?${querystring.stringify({
         src: 'https://foo.com',
-        'hlx_p.limit': 50,
-        'hlx_p.offset': 100,
+        limit: 50,
+        offset: 100,
       })}`),
       { log },
     );
