@@ -1,3 +1,10 @@
+## [3.0.4](https://github.com/adobe/helix-data-embed/compare/v3.0.3...v3.0.4) (2021-06-02)
+
+
+### Bug Fixes
+
+* remove querybuilder ([#385](https://github.com/adobe/helix-data-embed/issues/385)) ([962385d](https://github.com/adobe/helix-data-embed/commit/962385d8924a5cbc149683d6b6b1b40b83f351ed)), closes [#364](https://github.com/adobe/helix-data-embed/issues/364) [#384](https://github.com/adobe/helix-data-embed/issues/384)
+
 ## [3.0.3](https://github.com/adobe/helix-data-embed/compare/v3.0.2...v3.0.3) (2021-06-01)
 
 
