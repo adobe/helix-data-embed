@@ -113,20 +113,9 @@ async function main(req, context) {
     let size = JSON.stringify(ret).length;
     log.info(`filtered result ${numRows} rows. size: ${size}.`);
 
-    // if only 1 data set, unwrap it
-    if (ret[NAMES_KEY].length === 1) {
-      ret = ret[ret[NAMES_KEY][0]];
-      ret[TYPE_KEY] = 'sheet';
-    }
-    ret[VERSION_KEY] = 3;
-
     const { presignedStorageUrl } = params;
-    if (presignedStorageUrl) {
-      return store(ret, headers, presignedStorageUrl);
-    }
-
     const maxSize = getMaxSize(context);
-    if (size > maxSize) {
+    if (size > maxSize && !presignedStorageUrl) {
       // todo: could be optimized to be more accurate using some binary search approach
       const avgRowSize = size / numRows;
       const retain = Math.floor(maxSize / avgRowSize);
@@ -140,6 +129,17 @@ async function main(req, context) {
       });
       size = JSON.stringify(ret).length;
       log.info(`result truncated to ${numRows} rows. size: ${size}.`);
+    }
+
+    // if only 1 data set, unwrap it
+    if (ret[NAMES_KEY].length === 1) {
+      ret = ret[ret[NAMES_KEY][0]];
+      ret[TYPE_KEY] = 'sheet';
+    }
+    ret[VERSION_KEY] = 3;
+
+    if (presignedStorageUrl) {
+      return store(log, ret, headers, presignedStorageUrl);
     }
 
     const bodyText = JSON.stringify(ret);

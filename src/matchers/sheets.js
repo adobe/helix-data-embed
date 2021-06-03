@@ -49,6 +49,7 @@ async function extract(tabular, params, log) {
       headers['Last-Modified'] = new Date(lastModified).toUTCString();
     }
     const sourceLocation = await tabular.getSourceLocation();
+    /* istanbul ignore next */
     if (sourceLocation) {
       headers['x-source-location'] = sourceLocation;
     }

@@ -15,6 +15,7 @@ process.env.HELIX_FETCH_FORCE_HTTP1 = true;
 const assert = require('assert');
 const querystring = require('querystring');
 const proxyquire = require('proxyquire');
+const nock = require('nock');
 const { Request } = require('@adobe/helix-universal');
 const { DataEmbedValidator } = require('@adobe/helix-shared-config');
 const { main } = require('../src/index');
@@ -298,6 +299,71 @@ describe('Index result Tests', () => {
       offset: 0,
       total: 10000,
     });
+  });
+
+  it('does not truncate result if too large with presigned storage url', async () => {
+    const scope = nock('https://www.example.com')
+      .put('/store/this?signed=1234')
+      .reply(200);
+
+    const { main: customMain } = proxyquire('../src/index.js', {
+      './embed.js': () => ({
+        body: [{
+          name: 'helix-default',
+          data: TEST_DATA,
+        }],
+        headers: {
+          'x-source-location': '/drive/1234',
+        },
+      }),
+    });
+    const response = await customMain(
+      new Request(`https://www.example.com/data-embed-action?${querystring.stringify({
+        src: 'https://foo.com',
+        presignedStorageUrl: 'https://www.example.com/store/this?signed=1234',
+      })}`),
+      {
+        log,
+        runtime: {
+          name: 'apache-openwhisk',
+        },
+      },
+    );
+    assert.strictEqual(response.status, 201);
+    assert.strictEqual(response.headers.get('location'), 'https://www.example.com/store/this');
+    await scope.done();
+  });
+
+  it('propagates error with presigned url', async () => {
+    const scope = nock('https://www.example.com')
+      .put('/store/this?signed=1234')
+      .reply(403);
+
+    const { main: customMain } = proxyquire('../src/index.js', {
+      './embed.js': () => ({
+        body: [{
+          name: 'helix-default',
+          data: TEST_DATA,
+        }],
+        headers: {
+          'x-source-location': '/drive/1234',
+        },
+      }),
+    });
+    const response = await customMain(
+      new Request(`https://www.example.com/data-embed-action?${querystring.stringify({
+        src: 'https://foo.com',
+        presignedStorageUrl: 'https://www.example.com/store/this?signed=1234',
+      })}`),
+      {
+        log,
+        runtime: {
+          name: 'apache-openwhisk',
+        },
+      },
+    );
+    assert.strictEqual(response.status, 403);
+    await scope.done();
   });
 
   it('does not truncate result if too large for action response in lambda', async () => {

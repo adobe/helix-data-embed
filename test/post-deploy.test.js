@@ -81,7 +81,8 @@ createTargets().forEach((target) => {
         });
     }).timeout(10000);
 
-    it('Stores excel sheet in s3 with presigned url', async () => {
+    it.skip('Stores excel sheet in s3 with presigned url', async () => {
+      // todo: find a way to test this....
       const url = 'https://adobe.sharepoint.com/:x:/r/sites/cg-helix/Shared%20Documents/data-embed-unit-tests/example-data.xlsx';
       console.log('Trying', url);
 

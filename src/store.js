@@ -24,17 +24,16 @@ const { fetch } = process.env.HELIX_FETCH_FORCE_HTTP1
   /* istanbul ignore next */
   : fetchAPI;
 
-async function store(data, hdrs, url) {
-  console.log('storing headers:', hdrs);
+async function store(log, data, hdrs, url) {
   const headers = {
     'content-type': 'application/json',
     'content-encoding': 'gzip',
   };
+  /* istanbul ignore next */
   if (hdrs['x-source-location']) {
     headers['x-amz-meta-x-source-location'] = hdrs['x-source-location'];
   }
-  console.log('put url:', url);
-  console.log('put headers:', headers);
+  log.info(`uploading data to: ${url}`);
   const res = await fetch(url, {
     method: 'PUT',
     headers,
@@ -42,12 +41,14 @@ async function store(data, hdrs, url) {
   });
 
   const msg = await res.text();
-  console.log(res.status);
-  console.log(msg);
-  console.log(res.headers.plain());
+  log.info(`uploading done. status: ${res.status} ${msg}`);
   if (res.ok) {
+    // respond with location w/o query string
     return new Response('', {
-      status: 200,
+      status: 201,
+      headers: {
+        location: url.substring(0, url.indexOf('?')),
+      },
     });
   }
 

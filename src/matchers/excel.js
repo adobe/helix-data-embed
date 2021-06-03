@@ -112,6 +112,7 @@ class Excel extends Tabular {
    * @returns {Promise<string>}
    */
   async getSourceLocation() {
+    /* istanbul ignore next */
     if (!this.sourceLocation) {
       const driveItem = await this._getDriveItem();
       this.sourceLocation = `/drives/${driveItem.parentReference.driveId}/items/${driveItem.id}`;

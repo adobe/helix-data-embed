@@ -20,6 +20,11 @@ describe('Tabular Tests', () => {
     assert.deepEqual(await tabular.getData('foo', 'bar'), []);
   });
 
+  it('getSourceLocation returns empty string', async () => {
+    const tabular = new Tabular().withLog(console);
+    assert.deepEqual(await tabular.getSourceLocation(), '');
+  });
+
   it('selectSheetNames empty array for no sheets', async () => {
     const tabular = new Tabular().withLog(console);
     assert.deepEqual(await tabular.selectSheetNames([]), []);
