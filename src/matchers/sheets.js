@@ -56,7 +56,7 @@ async function extract(tabular, params, log) {
   } catch (e) {
     log.error(e.message);
     return {
-      statusCode: e.statusCode || 500,
+      statusCode: e.statusCode || e.code || 500,
       headers: {
         'Content-Type': 'application/json',
         'cache-control': 'no-store, private, must-revalidate',
