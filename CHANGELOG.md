@@ -1,3 +1,10 @@
+## [3.0.5](https://github.com/adobe/helix-data-embed/compare/v3.0.4...v3.0.5) (2021-06-10)
+
+
+### Bug Fixes
+
+* **google:** correctly propagate status codes from google client ([a2a37ed](https://github.com/adobe/helix-data-embed/commit/a2a37eda0e579ec981d18a01c97edd4172d40384)), closes [#389](https://github.com/adobe/helix-data-embed/issues/389)
+
 ## [3.0.4](https://github.com/adobe/helix-data-embed/compare/v3.0.3...v3.0.4) (2021-06-02)
 
 
