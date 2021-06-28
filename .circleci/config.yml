@@ -77,7 +77,7 @@ jobs:
           statuspage_name: Helix Data Embed
           statuspage_group: Delivery
           newrelic_group_policy: Delivery Repeated Failure
-          aws: true
+          targets: universal, aws, adobeio
 
   branch-deploy:
     executor: node12
