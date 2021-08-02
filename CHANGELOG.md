@@ -1,3 +1,10 @@
+## [3.0.13](https://github.com/adobe/helix-data-embed/compare/v3.0.12...v3.0.13) (2021-08-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency googleapis to v83 ([#417](https://github.com/adobe/helix-data-embed/issues/417)) ([15e1b4b](https://github.com/adobe/helix-data-embed/commit/15e1b4b90a6da47895a13ad5867b46484df54c7c))
+
 ## [3.0.12](https://github.com/adobe/helix-data-embed/compare/v3.0.11...v3.0.12) (2021-07-28)
 
 
