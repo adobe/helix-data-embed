@@ -36,6 +36,6 @@ describe('run query tests', () => {
     const { body, headers, statusCode } = await runQuery.extract('/run_query/fail');
     assert.ok(Array.isArray(body));
     assert.deepEqual(EXPECTED_HEADERS, headers);
-    assert.equal(statusCode, 502);
+    assert.equal(statusCode, 404);
   }).timeout(6000);
 });
