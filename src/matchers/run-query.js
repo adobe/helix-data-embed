@@ -13,14 +13,9 @@
 const { propagateStatusCode, logLevelForStatusCode } = require('@adobe/helix-shared-utils');
 const fetchAPI = require('@adobe/helix-fetch');
 
-const { context, ALPN_HTTP1_1 } = fetchAPI;
 const { fetch } = process.env.HELIX_FETCH_FORCE_HTTP1
-  ? context({
-    alpnProtocols: [ALPN_HTTP1_1],
-    userAgent: 'helix-fetch', // static user agent for test recordings
-  })
-  /* istanbul ignore next */
-  : fetchAPI;
+  ? /* istanbul ignore next */ fetchAPI.h1()
+  : /* istanbul ignore next */ fetchAPI;
 
 async function extract(url, params, env, log = console) {
   const host = 'https://adobeioruntime.net';

@@ -32,7 +32,7 @@
   },
   "homepage": "https://github.com/adobe/helix-data-embed#readme",
   "dependencies": {
-    "@adobe/helix-fetch": "2.4.1",
+    "@adobe/helix-fetch": "3.0.0",
     "@adobe/helix-onedrive-support": "5.0.2",
     "@adobe/helix-shared-utils": "1.0.3",
     "@adobe/helix-shared-wrap": "1.0.0",
@@ -40,25 +40,25 @@
     "@adobe/helix-universal": "1.6.6",
     "@adobe/helix-universal-logger": "1.0.6",
     "@flighter/a1-notation": "2.0.2",
-    "googleapis": "84.0.0",
+    "googleapis": "88.2.0",
     "rss-parser": "3.12.0"
   },
   "devDependencies": {
-    "@adobe/eslint-config-helix": "1.1.5",
+    "@adobe/eslint-config-helix": "1.3.0",
     "@adobe/helix-deploy": "4.9.5",
     "@adobe/helix-shared-config": "1.1.13",
     "@adobe/helix-testutils": "0.4.5",
-    "@semantic-release/changelog": "5.0.1",
-    "@semantic-release/exec": "5.0.0",
-    "@semantic-release/git": "9.0.0",
+    "@semantic-release/changelog": "6.0.0",
+    "@semantic-release/exec": "6.0.1",
+    "@semantic-release/git": "10.0.0",
     "ajv": "8.6.2",
     "chai": "4.3.4",
     "chai-http": "4.3.0",
     "codecov": "3.8.3",
     "dotenv": "10.0.0",
-    "eslint": "7.32.0",
+    "eslint": "8.0.1",
     "eslint-plugin-header": "3.1.1",
-    "eslint-plugin-import": "2.23.4",
+    "eslint-plugin-import": "2.25.2",
     "fs-extra": "10.0.0",
     "ghooks": "2.0.4",
     "junit-report-builder": "3.0.0",
@@ -66,7 +66,7 @@
     "mocha": "9.0.3",
     "nyc": "15.1.0",
     "proxyquire": "2.1.3",
-    "semantic-release": "17.4.4"
+    "semantic-release": "18.0.0"
   },
   "lint-staged": {
     "*.js": "eslint"
