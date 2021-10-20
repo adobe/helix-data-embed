@@ -43,9 +43,7 @@ function validate(data) {
 
 describe('Integration Tests', async () => {
   it('Rejects missing URLs', async () => {
-    const response = await main({
-      url: 'https://www.example.com/data-embed-action',
-    }, { log });
+    const response = await main(new Request('https://www.example.com/data-embed-action'), { log });
     assert.equal(response.status, 400);
   });
 
