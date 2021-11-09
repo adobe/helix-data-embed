@@ -12,6 +12,8 @@
 process.env.HELIX_FETCH_FORCE_HTTP1 = true;
 
 /* eslint-env mocha */
+/* eslint-disable no-console */
+
 const assert = require('assert');
 const querystring = require('querystring');
 const proxyquire = require('proxyquire');
