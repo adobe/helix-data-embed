@@ -15,7 +15,7 @@ process.env.HELIX_FETCH_FORCE_HTTP1 = true;
 
 const assert = require('assert');
 const querystring = require('querystring');
-const { Request } = require('@adobe/helix-universal');
+const { Request } = require('@adobe/helix-fetch');
 const { condit } = require('@adobe/helix-testutils');
 const { OneDrive } = require('@adobe/helix-onedrive-support');
 const { main: universalMain } = require('../src/index');
