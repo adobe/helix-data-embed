@@ -33,7 +33,7 @@
   "homepage": "https://github.com/adobe/helix-data-embed#readme",
   "dependencies": {
     "@adobe/helix-fetch": "3.0.0",
-    "@adobe/helix-onedrive-support": "6.0.1",
+    "@adobe/helix-onedrive-support": "6.1.0",
     "@adobe/helix-shared-utils": "2.0.0",
     "@adobe/helix-shared-wrap": "1.0.0",
     "@adobe/helix-status": "9.2.4",
@@ -44,9 +44,9 @@
   },
   "devDependencies": {
     "@adobe/eslint-config-helix": "1.3.2",
-    "@adobe/helix-deploy": "6.0.0",
-    "@adobe/helix-shared-config": "1.7.3",
-    "@adobe/helix-testutils": "0.4.10",
+    "@adobe/helix-deploy": "6.2.2",
+    "@adobe/helix-shared-config": "1.7.5",
+    "@adobe/helix-testutils": "0.4.11",
     "@adobe/helix-universal": "3.0.0",
     "@semantic-release/changelog": "6.0.1",
     "@semantic-release/exec": "6.0.3",
