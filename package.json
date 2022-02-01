@@ -47,7 +47,7 @@
     "@adobe/helix-deploy": "6.2.2",
     "@adobe/helix-shared-config": "1.7.5",
     "@adobe/helix-testutils": "0.4.11",
-    "@adobe/helix-universal": "3.0.1",
+    "@adobe/helix-universal": "3.0.2",
     "@semantic-release/changelog": "6.0.1",
     "@semantic-release/exec": "6.0.3",
     "@semantic-release/git": "10.0.1",
