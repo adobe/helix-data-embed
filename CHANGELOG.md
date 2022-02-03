@@ -1,3 +1,10 @@
+## [3.0.25](https://github.com/adobe/helix-data-embed/compare/v3.0.24...v3.0.25) (2022-02-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency googleapis to v94 ([#484](https://github.com/adobe/helix-data-embed/issues/484)) ([95bdf04](https://github.com/adobe/helix-data-embed/commit/95bdf04a036480bb0c2c3b66804fa07712a7fd2d))
+
 ## [3.0.24](https://github.com/adobe/helix-data-embed/compare/v3.0.23...v3.0.24) (2022-01-27)
 
 
