@@ -36,7 +36,7 @@
     "@adobe/helix-onedrive-support": "6.1.4",
     "@adobe/helix-shared-utils": "2.0.2",
     "@adobe/helix-shared-wrap": "1.0.2",
-    "@adobe/helix-status": "9.2.6",
+    "@adobe/helix-status": "9.2.7",
     "@adobe/helix-universal-logger": "2.0.3",
     "@flighter/a1-notation": "2.1.2",
     "googleapis": "95.0.0",
